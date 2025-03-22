@@ -12,6 +12,7 @@ import {
     Container,
     Row,
     Col,
+    Label
   } from "reactstrap";
   // core components
   import AdminHeader from "../../components/Headers/AdminHeader";
@@ -47,7 +48,7 @@ import {
                       onClick={(e) => e.preventDefault()}
                       size="sm"
                     >
-                      Book
+                      Assign
                     </Button>
                     <Button
                       className="float-right"
@@ -56,7 +57,7 @@ import {
                       onClick={(e) => e.preventDefault()}
                       size="sm"
                     >
-                      Book
+                      Assign
                     </Button>
                   </div>
                 </CardHeader>
@@ -69,18 +70,18 @@ import {
                     </div>
                   </Row>
                   <form>
-                     <Row>
+                    <Row>
                           <Col lg="12">
                             <FormGroup>
                               <label
                                 className="form-control-label"
                                 htmlFor="input-username"
                               >
-                                Room Number
+                                Room ID
                               </label>
                               <Input
                                 className="form-control-alternative"
-                                defaultValue="Room Number"
+                                defaultValue="Room ID"
                                 id="input-username"
                                 placeholder="room_number"
                                 type="text"
@@ -128,7 +129,28 @@ import {
                             </FormGroup>
                           </Col>
                         
-                    </Row>`
+                    </Row>
+                    <Row>
+                          <Col lg="12">
+                            <FormGroup>
+                              <label
+                                className="form-control-label"
+                                htmlFor="input-username"
+                              >
+                                Room Type
+                              </label>
+                              <Input
+                                className="form-control-alternative"
+                                defaultValue="Room Type  "
+                                id="input-username"
+                                placeholder="Room Type"
+                                type="text"
+                              />
+                            </FormGroup>
+                          </Col>
+                        
+                    </Row>
+                    
                   </form>
                 </CardBody>
               </Card>
@@ -195,21 +217,27 @@ import {
                       </Row>
                       <Row>
                         <Col lg="6">
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-first-name"
-                            >
-                              Room Type
-                            </label>
-                            <Input
-                              className="form-control-alternative"
-                              defaultValue="Room Type"
-                              id="input-first-name"
-                              placeholder="Room Type"
-                              type="text"
-                            />
-                          </FormGroup>
+                        <FormGroup>
+                          <label className="form-control-label" htmlFor="roomType">
+                            Room Type
+                          </label>
+                          <Input
+                            type="select"
+                            id="roomType"
+                            bsSize="lg"
+                            className="form-control form-control-alternative"
+                            defaultValue=""
+                          >
+                            <option value="" disabled>Select room type</option>
+                            <option value="Lecture Hall">Lecture Hall</option>
+                            <option value="Lab">Lab</option>
+                            <option value="Auditorium">Auditorium</option>
+                            <option value="Seminar Room">Seminar Room</option>
+                            <option value="Tutorial Room">Tutorial Room</option>
+                          </Input>
+                        </FormGroup>
+
+
                         </Col>
                         <Col lg="6">
                           <FormGroup>
@@ -228,8 +256,44 @@ import {
                             />
                           </FormGroup>
                         </Col>
-                       
                       </Row>
+                      <Row>
+                        <Col lg="6">
+                        <FormGroup>
+                          <label className="form-control-label" htmlFor="hasProjector">
+                            Has Smart Screen
+                          </label>
+                          <Input
+                            type="select"
+                            id="hasSmartScreen"
+                            bsSize="lg"
+                            className="form-control form-control-alternative"
+                          >
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                          </Input>
+                        </FormGroup>
+
+                        </Col>
+                        <Col lg="6">
+                        <FormGroup>
+                          <label className="form-control-label" htmlFor="hasComputers">
+                            Has Computers
+                          </label>
+                          <Input
+                            type="select"
+                            id="hasComputers"
+                            bsSize="lg"
+                            className="form-control form-control-alternative"
+                          >
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                          </Input>
+                        </FormGroup>
+
+                        </Col>
+                      </Row>
+                      
                     </div>
                     <hr className="my-4" />
                    
