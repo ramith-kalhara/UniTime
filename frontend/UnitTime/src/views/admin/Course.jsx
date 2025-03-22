@@ -19,7 +19,7 @@ import {
   const Course = () => {
     return (
       <>
-        <AdminHeader pageIndex={0} />
+        <AdminHeader pageIndex={7} />
         {/* Page content */}
         <Container className="mt--7" fluid>
           <Row>

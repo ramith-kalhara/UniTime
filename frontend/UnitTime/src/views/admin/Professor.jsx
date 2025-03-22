@@ -140,13 +140,13 @@ import {
                               className="form-control-label"
                               htmlFor="input-username"
                             >
-                              fullName
+                              Full Name
                             </label>
                             <Input
                               className="form-control-alternative"
-                              defaultValue="fullName"
+                              defaultValue="full Name"
                               id="input-username"
-                              placeholder="fullName"
+                              placeholder="full Name"
                               type="text"
                             />
                           </FormGroup>
@@ -192,17 +192,18 @@ import {
                               className="form-control-label"
                               htmlFor="input-last-name"
                             >
-                              Module
+                              Department Name 
                             </label>
                             <Input
                               className="form-control-alternative"
-                              defaultValue="Module "
+                              defaultValue="Department Name "
                               id="input-last-name"
-                              placeholder="Module"
+                              placeholder="Department Name"
                               type="text"
                             />
                           </FormGroup>
                         </Col>
+                        
                       </Row>
                     </div>
                     <hr className="my-4" />
@@ -282,6 +283,49 @@ import {
                           </FormGroup>
                         </Col>
                       </Row>
+                    </div>
+                    <hr className="my-4" />
+                    {/* Module */}
+                    <h6 className="heading-small text-muted mb-4">
+                      Module information
+                    </h6>
+                    <div className="pl-lg-4">
+                    <Row>
+                        <Col lg="6">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-username"
+                            >
+                              Module Name
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              defaultValue="Module Name"
+                              id="input-username"
+                              placeholder="Module Name"
+                              type="text"
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col lg="6">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-email"
+                            >
+                              Module Code
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              id="input-email"
+                              placeholder="Module code"
+                              type="text"
+                            />
+                          </FormGroup>
+                        </Col>
+                      </Row>
+                      
                     </div>
                     <hr className="my-4" />
                     {/* Description */}

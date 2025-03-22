@@ -50,6 +50,13 @@ const adminHeaderData = [
       buttonText: "Update Schedule", 
       buttonLink: "#pablo", 
     },
+    {
+      id: 7,
+      title: "Add Course", 
+      description: "This is your Update Room page. You can see the progress you've made with your work and manage your projects or assigned tasks.",
+      buttonText: "Add Course", 
+      buttonLink: "#pablo", 
+    }
     
     
   ];
