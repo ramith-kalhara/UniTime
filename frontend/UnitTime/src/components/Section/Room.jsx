@@ -12,17 +12,19 @@ function Room() {
             <p className="section-title px-5">
               <span className="px-2">Popular Rooms</span>
             </p>
-            <h1 className="mb-4">Rooms for Your Kids</h1>
+            <h1 className="mb-4">Rooms Type</h1>
           </div>
           <div className="row">
             <div className="col-lg-4 mb-5">
               <div className="card border-0 bg-light shadow-sm pb-2">
                 <img className="card-img-top mb-2" src={room1} alt="" />
                 <div className="card-body text-center">
-                  <h4 className="card-title">Drawing Class</h4>
+                  <h4 className="card-title">Lectuer room</h4>
                   <p className="card-text">
-                    Justo ea diam stet diam ipsum no sit, ipsum vero et et diam
-                    ipsum duo et no et, ipsum ipsum erat duo amet clita duo
+                  Book a lecture room for academic sessions, seminars, or meetings with ease through our web application.
+                  </p>
+                  <p className="card-text">
+                  *Any food and beverage items are not allowed except water*
                   </p>
                 </div>
                 <div className="card-footer bg-transparent py-4 px-5">
@@ -40,9 +42,9 @@ function Room() {
                   </div>
                   <div className="row border-bottom">
                     <div className="col-6 py-1 text-right border-right">
-                      <strong>Class Time</strong>
+                      <strong>Operating Hours</strong>
                     </div>
-                    <div className="col-6 py-1">08:00 - 10:00</div>
+                    <div className="col-6 py-1">9:00 AM to 5:00 PM</div>
                   </div>
                   <div className="row">
                     <div className="col-6 py-1 text-right border-right">
@@ -51,17 +53,19 @@ function Room() {
                     <div className="col-6 py-1">$290 / Month</div>
                   </div>
                 </div>
-                <a href="" className="btn btn-primary px-4 mx-auto mb-4">Join Now</a>
+                <a href="" className="btn btn-primary px-4 mx-auto mb-4">Book Now</a>
               </div>
             </div>
             <div className="col-lg-4 mb-5">
               <div className="card border-0 bg-light shadow-sm pb-2">
                 <img className="card-img-top mb-2" src={room2}alt="" />
                 <div className="card-body text-center">
-                  <h4 className="card-title">Language Learning</h4>
+                  <h4 className="card-title">Computer Lab</h4>
                   <p className="card-text">
-                    Justo ea diam stet diam ipsum no sit, ipsum vero et et diam
-                    ipsum duo et no et, ipsum ipsum erat duo amet clita duo
+                  Reserve a computer lab equipped with the latest technology for practical sessions, IT training, or research work.
+                  </p>
+                  <p className="card-text">
+                  *Any food and beverage items are not allowed except water*
                   </p>
                 </div>
                 <div className="card-footer bg-transparent py-4 px-5">
@@ -79,9 +83,9 @@ function Room() {
                   </div>
                   <div className="row border-bottom">
                     <div className="col-6 py-1 text-right border-right">
-                      <strong>Class Time</strong>
+                      <strong>Operating Hours</strong>
                     </div>
-                    <div className="col-6 py-1">08:00 - 10:00</div>
+                    <div className="col-6 py-1">9:00 AM to 5:00 PM</div>
                   </div>
                   <div className="row">
                     <div className="col-6 py-1 text-right border-right">
@@ -90,17 +94,19 @@ function Room() {
                     <div className="col-6 py-1">$290 / Month</div>
                   </div>
                 </div>
-                <a href ="" className="btn btn-primary px-4 mx-auto mb-4">Join Now</a>
+                <a href ="" className="btn btn-primary px-4 mx-auto mb-4">Book Now</a>
               </div>
             </div>
             <div className="col-lg-4 mb-5">
               <div className="card border-0 bg-light shadow-sm pb-2">
                 <img className="card-img-top mb-2" src={room3}alt="" />
                 <div className="card-body text-center">
-                  <h4 className="card-title">Basic Science</h4>
+                  <h4 className="card-title">Smart Class Room</h4>
                   <p className="card-text">
-                    Justo ea diam stet diam ipsum no sit, ipsum vero et et diam
-                    ipsum duo et no et, ipsum ipsum erat duo amet clita duo
+                  Schedule a smart classroom with advanced digital tools for interactive and engaging learning experiences.
+                  </p>
+                  <p className="card-text">
+                  *Any food and beverage items are not allowed except water*
                   </p>
                 </div>
                 <div className="card-footer bg-transparent py-4 px-5">
@@ -118,9 +124,9 @@ function Room() {
                   </div>
                   <div className="row border-bottom">
                     <div className="col-6 py-1 text-right border-right">
-                      <strong>Class Time</strong>
+                      <strong>Operating Hours</strong>
                     </div>
-                    <div className="col-6 py-1">08:00 - 10:00</div>
+                    <div className="col-6 py-1">9:00 AM to 5:00 PM</div>
                   </div>
                   <div className="row">
                     <div className="col-6 py-1 text-right border-right">
@@ -129,7 +135,7 @@ function Room() {
                     <div className="col-6 py-1">$290 / Month</div>
                   </div>
                 </div>
-                <a href="" className="btn btn-primary px-4 mx-auto mb-4">Join Now</a>
+                <a href="" className="btn btn-primary px-4 mx-auto mb-4">Book Now</a>
               </div>
             </div>
           </div>
