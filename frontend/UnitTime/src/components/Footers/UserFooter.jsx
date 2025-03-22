@@ -12,9 +12,8 @@ function UserFooter() {
               <span className="text-white">UniTime</span>
             </a>
             <p>
-              Labore dolor amet ipsum ea, erat sit ipsum duo eos. Volup amet ea
-              dolor et magna dolor, elitr rebum duo est sed diam elitr. Stet elitr
-              stet diam duo eos rebum ipsum diam ipsum elitr.
+            A comprehensive web application for efficient university scheduling and management. 
+            Streamline course planning, room assignments, and faculty coordination.
             </p>
             <div className="d-flex justify-content-start mt-4">
               <a className="btn btn-outline-primary rounded-circle text-center mr-2 px-0" style={{width: '38px', height: '38px'}} href="#"><i className="fab fa-twitter" /></a>
@@ -29,21 +28,21 @@ function UserFooter() {
               <h4 className="fa fa-map-marker-alt text-primary" />
               <div className="pl-3">
                 <h5 className="text-white">Address</h5>
-                <p>123 Street, New York, USA</p>
+                <p>No. 25, Galle Road, Colombo 03, Sri Lanka</p>
               </div>
             </div>
             <div className="d-flex">
               <h4 className="fa fa-envelope text-primary" />
               <div className="pl-3">
                 <h5 className="text-white">Email</h5>
-                <p>info@example.com</p>
+                <p> study@unitime.lk</p>
               </div>
             </div>
             <div className="d-flex">
               <h4 className="fa fa-phone-alt text-primary" />
               <div className="pl-3">
                 <h5 className="text-white">Phone</h5>
-                <p>+012 345 67890</p>
+                <p>+94 11 234 5678</p>
               </div>
             </div>
           </div>
