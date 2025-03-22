@@ -140,13 +140,13 @@ import {
                               className="form-control-label"
                               htmlFor="input-username"
                             >
-                              Day
+                              Module Code
                             </label>
                             <Input
                               className="form-control-alternative"
-                              defaultValue="Day"
+                              defaultValue="Module Code"
                               id="input-username"
-                              placeholder="Day"
+                              placeholder="Module Code"
                               type="text"
                             />
                           </FormGroup>
@@ -157,14 +157,14 @@ import {
                               className="form-control-label"
                               htmlFor="input-email"
                             >
-                              TimeSlot
+                              Room Type
                             </label>
                             <Input
                               className="form-control-alternative"
                               id="input-email"
-                              defaultValue="TimeSlot"
-                              placeholder="TimeSlot"
-                              type="email"
+                              defaultValue="Room Type"
+                              placeholder="Room Type"
+                              type="text"
                             />
                           </FormGroup>
                         </Col>
@@ -176,13 +176,13 @@ import {
                               className="form-control-label"
                               htmlFor="input-first-name"
                             >
-                              Professor
+                              Room Capacity
                             </label>
                             <Input
                               className="form-control-alternative"
-                              defaultValue="Professor Name"
+                              defaultValue="Room Capacity"
                               id="input-first-name"
-                              placeholder="Professor"
+                              placeholder="Room Capacity"
                               type="text"
                             />
                           </FormGroup>
@@ -193,18 +193,99 @@ import {
                               className="form-control-label"
                               htmlFor="input-last-name"
                             >
-                              Module Name 
+                             Enrolled Students Count
                             </label>
                             <Input
                               className="form-control-alternative"
-                              defaultValue="Module Name"
+                              defaultValue="Enrolled Students Count"
                               id="input-last-name"
-                              placeholder="Module Name"
+                              placeholder="Enrolled Students Count"
                               type="text"
                             />
                           </FormGroup>
                         </Col>
+                      
+
                       </Row>
+
+                      <Row>
+                        <Col lg="6">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-first-name"
+                            >
+                              Schedule Status
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              defaultValue="Schedule Status"
+                              id="input-first-name"
+                              placeholder="Schedule Status"
+                              type="text"
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col lg="6">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-last-name"
+                            >
+                             Created By
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              defaultValue="Created By"
+                              id="input-last-name"
+                              placeholder="Created By"
+                              type="text"
+                            />
+                          </FormGroup>
+                        </Col>
+                      
+
+                      </Row>
+                      <Row>
+                        <Col lg="6">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-first-name"
+                            >
+                              Last Updated
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              defaultValue="Last Updated"
+                              id="input-first-name"
+                              placeholder="Last Updated"
+                              type="text"
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col lg="6">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-last-name"
+                            >
+                             Notification Sent
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              defaultValue="Notification Sent"
+                              id="input-last-name"
+                              placeholder="Notification Sent"
+                              type="text"
+                            />
+                          </FormGroup>
+                        </Col>
+                      
+
+                      </Row>
+
+                 
                     </div>
                     <hr className="my-4" />
                     

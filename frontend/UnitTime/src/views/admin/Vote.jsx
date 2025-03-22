@@ -1,4 +1,9 @@
+import React, { useState } from 'react';
 import ProfileImg from "../../assets/admin/img/theme/team-4-800x800.jpg";
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import dayjs from 'dayjs';
 // reactstrap components
 import {
     Button,
@@ -15,7 +20,8 @@ import {
   // core components
   import AdminHeader from "../../components/Headers/AdminHeader";
   
-  const Professor = () => {
+  const Vote = () => {
+    const [startDateTime, setStartDateTime] = React.useState(dayjs());
     return (
       <>
         <AdminHeader  pageIndex={2} />
@@ -113,7 +119,7 @@ import {
                 <CardHeader className="bg-white border-0">
                   <Row className="align-items-center">
                     <Col xs="8">
-                      <h3 className="mb-0">Add Professor </h3>
+                      <h3 className="mb-0">Start Vote </h3>
                     </Col>
                     <Col className="text-right" xs="4">
                       <Button
@@ -130,7 +136,7 @@ import {
                 <CardBody>
                   <Form>
                     <h6 className="heading-small text-muted mb-4">
-                      Professor information
+                      Module information
                     </h6>
                     <div className="pl-lg-4">
                       <Row>
@@ -140,13 +146,13 @@ import {
                               className="form-control-label"
                               htmlFor="input-username"
                             >
-                              fullName
+                              Module Code
                             </label>
                             <Input
                               className="form-control-alternative"
-                              defaultValue="fullName"
+                              defaultValue="Module Code "
                               id="input-username"
-                              placeholder="fullName"
+                              placeholder="Module Code"
                               type="text"
                             />
                           </FormGroup>
@@ -157,143 +163,66 @@ import {
                               className="form-control-label"
                               htmlFor="input-email"
                             >
-                              Email address
+                              Module Name  
                             </label>
                             <Input
                               className="form-control-alternative"
                               id="input-email"
-                              placeholder="Email address"
+                              placeholder="Module Name "
                               type="email"
                             />
                           </FormGroup>
                         </Col>
                       </Row>
-                      <Row>
-                        <Col lg="6">
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-first-name"
-                            >
-                              Contact Number
-                            </label>
-                            <Input
-                              className="form-control-alternative"
-                              defaultValue="contact Number"
-                              id="input-first-name"
-                              placeholder="contact Number"
-                              type="text"
-                            />
-                          </FormGroup>
-                        </Col>
-                        <Col lg="6">
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-last-name"
-                            >
-                              Module
-                            </label>
-                            <Input
-                              className="form-control-alternative"
-                              defaultValue="Module "
-                              id="input-last-name"
-                              placeholder="Module"
-                              type="text"
-                            />
-                          </FormGroup>
-                        </Col>
-                      </Row>
                     </div>
+
                     <hr className="my-4" />
-                    {/* Address */}
                     <h6 className="heading-small text-muted mb-4">
-                      Contact information
+                      Vote Time & Date Information
                     </h6>
                     <div className="pl-lg-4">
                       <Row>
-                        <Col md="12">
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-address"
-                            >
-                              Address
-                            </label>
-                            <Input
-                              className="form-control-alternative"
-                              defaultValue="Address"
-                              id="input-address"
-                              placeholder="Home Address"
-                              type="text"
-                            />
-                          </FormGroup>
+                        <Col lg="6">
+                            <FormGroup>
+                        
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DateTimePicker
+                                label="Start Date"
+                                value={startDateTime}
+                                onChange={setStartDateTime}
+                                renderInput={(props) => <Input {...props} />}
+                                />
+                            </LocalizationProvider>
+                            </FormGroup>
                         </Col>
-                      </Row>
-                      <Row>
-                        <Col lg="4">
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-city"
-                            >
-                              City
-                            </label>
-                            <Input
-                              className="form-control-alternative"
-                              defaultValue="City"
-                              id="input-city"
-                              placeholder="City"
-                              type="text"
-                            />
-                          </FormGroup>
+                        <Col lg="6">
+                            <FormGroup>
+                            
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DateTimePicker
+                                label="End Date"
+                                value={startDateTime}
+                                onChange={setStartDateTime}
+                                renderInput={(props) => <Input {...props} />}
+                                />
+                            </LocalizationProvider>
+                            </FormGroup>
                         </Col>
-                        <Col lg="4">
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-country"
-                            >
-                              Country
-                            </label>
-                            <Input
-                              className="form-control-alternative"
-                              defaultValue="Country"
-                              id="input-country"
-                              placeholder="Country"
-                              type="text"
-                            />
-                          </FormGroup>
-                        </Col>
-                        <Col lg="4">
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-country"
-                            >
-                              Postal code
-                            </label>
-                            <Input
-                              className="form-control-alternative"
-                              id="input-postal-code"
-                              placeholder="Postal code"
-                              type="number"
-                            />
-                          </FormGroup>
-                        </Col>
-                      </Row>
+                    </Row>
+
                     </div>
+                   
                     <hr className="my-4" />
                     {/* Description */}
-                    <h6 className="heading-small text-muted mb-4">Description</h6>
+                    <h6 className="heading-small text-muted mb-4">Vote Description</h6>
                     <div className="pl-lg-4">
                       <FormGroup>
-                        <label> Description </label>
+                        <label> Vote Description </label>
                         <Input
                           className="form-control-alternative"
-                          placeholder="A few words about you ..."
+                          placeholder="A few words about Vote ..."
                           rows="4"
-                          defaultValue="Description"
+                          defaultValue="Vote Description"
                           type="textarea"
                         />
                       </FormGroup>
@@ -308,5 +237,5 @@ import {
     );
   };
   
-  export default Professor;
+  export default Vote;
   

@@ -14,6 +14,7 @@ import RoomUpdate from "../views/admin/RoomUpdate.jsx";
 import CourseUpdate from "../views/admin/CourseUpdate.jsx";
 import ProfessorUpdate from "../views/admin/ProfessorUpdate.jsx";
 import ScheduleUpdate from "../views/admin/ScheduleUpdate.jsx";
+import Vote from "../views/admin/Vote.jsx";
 
 var AdminRoutes = [
   {
@@ -117,6 +118,13 @@ var AdminRoutes = [
     component: < ScheduleUpdate/>,
     layout: "/admin",
     hidden: true,
+  },
+  {
+    path: "/vote",
+    name: "Vote",
+    icon: "ni ni-books text-cyan",
+    component: < Vote/>,
+    layout: "/admin",
   },
  
   {
