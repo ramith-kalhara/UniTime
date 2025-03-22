@@ -1,6 +1,12 @@
 
 // reactstrap components
+import React, { useState } from 'react';
+
 import teamImage from "../../assets/admin/img/theme/team-4-800x800.jpg";
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
 import {
     Button,
     Card,
@@ -18,6 +24,7 @@ import {
   import AdminHeader from "../../components/Headers/AdminHeader";
   
   const Room = () => {
+    const [selectedDate, setSelectedDate] = React.useState(dayjs());
     return (
       <>
         <AdminHeader  pageIndex={4} />
@@ -150,7 +157,88 @@ import {
                           </Col>
                         
                     </Row>
-                    
+                    <Row>
+                          <Col lg="12">
+                            <FormGroup>
+                              <label
+                                className="form-control-label"
+                                htmlFor="input-username"
+                              >
+                                Lecture Title 
+                              </label>
+                              <Input
+                                className="form-control-alternative"
+                                defaultValue="Lecture Title  "
+                                id="input-username"
+                                placeholder="Lecture Title "
+                                type="text"
+                              />
+                            </FormGroup>
+                          </Col>
+                        
+                    </Row>
+                    <Row>
+                      <Col lg="12">
+                        <FormGroup>
+                          <label className="form-control-label" htmlFor="date-picker">
+                            Date
+                          </label>
+                          <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                              id="date-picker"
+                              value={selectedDate}
+                              onChange={setSelectedDate}
+                              format="YYYY-MM-DD"
+                              slotProps={{
+                                textField: {
+                                  fullWidth: true,
+                                  className: "form-control form-control-alternative",
+                                },
+                              }}
+                            />
+                          </LocalizationProvider>
+                        </FormGroup>
+                      </Col>
+                    </Row>
+
+                    <Row>
+                      <Col lg="12">
+                        <FormGroup>
+                          <label
+                            className="form-control-label"
+                            htmlFor="input-start-time"
+                          >
+                            Start Time
+                          </label>
+                          <Input
+                            className="form-control-alternative"
+                            id="input-start-time"
+                            placeholder="Start Time"
+                            type="time"
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+
+                    <Row>
+                      <Col lg="12">
+                        <FormGroup>
+                          <label
+                            className="form-control-label"
+                            htmlFor="input-end-time"
+                          >
+                            End Time
+                          </label>
+                          <Input
+                            className="form-control-alternative"
+                            id="input-end-time"
+                            placeholder="End Time"
+                            type="time"
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                                                  
                   </form>
                 </CardBody>
               </Card>
