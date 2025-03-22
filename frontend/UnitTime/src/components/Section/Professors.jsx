@@ -11,9 +11,9 @@ function Professors() {
         <div className="container">
           <div className="text-center pb-2">
             <p className="section-title px-5">
-              <span className="px-2">Our Teachers</span>
+              <span className="px-2">Our Professors</span>
             </p>
-            <h1 className="mb-4">Meet Our Teachers</h1>
+            <h1 className="mb-4">Meet Our Professors</h1>
           </div>
           <div className="row">
             <div className="col-md-6 col-lg-3 text-center team mb-5">
