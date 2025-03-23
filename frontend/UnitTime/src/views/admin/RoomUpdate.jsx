@@ -398,7 +398,7 @@ const RoomUpdate = () => {
               <CardHeader className="bg-white border-0">
                 <Row className="align-items-center">
                   <Col xs="8">
-                    <h3 className="mb-0">Add Room</h3>
+                    <h3 className="mb-0">Update Room</h3>
                   </Col>
                   <Col className="text-right" xs="4">
                     <Button
@@ -550,7 +550,7 @@ const RoomUpdate = () => {
                     </FormGroup>
                   </div>
                   <div className="text-center">
-                    <button type="submit" className="btn btn-primary">Add Room</button>
+                    <button type="submit" className="btn btn-primary">Update Room</button>
                   </div>
                   
                 </Form>

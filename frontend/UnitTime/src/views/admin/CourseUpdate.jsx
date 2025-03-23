@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import teamImage from "../../assets/admin/img/theme/team-4-800x800.jpg";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -200,11 +201,11 @@ const CourseUpdate = () => {
               <CardHeader className="bg-white border-0">
                 <Row className="align-items-center">
                   <Col xs="8">
-                    <h3 className="mb-0">Add Course</h3>
+                    <h3 className="mb-0">Update Course</h3>
                   </Col>
                   <Col className="text-right" xs="4">
                     <Button color="primary" href="#pablo" onClick={handleSubmit}  size="sm">
-                      Add Course
+                      Update Course
                     </Button>
                   </Col>
                 </Row>

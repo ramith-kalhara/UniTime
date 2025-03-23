@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 
 import {
     Badge,
@@ -16,6 +17,8 @@ import {
   import Header from "../../components/Headers/Header";
   
   const CourseTable = () => {
+    const navigate = useNavigate();
+
     return (
       <>
         <Header />
@@ -83,14 +86,14 @@ import {
                           </DropdownToggle>
                           <DropdownMenu className="dropdown-menu-arrow" right>
                             <DropdownItem
-                              href="#pablo"
+                              href=""
                               onClick={(e) => e.preventDefault()}
                             >
                               Delete
                             </DropdownItem>
                             <DropdownItem
                               href="#pablo"
-                              onClick={(e) => e.preventDefault()}
+                              onClick={() => navigate('/admin/update-course')}
                             >
                               Update
                             </DropdownItem>

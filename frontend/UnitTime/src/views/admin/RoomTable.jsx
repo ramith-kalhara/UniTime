@@ -1,4 +1,6 @@
 import teamImage from "../../assets/admin/img/theme/team-4-800x800.jpg";
+import { useNavigate } from "react-router-dom";
+
 import {
   Badge,
   Card,
@@ -23,6 +25,8 @@ import {
 import Header from "../../components/Headers/Header";
 
 const RoomTable = () => {
+  const navigate = useNavigate();
+
   return (
     <>
       <Header />
@@ -99,7 +103,7 @@ const RoomTable = () => {
                           </DropdownItem>
                           <DropdownItem
                             href="#pablo"
-                            onClick={(e) => e.preventDefault()}
+                            onClick={() => navigate('/admin/update-room')}
                           >
                             Update
                           </DropdownItem>
