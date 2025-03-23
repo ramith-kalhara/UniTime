@@ -30,7 +30,7 @@ const Vote = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-  
+
     // If updating the moduleName field, validate it
     if (name === 'moduleName') {
       // Reject if value contains anything other than letters and spaces
@@ -43,14 +43,14 @@ const Vote = () => {
         return;
       }
     }
-  
+
     // If valid or not moduleName, update the form state
     setFormValues((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const { moduleCode, moduleName, voteDescription } = formValues;
@@ -230,7 +230,10 @@ const Vote = () => {
                     </FormGroup>
                   </div>
 
-                  <Button color="primary" type="submit">Create Vote</Button>
+                  <div className="text-center">
+                    <Button color="primary" type="submit">Create Vote</Button>
+                  </div>
+
                 </Form>
               </CardBody>
             </Card>
