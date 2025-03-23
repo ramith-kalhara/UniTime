@@ -49,8 +49,8 @@ const Room = () => {
 
   const validate = () => {
     let formErrors = '';
-
-    // Check if required fields are filled
+  
+    // Check required fields
     if (!formData.roomId) formErrors += 'Room ID is required.\n';
     if (!formData.professorId) formErrors += 'Professor ID is required.\n';
     if (!formData.moduleId) formErrors += 'Module ID is required.\n';
@@ -59,12 +59,26 @@ const Room = () => {
     if (!formData.date) formErrors += 'Date is required.\n';
     if (!formData.startTime) formErrors += 'Start Time is required.\n';
     if (!formData.endTime) formErrors += 'End Time is required.\n';
-
-    // Validate that the End Date is not in the past
-    if (formData.endDate.isBefore(dayjs(), 'day')) {
+  
+    // Validate time format and range
+    if (formData.startTime && formData.endTime) {
+      const start = dayjs(formData.startTime, 'HH:mm');
+      const end = dayjs(formData.endTime, 'HH:mm');
+  
+      if (start.isSame(end)) {
+        formErrors += 'Start Time and End Time cannot be the same.\n';
+      }
+  
+      if (end.isBefore(start)) {
+        formErrors += 'End Time must be after Start Time.\n';
+      }
+    }
+  
+    // Validate End Date is not in the past
+    if (formData.endDate && formData.endDate.isBefore(dayjs(), 'day')) {
       formErrors += 'End Date cannot be in the past.\n';
     }
-
+  
     if (formErrors) {
       Swal.fire({
         icon: 'error',
@@ -73,6 +87,7 @@ const Room = () => {
       });
       return false;
     }
+  
     return true;
   };
 

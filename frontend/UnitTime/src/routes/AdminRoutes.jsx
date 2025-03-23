@@ -37,6 +37,7 @@ var AdminRoutes = [
     icon: "ni ni-planet text-blue",
     component: <Icons />,
     layout: "/admin",
+    hidden: true,
   },
   {
     path: "/add-schedule",
@@ -122,7 +123,7 @@ var AdminRoutes = [
   {
     path: "/vote",
     name: "Vote",
-    icon: "ni ni-books text-cyan",
+    icon: "ni ni-collection text-blue",
     component: < Vote/>,
     layout: "/admin",
   },

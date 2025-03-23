@@ -29,49 +29,24 @@ const Schedule = () => {
   const [lectureTitle, setLectureTitle] = useState("");
   const [moduleCode, setModuleCode] = useState("");
   const [capacity, setCapacity] = useState("");
-
-  // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // Validation
-    if (!roomNumber || !professorName || !lectureTitle || !moduleCode) {
+  const handleProfessorNameChange = (e) => {
+    const { value } = e.target;
+  
+    // Allow only letters and spaces
+    if (/[^a-zA-Z\s]/.test(value)) {
       Swal.fire({
         icon: "error",
-        title: "Oops...",
-        text: "All fields are required!",
+        title: "Invalid Name",
+        text: "Professor Name can only contain letters and spaces.",
       });
-      return;
+      return; // Don't update state if invalid
     }
-
-    if (!startDate || !startTime || !endTime) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Start date and time, and End time are required!",
-      });
-      return;
-    }
-
-    // Validate Capacity should be a number
-    if (capacity && isNaN(capacity)) {
-      Swal.fire({
-        icon: "error",
-        title: "Invalid Input",
-        text: "Capacity must be a valid number.",
-      });
-      return;
-    }
-
-    // If all fields are valid
-    Swal.fire({
-      icon: "success",
-      title: "Schedule Added",
-      text: "Your schedule has been added successfully!",
-    });
+  
+    // If valid, update the professorName state
+    setProfessorName(value);
   };
+  
 
-  // Ensure the Capacity input only allows numbers
   const handleCapacityChange = (e) => {
     const { value } = e.target;
     // Allow only numbers in the capacity field
@@ -85,6 +60,82 @@ const Schedule = () => {
       });
     }
   };
+  
+
+  // Handle form submission
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  
+    // Check required fields
+    if (!roomNumber || !professorName || !lectureTitle || !moduleCode) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "All fields are required!",
+      });
+      return;
+    }
+  
+    if (!startDate || !startTime || !endTime) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Start date and time, and End time are required!",
+      });
+      return;
+    }
+  
+    // Check if startDate is in the past
+    const now = dayjs();
+    if (dayjs(startDate).isBefore(now, 'day')) {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Date",
+        text: "Start date cannot be in the past.",
+      });
+      return;
+    }
+  
+    // Check if startTime and endTime are equal
+    if (dayjs(startTime).isSame(endTime)) {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Time",
+        text: "Start time and End time cannot be the same.",
+      });
+      return;
+    }
+  
+    // Check if endTime is after startTime
+    if (dayjs(endTime).isBefore(startTime)) {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Time Range",
+        text: "End time must be after Start time.",
+      });
+      return;
+    }
+  
+    // Validate Capacity should be a number
+    if (capacity && isNaN(capacity)) {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Input",
+        text: "Capacity must be a valid number.",
+      });
+      return;
+    }
+  
+    // All good
+    Swal.fire({
+      icon: "success",
+      title: "Schedule Added",
+      text: "Your schedule has been added successfully!",
+    });
+  
+    // TODO: Submit data to server
+  };
+  
   return (
     <>
       <AdminHeader pageIndex={5} />
@@ -224,7 +275,7 @@ const Schedule = () => {
                             placeholder="Professor Name"
                             type="text"
                             value={professorName}
-                            onChange={(e) => setProfessorName(e.target.value)}
+                            onChange={handleProfessorNameChange}
                           />
                         </FormGroup>
                       </Col>

@@ -182,7 +182,7 @@ const ScheduleUpdate = () => {
               <CardHeader className="bg-white border-0">
                 <Row className="align-items-center">
                   <Col xs="8">
-                    <h3 className="mb-0">Add Schedule</h3>
+                    <h3 className="mb-0">Update Schedule</h3>
                   </Col>
                   <Col className="text-right" xs="4">
                     <Button color="primary" href="#pablo" onClick={(e) => e.preventDefault()} size="sm">
@@ -344,7 +344,7 @@ const ScheduleUpdate = () => {
                   </div>
                   <div className="text-center">
                     <Button color="primary" type="submit">
-                      Save Schedule
+                      Update Schedule
                     </Button>
                   </div>
                 </Form>

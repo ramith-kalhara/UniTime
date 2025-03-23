@@ -56,6 +56,13 @@ const adminHeaderData = [
       description: "This is your Add Course page. You can create a new course, define its details, and assign it to professors and students.",
       buttonText: "Add Course", 
       buttonLink: "#pablo", 
+    },
+    {
+      id: 8,
+      title: "Add Vote", 
+      description: "This is your Vote page. You can cast your vote for your preferred professors and help the system suggest the best matches for each module. Your votes will influence the course scheduling process, ensuring that students get the best learning experience.",
+      buttonText: "Add Vote", 
+      buttonLink: "#pablo", 
     }
     
     
