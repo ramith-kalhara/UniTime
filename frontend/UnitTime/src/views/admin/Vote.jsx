@@ -30,12 +30,27 @@ const Vote = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+  
+    // If updating the moduleName field, validate it
+    if (name === 'moduleName') {
+      // Reject if value contains anything other than letters and spaces
+      if (/[^a-zA-Z\s]/.test(value)) {
+        Swal.fire({
+          icon: "error",
+          title: "Invalid Module Name",
+          text: "Module Name can only contain letters and spaces.",
+        });
+        return;
+      }
+    }
+  
+    // If valid or not moduleName, update the form state
     setFormValues((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
-
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     const { moduleCode, moduleName, voteDescription } = formValues;
