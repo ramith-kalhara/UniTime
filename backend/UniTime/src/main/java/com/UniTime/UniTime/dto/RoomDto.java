@@ -11,6 +11,7 @@ public class RoomDto {
     private String department;
     private String description;
     private int capacity;
+    private String roomType;
     private boolean smart_screen;
 
     public Room toEntity(ModelMapper mapper) {
