@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/vote")
 @RequiredArgsConstructor
-@CrossOrigin
+@CrossOrigin("*")
 public class VoteController {
     private final VoteServiceImpl voteService;
     private final RoomService roomService;
