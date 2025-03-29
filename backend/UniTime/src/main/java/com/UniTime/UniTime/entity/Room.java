@@ -30,6 +30,9 @@ public class Room {
     @Column(name = "capacity", nullable = false)
     private int capacity;
 
+    @Column(name = "room_type", nullable = false)
+    private String roomType;
+
     @Column(name = "has_smart_screen", nullable = false)
     private boolean smart_screen;
 
