@@ -1,0 +1,23 @@
+package com.UniTime.UniTime.dto;
+
+import com.UniTime.UniTime.entity.Course; // Ensure this import is present
+import lombok.Data;
+import org.modelmapper.ModelMapper;
+
+@Data
+public class CourseDto {
+    private Long courseId;
+    private String courseCode;
+    private String name;
+    private int credits;
+    private String department;
+    private String startDate;
+    private String description;
+
+    // Method to convert CourseDto to Course entity
+    public Course toEntity(ModelMapper mapper) {
+        Course course = mapper.map(this, Course.class);
+        return course;
+    }
+}
+
