@@ -6,6 +6,7 @@ import Professor from "../views/user/Professor";
 import Rooms from "../views/user/Rooms";
 import Shedule from "../views/user/Shedule";
 import SingleCourse from "../views/user/SingleCourse";
+import Vote from "../views/user/Vote";
 
 var UserRoutes = [
     {
@@ -61,6 +62,13 @@ var UserRoutes = [
         path: "/singleCourse",
         name: "singleCourse",
         component: < SingleCourse/>,
+        layout: "/user",
+        hidden: true,
+      },
+      {
+        path: "/vote",
+        name: "vote",
+        component: < Vote/>,
         layout: "/user",
         hidden: true,
       },

@@ -7,6 +7,7 @@ import BookRoom from '../../components/Section/BookRoom'
 import Professors from '../../components/Section/Professors'
 import Testimonial from '../../components/Section/Testimonial'
 import Blog from '../../components/Section/Blog'
+import VoteSlider from '../../components/Section/VoteSlider'
 
 
 function Home() {

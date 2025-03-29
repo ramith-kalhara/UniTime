@@ -22,6 +22,7 @@ function UserNavbar() {
               <Link to="/user/room" className="nav-item nav-link">Rooms</Link>
               <Link to="/user/professor" className="nav-item nav-link">Professor</Link>
               <Link to="/user/course" className="nav-item nav-link">Course</Link>
+              <Link to="/user/vote" className="nav-item nav-link">Vote</Link>
               <Link to="/user/shedule" className="nav-item nav-link">Shedule</Link>
               {/* <div class="nav-item dropdown">
               <a

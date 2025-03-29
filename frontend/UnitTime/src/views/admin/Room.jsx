@@ -29,7 +29,7 @@ const Room = () => {
     roomId: '',
     professorId: '',
     moduleId: '',
-    roomType: '',
+    // roomType: '',
     lectureTitle: '',
     date: null,
     startTime: '',
@@ -54,7 +54,7 @@ const Room = () => {
     if (!formData.roomId) formErrors += 'Room ID is required.\n';
     if (!formData.professorId) formErrors += 'Professor ID is required.\n';
     if (!formData.moduleId) formErrors += 'Module ID is required.\n';
-    if (!formData.roomType) formErrors += 'Room Type is required.\n';
+    // if (!formData.roomType) formErrors += 'Room Type is required.\n';
     if (!formData.lectureTitle) formErrors += 'Lecture Title is required.\n';
     if (!formData.date) formErrors += 'Date is required.\n';
     if (!formData.startTime) formErrors += 'Start Time is required.\n';
@@ -152,7 +152,6 @@ const Room = () => {
     // Validate required fields
     if (!formValues.roomNumber) errorMessages += 'Room Number is required.\n';
     if (!formValues.capacity) errorMessages += 'Capacity is required.\n';
-    if (!formValues.roomType) errorMessages += 'Room Type is required.\n';
     if (!formValues.department) errorMessages += 'Department is required.\n';
     if (!formValues.hasSmartScreen) errorMessages += 'Smart Screen option is required.\n';
     if (!formValues.hasComputers) errorMessages += 'Computers option is required.\n';
@@ -308,7 +307,7 @@ const Room = () => {
                     </Col>
                   </Row>
 
-                  <Row>
+                  {/* <Row>
                     <Col lg="12">
                       <FormGroup>
                           <label className="form-control-label" htmlFor="input-roomType">
@@ -332,7 +331,7 @@ const Room = () => {
                           </Input>
                         </FormGroup>
                     </Col>
-                  </Row>
+                  </Row> */}
 
                   <Row>
                     <Col lg="12">

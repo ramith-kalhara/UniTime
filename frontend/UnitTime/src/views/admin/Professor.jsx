@@ -448,6 +448,7 @@ const Professor = () => {
                             id="moduleCode"
                             value={formData.moduleCode}
                             onChange={handleChange}
+                            maxLength="6"
                             placeholder="Module Code"
                             type="text"
                           />

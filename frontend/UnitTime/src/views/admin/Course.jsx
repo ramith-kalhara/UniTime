@@ -69,26 +69,9 @@ const Course = () => {
       return;
     }
 
-    // Validate email (for the name field assuming it's an email)
-    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-    if (!emailRegex.test(name)) {
-      Swal.fire({
-        icon: "error",
-        title: "Invalid Email",
-        text: "Please enter a valid email address for the name field.",
-      });
-      return;
-    }
+   
 
-    // Check if start date is before end date
-    if (startDate.isAfter(endDate)) {
-      Swal.fire({
-        icon: "error",
-        title: "Invalid Date Range",
-        text: "The start date cannot be after the end date.",
-      });
-      return;
-    }
+   
 
     // If all validations pass
     console.log('Course submitted:', {
@@ -291,18 +274,7 @@ const Course = () => {
                           </LocalizationProvider>
                         </FormGroup>
                       </Col>
-                      <Col lg="6">
-                        <FormGroup>
-                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                              <DatePicker
-                                label="End Date"
-                                value={startDate}
-                                onChange={setStartDate}
-                                renderInput={(props) => <Input {...props} />}
-                              />
-                            </LocalizationProvider>
-                          </FormGroup>
-                      </Col>
+                     
                     </Row>
                     
                       <FormGroup>
