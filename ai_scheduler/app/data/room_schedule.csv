@@ -1,0 +1,6 @@
+room_id,professor_id,course_id,time_slot
+R101,P1,CS101,Monday 10 AM - 12 PM
+R102,P2,CS102,Monday 2 PM - 4 PM
+R103,P3,CS103,Tuesday 9 AM - 11 AM
+R104,P1,CS104,Wednesday 1 PM - 3 PM
+R105,P2,CS105,Thursday 3 PM - 5 PM

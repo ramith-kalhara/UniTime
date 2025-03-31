@@ -1,0 +1,6 @@
+room_id,room_name,capacity,has_projector,has_computer,room_type
+R101,Room A,50,Yes,No,Lecture Hall
+R102,Room B,30,No,Yes,Lab
+R103,Room C,40,Yes,Yes,Lecture Hall
+R104,Room D,25,No,No,Tutorial Room
+R105,Room E,60,Yes,Yes,Auditorium
