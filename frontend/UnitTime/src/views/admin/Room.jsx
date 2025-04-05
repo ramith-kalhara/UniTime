@@ -151,11 +151,10 @@ const Room = () => {
     let errorMessages = '';
   
     // Validate required fields
-    if (!formValues.roomNumber) errorMessages += 'Room Number is required.\n';
+   
     if (!formValues.capacity) errorMessages += 'Capacity is required.\n';
     if (!formValues.department) errorMessages += 'Department is required.\n';
     if (!formValues.hasSmartScreen) errorMessages += 'Smart Screen option is required.\n';
-    if (!formValues.hasComputers) errorMessages += 'Computers option is required.\n';
     if (!formValues.roomDescription) errorMessages += 'Room Description is required.\n';
   
     // Validate Capacity should be a number
