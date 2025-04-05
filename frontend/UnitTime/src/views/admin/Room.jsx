@@ -181,21 +181,49 @@ const Room = () => {
   };
   
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    
-    // Run the validation function
-    if (validateRoomDetails()) {
-      // If validation passes, submit the form
-      Swal.fire({
-        icon: 'success',
-        title: 'Form Submitted Successfully',
-        text: 'Your form has been submitted!',
-      });
   
-      // Handle actual form submission logic here (e.g., API call)
+    if (validateRoomDetails()) {
+      try {
+        const response = await fetch("http://localhost:8086/api/room/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(formValues)
+        });
+  
+        if (!response.ok) {
+          throw new Error("Something went wrong");
+        }
+  
+        Swal.fire({
+          icon: 'success',
+          title: 'Room Added',
+          text: 'Room has been successfully added!',
+        });
+  
+        // Reset form after submit
+        setFormValues({
+          hasSmartScreen: '',
+          capacity: '',
+          roomType: '',
+          department: '',
+          roomDescription: ''
+        });
+  
+      } catch (error) {
+        console.error("Error:", error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to add room. Please try again.',
+        });
+      }
     }
   };
+  
   
 
 
@@ -432,22 +460,27 @@ const Room = () => {
                   <h6 className="heading-small text-muted mb-4">Room information</h6>
                   <div className="pl-lg-4">
                     <Row>
-                      <Col lg="6">
+                    <Col lg="6">
                         <FormGroup>
-                          <label className="form-control-label" htmlFor="input-roomNumber">
-                            Room Id
+                          <label className="form-control-label" htmlFor="input-hasSmartScreen">
+                            Has Smart Screen
                           </label>
                           <Input
-                            className="form-control-alternative"
-                            value={formValues.roomNumber}
-                            name="roomNumber"
+                            type="select"
+                            id="input-hasSmartScreen"
+                            name="hasSmartScreen"
+                            bsSize="lg"
+                            className="form-control form-control-alternative"
+                            value={formValues.hasSmartScreen}
                             onChange={handleFormChange}
-                            placeholder="Room Number"
-                            maxLength="6"
-                            type="text"
-                          />
+                          >
+                            <option value="">Select</option>
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                          </Input>
                         </FormGroup>
                       </Col>
+                      
                       <Col lg="6">
                         <FormGroup>
                           <label className="form-control-label" htmlFor="input-capacity">
@@ -505,46 +538,8 @@ const Room = () => {
                       </Col>
                     </Row>
                     <Row>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label className="form-control-label" htmlFor="input-hasSmartScreen">
-                            Has Smart Screen
-                          </label>
-                          <Input
-                            type="select"
-                            id="input-hasSmartScreen"
-                            name="hasSmartScreen"
-                            bsSize="lg"
-                            className="form-control form-control-alternative"
-                            value={formValues.hasSmartScreen}
-                            onChange={handleFormChange}
-                          >
-                            <option value="">Select</option>
-                            <option value="true">Yes</option>
-                            <option value="false">No</option>
-                          </Input>
-                        </FormGroup>
-                      </Col>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label className="form-control-label" htmlFor="input-hasComputers">
-                            Has Computers
-                          </label>
-                          <Input
-                            type="select"
-                            id="input-hasComputers"
-                            name="hasComputers"
-                            bsSize="lg"
-                            className="form-control form-control-alternative"
-                            value={formValues.hasComputers}
-                            onChange={handleFormChange}
-                          >
-                            <option value="">Select</option>
-                            <option value="true">Yes</option>
-                            <option value="false">No</option>
-                          </Input>
-                        </FormGroup>
-                      </Col>
+                      
+                  
                     </Row>
                   </div>
                   <hr className="my-4" />
