@@ -1,0 +1,10 @@
+student_id,professor_id,professor_name
+S101,P1,Dr. Smith
+S102,P2,Dr. Johnson
+S103,P1,Dr. Smith
+S104,P3,Dr. Brown
+S105,P2,Dr. Johnson
+S106,P1,Dr. Smith
+S107,P3,Dr. Brown
+S108,P2,Dr. Johnson
+S109,P1,Dr. Smith
