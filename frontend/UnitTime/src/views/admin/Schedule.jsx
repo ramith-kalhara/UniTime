@@ -5,6 +5,7 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import dayjs from 'dayjs';
 import Swal from "sweetalert2";
 import React, { useState } from 'react';
+import axios from "axios";
 import teamImage from "../../assets/admin/img/theme/team-4-800x800.jpg";
 import {
   Button,
@@ -25,10 +26,12 @@ const Schedule = () => {
   const [startTime, setStartTime] = useState(dayjs());
   const [endTime, setEndTime] = useState(dayjs());
   const [roomNumber, setRoomNumber] = useState("");
-  const [professorName, setProfessorName] = useState("");
-  const [lectureTitle, setLectureTitle] = useState("");
-  const [moduleCode, setModuleCode] = useState("");
+  const [professor_name, setProfessorName] = useState("");
+  const [lecture_title, setLectureTitle] = useState("");
+  const [module_code, setModuleCode] = useState("");
   const [capacity, setCapacity] = useState("");
+  const [schedule_description, setscheduleDescription] = useState("");
+
   const handleProfessorNameChange = (e) => {
     const { value } = e.target;
   
@@ -63,11 +66,11 @@ const Schedule = () => {
   
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
   
-    // Check required fields
-    if (!roomNumber || !professorName || !lectureTitle || !moduleCode) {
+    // Validate fields
+    if (!roomNumber || !professor_name || !lecture_title || !module_code) {
       Swal.fire({
         icon: "error",
         title: "Oops...",
@@ -85,9 +88,8 @@ const Schedule = () => {
       return;
     }
   
-    // Check if startDate is in the past
     const now = dayjs();
-    if (dayjs(startDate).isBefore(now, 'day')) {
+    if (dayjs(startDate).isBefore(now, "day")) {
       Swal.fire({
         icon: "error",
         title: "Invalid Date",
@@ -96,45 +98,45 @@ const Schedule = () => {
       return;
     }
   
-    // Check if startTime and endTime are equal
-    if (dayjs(startTime).isSame(endTime)) {
+    const scheduleData = {
+      roomNumber,
+      professorName: professor_name,
+      lectureTitle: lecture_title,
+      moduleCode: module_code,
+      capacity: parseInt(capacity), // convert to number
+      scheduleDescription: schedule_description,
+      startDate: dayjs(startDate).format("YYYY-MM-DD"), // LocalDate
+      startTime: dayjs(startTime).format("HH:mm:ss"),   // LocalTime
+      endTime: dayjs(endTime).format("HH:mm:ss"),       // LocalTime
+    };
+    
+   
+  
+    try {
+      const response = await axios.post(
+        "http://localhost:8086/api/schedule/create",
+        scheduleData
+      );
+  
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: "Schedule created successfully!",
+      });
+  
+      // Optionally redirect or reset form here
+      // window.location.href = "/admin/index";
+  
+    } catch (error) {
+      console.error("Error creating schedule:", error);
       Swal.fire({
         icon: "error",
-        title: "Invalid Time",
-        text: "Start time and End time cannot be the same.",
+        title: "API Error",
+        text: error.response?.data?.message || "Something went wrong.",
       });
-      return;
     }
-  
-    // Check if endTime is after startTime
-    if (dayjs(endTime).isBefore(startTime)) {
-      Swal.fire({
-        icon: "error",
-        title: "Invalid Time Range",
-        text: "End time must be after Start time.",
-      });
-      return;
-    }
-  
-    // Validate Capacity should be a number
-    if (capacity && isNaN(capacity)) {
-      Swal.fire({
-        icon: "error",
-        title: "Invalid Input",
-        text: "Capacity must be a valid number.",
-      });
-      return;
-    }
-  
-    // All good
-    Swal.fire({
-      icon: "success",
-      title: "Schedule Added",
-      text: "Your schedule has been added successfully!",
-    });
-  
-    // TODO: Submit data to server
   };
+  
   
   return (
     <>
@@ -274,7 +276,7 @@ const Schedule = () => {
                             id="input-professorName"
                             placeholder="Professor Name"
                             type="text"
-                            value={professorName}
+                            value={professor_name}
                             onChange={handleProfessorNameChange}
                           />
                         </FormGroup>
@@ -311,7 +313,7 @@ const Schedule = () => {
                             placeholder="Module Code"
                             type="text"
                             maxLength="6"
-                            value={moduleCode}
+                            value={module_code}
                             onChange={(e) => setModuleCode(e.target.value)}
                           />
                         </FormGroup>
@@ -328,7 +330,7 @@ const Schedule = () => {
                             id="input-lectureTitle"
                             placeholder="Lecture Title"
                             type="text"
-                            value={lectureTitle}
+                            value={lecture_title}
                             onChange={(e) => setLectureTitle(e.target.value)}
                           />
                         </FormGroup>
@@ -390,6 +392,8 @@ const Schedule = () => {
                         placeholder="A few words about your schedule ..."
                         rows="4"
                         type="textarea"
+                        value={schedule_description}
+                        onChange={(e) => setscheduleDescription(e.target.value)}
                       />
                     </FormGroup>
                   </div>
