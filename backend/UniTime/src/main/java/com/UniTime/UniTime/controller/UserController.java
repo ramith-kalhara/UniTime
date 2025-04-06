@@ -1,5 +1,6 @@
 package com.UniTime.UniTime.controller;
 
+import com.UniTime.UniTime.dto.LoginRequestDto;
 import com.UniTime.UniTime.dto.UserDto;
 import com.UniTime.UniTime.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -46,4 +47,11 @@ public class UserController {
     public ResponseEntity<Boolean> deleteUser(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.deleteUser(id));
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<UserDto> login(@RequestBody LoginRequestDto loginRequest) {
+        UserDto userDto = userService.login(loginRequest.getEmail(), loginRequest.getPassword());
+        return ResponseEntity.ok(userDto);
+    }
+
 }

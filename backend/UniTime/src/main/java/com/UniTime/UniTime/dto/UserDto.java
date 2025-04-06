@@ -1,11 +1,8 @@
 package com.UniTime.UniTime.dto;
 
 import com.UniTime.UniTime.entity.User;
-import com.UniTime.UniTime.entity.Schedule;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
-
-import java.util.Set;
 
 @Data
 public class UserDto {
@@ -20,8 +17,7 @@ public class UserDto {
     private String email;
     private String moduleId;
 
-    private Set<Schedule> schedules;
-
+    // Convert UserDto to User entity
     public User toEntity(ModelMapper mapper) {
         return mapper.map(this, User.class);
     }
