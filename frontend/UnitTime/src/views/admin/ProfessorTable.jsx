@@ -1,6 +1,8 @@
 import teamImage from "../../assets/admin/img/theme/team-4-800x800.jpg";
 import { useNavigate } from "react-router-dom";
-
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import Swal from 'sweetalert2';
 import {
     Badge,
     Card,
@@ -23,6 +25,55 @@ import {
   
   const ProfessorTable = () => {
     const navigate = useNavigate();
+    const [professor, setprofessor] = useState([]);
+  
+    useEffect(() => {
+      const fetchprofessor = async () => {
+        try {
+          const response = await axios.get("http://localhost:8086/api/schedule/");
+          setprofessor(response.data);
+        } catch (error) {
+          console.error("Error fetching schedule:", error);
+        }
+      };
+  
+      fetchprofessor();
+    }, []);
+  
+    //Delete API
+    const handleDelete = (scheduleId) => {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'You won\'t be able to revert this!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, cancel!',
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const response = await axios.delete(`http://localhost:8086/api/schedule/${scheduleId}`);
+            if (response.status === 200) {
+              Swal.fire(
+                'Deleted!',
+                'The Schedule has been deleted.',
+                'success'
+              );
+  
+              // Remove the deleted room from the state
+              setprofessor(professor.filter(schedule => schedule.scheduleId !== scheduleId));
+            }
+          } catch (error) {
+            Swal.fire(
+              'Error!',
+              'There was a problem deleting the Schedule.',
+              'error'
+            );
+          }
+        }
+      });
+    };
+  
 
     return (
       <>
@@ -107,270 +158,6 @@ import {
                               href="#pablo"
                               onClick={() => navigate('/admin/update-professor')}
 
-                            >
-                              Update
-                            </DropdownItem>
-                          </DropdownMenu>
-                        </UncontrolledDropdown>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th scope="row">
-                        <Media className="align-items-center">
-                          <a
-                            className="avatar rounded-circle mr-3"
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            <img
-                              alt="..."
-                              src={teamImage}
-                            />
-                          </a>
-                          <Media>
-                            <span className="mb-0 text-sm">
-                              Mr.Aruna
-                            </span>
-                          </Media>
-                        </Media>
-                      </th>
-                      <td>aruna123</td>
-                      <td>
-                        <Badge color="" className="badge-dot mr-4">
-                          <i className="bg-warning" />
-                          aruna@gmail.com
-                        </Badge>
-                      </td>
-                      
-                      <td>
-                        <div className="d-flex align-items-center">
-                        <Media>
-                            <span className="mb-0 text-sm">
-                              Mr.Aruna
-                            </span>
-                          </Media>
-                        </div>
-                      </td>
-                      <td className="text-right">
-                        <UncontrolledDropdown>
-                          <DropdownToggle
-                            className="btn-icon-only text-light"
-                            href="#pablo"
-                            role="button"
-                            size="sm"
-                            color=""
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            <i className="fas fa-ellipsis-v" />
-                          </DropdownToggle>
-                          <DropdownMenu className="dropdown-menu-arrow" right>
-                            <DropdownItem
-                              href="#pablo"
-                              onClick={(e) => e.preventDefault()}
-                            >
-                              Delete
-                            </DropdownItem>
-                            <DropdownItem
-                              href="#pablo"
-                              onClick={(e) => e.preventDefault()}
-                            >
-                              Update
-                            </DropdownItem>
-                          </DropdownMenu>
-                        </UncontrolledDropdown>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th scope="row">
-                        <Media className="align-items-center">
-                          <a
-                            className="avatar rounded-circle mr-3"
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            <img
-                              alt="..."
-                              src={teamImage}
-                            />
-                          </a>
-                          <Media>
-                            <span className="mb-0 text-sm">
-                              Mr.Aruna
-                            </span>
-                          </Media>
-                        </Media>
-                      </th>
-                      <td>aruna123</td>
-                      <td>
-                        <Badge color="" className="badge-dot mr-4">
-                          <i className="bg-warning" />
-                          aruna@gmail.com
-                        </Badge>
-                      </td>
-                      
-                      <td>
-                        <div className="d-flex align-items-center">
-                        <Media>
-                            <span className="mb-0 text-sm">
-                              Mr.Aruna
-                            </span>
-                          </Media>
-                        </div>
-                      </td>
-                      <td className="text-right">
-                        <UncontrolledDropdown>
-                          <DropdownToggle
-                            className="btn-icon-only text-light"
-                            href="#pablo"
-                            role="button"
-                            size="sm"
-                            color=""
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            <i className="fas fa-ellipsis-v" />
-                          </DropdownToggle>
-                          <DropdownMenu className="dropdown-menu-arrow" right>
-                            <DropdownItem
-                              href="#pablo"
-                              onClick={(e) => e.preventDefault()}
-                            >
-                              Delete
-                            </DropdownItem>
-                            <DropdownItem
-                              href="#pablo"
-                              onClick={(e) => e.preventDefault()}
-                            >
-                              Update
-                            </DropdownItem>
-                          </DropdownMenu>
-                        </UncontrolledDropdown>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th scope="row">
-                        <Media className="align-items-center">
-                          <a
-                            className="avatar rounded-circle mr-3"
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            <img
-                              alt="..."
-                              src={teamImage}
-                            />
-                          </a>
-                          <Media>
-                            <span className="mb-0 text-sm">
-                              Mr.Aruna
-                            </span>
-                          </Media>
-                        </Media>
-                      </th>
-                      <td>aruna123</td>
-                      <td>
-                        <Badge color="" className="badge-dot mr-4">
-                          <i className="bg-warning" />
-                          aruna@gmail.com
-                        </Badge>
-                      </td>
-                      
-                      <td>
-                        <div className="d-flex align-items-center">
-                        <Media>
-                            <span className="mb-0 text-sm">
-                              Mr.Aruna
-                            </span>
-                          </Media>
-                        </div>
-                      </td>
-                      <td className="text-right">
-                        <UncontrolledDropdown>
-                          <DropdownToggle
-                            className="btn-icon-only text-light"
-                            href="#pablo"
-                            role="button"
-                            size="sm"
-                            color=""
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            <i className="fas fa-ellipsis-v" />
-                          </DropdownToggle>
-                          <DropdownMenu className="dropdown-menu-arrow" right>
-                            <DropdownItem
-                              href="#pablo"
-                              onClick={(e) => e.preventDefault()}
-                            >
-                              Delete
-                            </DropdownItem>
-                            <DropdownItem
-                              href="#pablo"
-                              onClick={(e) => e.preventDefault()}
-                            >
-                              Update
-                            </DropdownItem>
-                          </DropdownMenu>
-                        </UncontrolledDropdown>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th scope="row">
-                        <Media className="align-items-center">
-                          <a
-                            className="avatar rounded-circle mr-3"
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            <img
-                              alt="..."
-                              src={teamImage}
-                            />
-                          </a>
-                          <Media>
-                            <span className="mb-0 text-sm">
-                              Mr.Aruna
-                            </span>
-                          </Media>
-                        </Media>
-                      </th>
-                      <td>aruna123</td>
-                      <td>
-                        <Badge color="" className="badge-dot mr-4">
-                          <i className="bg-warning" />
-                          aruna@gmail.com
-                        </Badge>
-                      </td>
-                      
-                      <td>
-                        <div className="d-flex align-items-center">
-                        <Media>
-                            <span className="mb-0 text-sm">
-                              Mr.Aruna
-                            </span>
-                          </Media>
-                        </div>
-                      </td>
-                      <td className="text-right">
-                        <UncontrolledDropdown>
-                          <DropdownToggle
-                            className="btn-icon-only text-light"
-                            href="#pablo"
-                            role="button"
-                            size="sm"
-                            color=""
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            <i className="fas fa-ellipsis-v" />
-                          </DropdownToggle>
-                          <DropdownMenu className="dropdown-menu-arrow" right>
-                            <DropdownItem
-                              href="#pablo"
-                              onClick={(e) => e.preventDefault()}
-                            >
-                              Delete
-                            </DropdownItem>
-                            <DropdownItem
-                              href="#pablo"
-                              onClick={(e) => e.preventDefault()}
                             >
                               Update
                             </DropdownItem>

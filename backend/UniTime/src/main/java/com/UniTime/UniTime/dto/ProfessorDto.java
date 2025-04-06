@@ -9,7 +9,7 @@ public class ProfessorDto {
     private Long id;
     private String full_name;
     private String email;
-    private String tp_num;
+    private int tp_num;
     private String department_name;
     private String address;
     private String city;

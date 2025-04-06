@@ -1,6 +1,7 @@
 import ProfileImg from "../../assets/admin/img/theme/team-4-800x800.jpg";
 import Swal from "sweetalert2";
 import React, { useState } from "react";
+import axios from "axios";
 // reactstrap components
 import {
   Button,
@@ -18,6 +19,8 @@ import {
 import AdminHeader from "../../components/Headers/AdminHeader";
 
 const Professor = () => {
+
+
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -79,7 +82,7 @@ const Professor = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
   
     const {
@@ -91,10 +94,25 @@ const Professor = () => {
       city,
       country,
       postalCode,
-      moduleName,
+      // moduleName,
       moduleCode,
       description,
     } = formData;
+    
+    const professorData = {
+      full_name: fullName,
+      email: email,
+      tp_num: contactNumber,
+      department_name: departmentName,
+      address: address,
+      city: city,
+      country: country,
+      postal_code: postalCode,
+      module_id: moduleCode,
+      description: description,
+    };
+    
+    
   
     // Email validation using regex
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
@@ -111,7 +129,7 @@ const Professor = () => {
       !city ||
       !country ||
       !postalCode ||
-      !moduleName ||
+      // !moduleName ||
       !moduleCode ||
       !description
     ) {
@@ -162,7 +180,29 @@ const Professor = () => {
       });
       return;
     }
+    try {
+      const response = await axios.post(
+        "http://localhost:8086/api/professor/create",
+        professorData
+      );
   
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: "professor created successfully!",
+      });
+  
+      // Optionally redirect or reset form here
+      // window.location.href = "/admin/index";
+  
+    } catch (error) {
+      console.error("Error creating professor:", error);
+      Swal.fire({
+        icon: "error",
+        title: "API Error",
+        text: error.response?.data?.message || "Something went wrong.",
+      });
+    }
     // If all validations pass
     Swal.fire({
       icon: "success",

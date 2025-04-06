@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -32,7 +34,7 @@ public class Course {
     private String department;
 
     @Column(name = "start_date", nullable = false)
-    private String startDate;
+    private LocalDate startDate;
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
