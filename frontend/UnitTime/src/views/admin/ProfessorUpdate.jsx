@@ -1,7 +1,8 @@
 import ProfileImg from "../../assets/admin/img/theme/team-4-800x800.jpg";
 import Swal from "sweetalert2";
-import React, { useState } from "react";
-
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 // reactstrap components
 import {
   Button,
@@ -19,10 +20,14 @@ import {
 import AdminHeader from "../../components/Headers/AdminHeader";
 
 const ProfessorUpdate = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const professor = location.state; // coming from navigate
+
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
-    contactNumber: "",
+    tp_num: "",
     departmentName: "",
     address: "",
     city: "",
@@ -32,7 +37,32 @@ const ProfessorUpdate = () => {
     moduleCode: "",
     description: "",
   });
+
+  useEffect(() => {
+    if (!professor) {
+      Swal.fire({
+        icon: "error",
+        title: "No Professor Data",
+        text: "Professor data not found. Redirecting back.",
+      }).then(() => navigate('/admin/index'));
+      return;
+    }
   
+    setFormData({
+      id: professor.id,
+      fullName: professor.full_name || "",
+      email: professor.email || "",
+      tp_num: professor.tp_num || "" ,
+      departmentName: professor.department_name || "",
+      address: professor.address || "",
+      city: professor.city || "",
+      country: professor.country || "",
+      postalCode: professor.postal_code || "",
+      moduleCode: professor.module_id || "",
+      description: professor.description || "",
+    });
+  }, [professor, navigate]);
+
 
   // Handle form input change
   const handleChange = (e) => {
@@ -61,7 +91,7 @@ const ProfessorUpdate = () => {
       });
       return; // Don't update the state if the full name contains non-letter characters
     }
-  
+
     // Validate postal code field to ensure it only contains numbers
     if (id === "postalCode" && /[^0-9]/.test(value)) {
       Swal.fire({
@@ -71,7 +101,7 @@ const ProfessorUpdate = () => {
       });
       return; // Don't update the state if the postal code contains non-numeric characters
     }
-  
+
     // Update state for valid inputs
     setFormData({
       ...formData,
@@ -80,39 +110,37 @@ const ProfessorUpdate = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const {
       fullName,
       email,
-      contactNumber,
+      tp_num,
       departmentName,
       address,
       city,
       country,
       postalCode,
-      moduleName,
+      // moduleName,
       moduleCode,
       description,
     } = formData;
-  
-    // Email validation using regex
+
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-    const phoneRegex = /^[0-9]{10}$/; // Contact number must be 10 digits
-    const numberRegex = /\d/; // Check for numbers in city or country
-  
-    // Check for missing fields
+    const phoneRegex = /^[0-9]{10}$/;
+    const numberRegex = /\d/;
+
     if (
       !fullName ||
       !email ||
-      !contactNumber ||
+      !tp_num ||
       !departmentName ||
       !address ||
       !city ||
       !country ||
       !postalCode ||
-      !moduleName ||
+      // !moduleName ||
       !moduleCode ||
       !description
     ) {
@@ -123,8 +151,7 @@ const ProfessorUpdate = () => {
       });
       return;
     }
-  
-    // Validate email format
+
     if (!emailRegex.test(email)) {
       Swal.fire({
         icon: "error",
@@ -133,10 +160,8 @@ const ProfessorUpdate = () => {
       });
       return;
     }
- 
-  
-    // Validate contact number (must be 10 digits)
-    if (!phoneRegex.test(contactNumber)) {
+
+    if (!phoneRegex.test(tp_num)) {
       Swal.fire({
         icon: "error",
         title: "Invalid Contact Number",
@@ -144,8 +169,7 @@ const ProfessorUpdate = () => {
       });
       return;
     }
-  
-    // Validate city and country (cannot contain numbers)
+
     if (numberRegex.test(city)) {
       Swal.fire({
         icon: "error",
@@ -154,7 +178,7 @@ const ProfessorUpdate = () => {
       });
       return;
     }
-  
+
     if (numberRegex.test(country)) {
       Swal.fire({
         icon: "error",
@@ -163,15 +187,46 @@ const ProfessorUpdate = () => {
       });
       return;
     }
-  
-    // If all validations pass
-    Swal.fire({
-      icon: "success",
-      title: "Success",
-      text: "Form submitted successfully!",
-    });
+
+    // ✅ AXIOS PUT REQUEST HERE
+    try {
+      const response = await axios.put(
+        `http://localhost:8086/api/professor/${professor.id}`
+        ,
+        {
+          id: professor.id,
+          full_name: formData.fullName,
+          email: formData.email,
+          tp_num: parseInt(formData.contactNumber, 10),
+          department_name: formData.departmentName,
+          address: formData.address,
+          city: formData.city,
+          country: formData.country,
+          postal_code: formData.postalCode,
+          module_id: formData.moduleCode,
+          description: formData.description
+        }
+      );
+
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Professor updated successfully!",
+      }).then(() => {
+        navigate('/admin/index'); // redirect to list page or wherever you want
+      });
+
+    } catch (error) {
+      console.error("Error updating professor:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Update Failed",
+        text: "An error occurred while updating the professor.",
+      });
+    }
   };
-  
+
+
   return (
     <>
       <AdminHeader pageIndex={3} />
@@ -322,13 +377,13 @@ const ProfessorUpdate = () => {
                     <Row>
                       <Col lg="6">
                         <FormGroup>
-                          <label className="form-control-label" htmlFor="contactNumber">
+                          <label className="form-control-label" htmlFor="tp_num">
                             Contact Number
                           </label>
                           <Input
                             className="form-control-alternative"
-                            id="contactNumber"
-                            value={formData.contactNumber}
+                            id="tp_num"
+                            value={formData.tp_num}
                             onChange={handleChange}
                             placeholder="Contact Number"
                             type="text"
