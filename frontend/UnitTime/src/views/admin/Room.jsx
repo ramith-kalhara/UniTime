@@ -110,7 +110,7 @@ const Room = () => {
     department: '',
     hasSmartScreen: '',
     hasComputers: '',
-    roomDescription: '',
+    description: '',
   });
   
 
@@ -155,7 +155,7 @@ const Room = () => {
     if (!formValues.capacity) errorMessages += 'Capacity is required.\n';
     if (!formValues.department) errorMessages += 'Department is required.\n';
     if (!formValues.hasSmartScreen) errorMessages += 'Smart Screen option is required.\n';
-    if (!formValues.roomDescription) errorMessages += 'Room Description is required.\n';
+    if (!formValues.description) errorMessages += 'Room Description is required.\n';
   
     // Validate Capacity should be a number
     if (formValues.capacity && isNaN(formValues.capacity)) {
@@ -209,7 +209,7 @@ const Room = () => {
           capacity: '',
           roomType: '',
           department: '',
-          roomDescription: ''
+          description: ''
         });
   
       } catch (error) {
@@ -549,8 +549,8 @@ const Room = () => {
                       <label>Room Description</label>
                       <Input
                         className="form-control-alternative"
-                        value={formValues.roomDescription}
-                        name="roomDescription"
+                        value={formValues.description}
+                        name="description"
                         onChange={handleFormChange}
                         placeholder="Room Description"
                         rows="4"
