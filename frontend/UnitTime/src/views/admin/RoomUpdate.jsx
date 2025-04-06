@@ -1,7 +1,11 @@
 
 // reactstrap components
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
+
+import axios from 'axios';
 import teamImage from "../../assets/admin/img/theme/team-4-800x800.jpg";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -37,6 +41,11 @@ const RoomUpdate = () => {
     endDate: dayjs(),
   });
   
+// Inside your RoomUpdate component
+const location = useLocation();
+const room = location.state;
+
+console.log(location);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -88,14 +97,28 @@ const RoomUpdate = () => {
     }
   };
   const [formValues, setFormValues] = useState({
-    roomNumber: '',
+    id: '',
     capacity: '',
-    roomType: '',
+    room_type: '',
     department: '',
-    hasSmartScreen: '',
-    hasComputers: '',
-    roomDescription: '',
+    has_smart_screen: '',
+    description: '',
   });
+
+  
+  useEffect(() => {
+    if (room && room.id) {
+      console.log("Room data passed via navigate:", room);  // Log room data passed via navigation
+      axios.get(`http://localhost:8086/api/room/${room.id}`)
+        .then(response => {
+          console.log("Fetched room data from API:", response.data);  // Log fetched data from API
+          setFormValues(response.data);  // Set the form values with fetched data
+        })
+        .catch(error => {
+          console.error("Error fetching room data:", error);
+        });
+    }
+  }, [room]);  // Runs only when 'room' changes
   
 
   const handleFormChange = (e) => {
@@ -135,13 +158,11 @@ const RoomUpdate = () => {
     let errorMessages = '';
   
     // Validate required fields
-    if (!formValues.roomNumber) errorMessages += 'Room Number is required.\n';
     if (!formValues.capacity) errorMessages += 'Capacity is required.\n';
-    if (!formValues.roomType) errorMessages += 'Room Type is required.\n';
+    if (!formValues.room_type) errorMessages += 'Room Type is required.\n';
     if (!formValues.department) errorMessages += 'Department is required.\n';
-    if (!formValues.hasSmartScreen) errorMessages += 'Smart Screen option is required.\n';
-    if (!formValues.hasComputers) errorMessages += 'Computers option is required.\n';
-    if (!formValues.roomDescription) errorMessages += 'Room Description is required.\n';
+    if (!formValues.has_smart_screen) errorMessages += 'Smart Screen option is required.\n';
+    if (!formValues.description) errorMessages += 'Room Description is required.\n';
   
     // Validate Capacity should be a number
     if (formValues.capacity && isNaN(formValues.capacity)) {
@@ -164,33 +185,31 @@ const RoomUpdate = () => {
     }
     return true;
   };
-    // Fetch the room details for the specific room on component mount
-    useEffect(() => {
-      axios.get(`http://localhost:8086/api/room/${roomId}`)
-        .then((response) => {
-          setFormValues(response.data); // Pre-fill form with data from API
-        })
-        .catch((error) => {
-          console.error("Error fetching room data:", error);
-        });
-    }, [roomId]);
 
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    
-    // Run the validation function
-    if (validateRoomDetails()) {
-      axios.put(`http://localhost:8086/api/room/${formValues.id}`, formValues)
-      .then((response) => {
-        alert('Room updated successfully!');
-        navigate('/admin/rooms'); // Navigate to room listing page after successful update
-      })
-      .catch((error) => {
-        console.error("Error updating room data:", error);
-        alert('Error updating room. Please try again.');
-      });// Handle actual form submission logic here (e.g., API call)
-    }
-  };
+
+ // Handle form submission (PUT request)
+ const handleFormSubmit = (e) => {
+  e.preventDefault();
+
+  // PUT request to update the room data
+  axios.put(`http://localhost:8086/api/room/${formValues.id}`, formValues)
+    .then((response) => {
+      Swal.fire({
+        icon: 'success',
+        title: 'Room Updated Successfully',
+        text: 'The room details have been updated!',
+      });
+      window.location.href = "/admin/index"; // Redirect after successful update
+    })
+    .catch((error) => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Update Failed',
+        text: 'There was an error updating the room details.',
+      });
+      console.error("Error updating room:", error);
+    });
+};
   
 
 
@@ -315,7 +334,7 @@ const RoomUpdate = () => {
                             name="roomType"
                             bsSize="lg"
                             className="form-control form-control-alternative"
-                            value={formValues.roomType}
+                            value={formValues.description}
                             onChange={handleChange}
                           >
                             <option value="" disabled>Select room type</option>
@@ -425,18 +444,6 @@ const RoomUpdate = () => {
               <CardBody>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
               <Form onSubmit={handleFormSubmit}>
       <h6 className="heading-small text-muted mb-4">Room information</h6>
       <div className="pl-lg-4">
@@ -454,7 +461,7 @@ const RoomUpdate = () => {
                 placeholder="Room Id"
                 maxLength="6"
                 type="text"
-                readOnly // Make the room ID field read-only
+                readOnly
               />
             </FormGroup>
           </Col>
@@ -486,7 +493,7 @@ const RoomUpdate = () => {
                 name="roomType"
                 bsSize="lg"
                 className="form-control form-control-alternative"
-                value={formValues.roomType}
+                value={formValues.room_type}
                 onChange={handleFormChange}
               >
                 <option value="" disabled>Select room type</option>
@@ -526,7 +533,7 @@ const RoomUpdate = () => {
                 name="hasSmartScreen"
                 bsSize="lg"
                 className="form-control form-control-alternative"
-                value={formValues.hasSmartScreen}
+                value={formValues.has_smart_screen}
                 onChange={handleFormChange}
               >
                 <option value="">Select</option>
@@ -545,7 +552,7 @@ const RoomUpdate = () => {
           <label>Room Description</label>
           <Input
             className="form-control-alternative"
-            value={formValues.roomDescription}
+            value={formValues.description}
             name="roomDescription"
             onChange={handleFormChange}
             placeholder="Room Description"
