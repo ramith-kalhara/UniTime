@@ -4,7 +4,10 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import dayjs from 'dayjs';
 import Swal from "sweetalert2";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from "react-router-dom";
+
+import axios from "axios";
 import teamImage from "../../assets/admin/img/theme/team-4-800x800.jpg";
 import {
   Button,
@@ -29,6 +32,24 @@ const ScheduleUpdate = () => {
   const [lectureTitle, setLectureTitle] = useState("");
   const [moduleCode, setModuleCode] = useState("");
   const [capacity, setCapacity] = useState("");
+  const [scheduleDescription, setScheduleDescription] = useState("");
+
+  const location = useLocation();
+  const schedule = location.state;
+  useEffect(() => {
+    if (schedule) {
+      setRoomNumber(schedule.roomNumber);
+      setProfessorName(schedule.professorName);
+      setLectureTitle(schedule.lectureTitle);
+      setModuleCode(schedule.moduleCode);
+      setCapacity(schedule.capacity.toString());
+      setStartDate(dayjs(schedule.startDate));
+      setStartTime(dayjs(schedule.startTime, "HH:mm:ss"));
+      setEndTime(dayjs(schedule.endTime, "HH:mm:ss"));
+      setScheduleDescription(schedule.scheduleDescription || "");
+    }
+  }, [schedule]);
+
 
   // Handle form submission
   const handleSubmit = (e) => {
@@ -63,12 +84,39 @@ const ScheduleUpdate = () => {
       return;
     }
 
-    // If all fields are valid
-    Swal.fire({
-      icon: "success",
-      title: "Schedule Added",
-      text: "Your schedule has been added successfully!",
-    });
+
+
+    const updatedSchedule = {
+      scheduleId: schedule.scheduleId,
+      roomNumber,
+      professorName,
+      capacity: parseInt(capacity),
+      moduleCode,
+      lectureTitle,
+      startDate: startDate.format("YYYY-MM-DD"),
+      startTime: startTime.format("HH:mm:ss"),
+      endTime: endTime.format("HH:mm:ss"),
+      scheduleDescription,
+    };
+
+
+    axios.put(`http://localhost:8086/api/schedule/${schedule.scheduleId}`, updatedSchedule)
+      .then(() => {
+        Swal.fire({
+          icon: "success",
+          title: "Schedule Updated",
+          text: "Your schedule has been updated successfully!",
+        });
+      })
+      .catch((err) => {
+        console.error("Failed to update schedule", err);
+        Swal.fire({
+          icon: "error",
+          title: "Update Failed",
+          text: "There was a problem updating the schedule.",
+        });
+      });
+
   };
 
   // Ensure the Capacity input only allows numbers
@@ -339,6 +387,8 @@ const ScheduleUpdate = () => {
                         placeholder="A few words about your schedule ..."
                         rows="4"
                         type="textarea"
+                        value={scheduleDescription}
+                        onChange={(e) => setScheduleDescription(e.target.value)}
                       />
                     </FormGroup>
                   </div>

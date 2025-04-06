@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import teamImage from "../../assets/admin/img/theme/team-4-800x800.jpg";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
-import Swal from 'sweetalert2';  // Import SweetAlert for alert messages
+import Swal from 'sweetalert2'; 
+import { useLocation } from "react-router-dom";
+import axios from "axios"; // Import SweetAlert for alert messages
 import {
   Button,
   Card,
@@ -22,12 +24,29 @@ import AdminHeader from "../../components/Headers/AdminHeader";
 
 const CourseUpdate = () => {
   const [startDate, setStartDate] = useState(dayjs()); // State for start date
-  const [endDate, setEndDate] = useState(dayjs());   // State for end date
+ // State for end date
+ const [courseId, setcourseId] = useState('');
   const [courseCode, setCourseCode] = useState('');
   const [name, setName] = useState('');
   const [credits, setCredits] = useState('');
   const [department, setDepartment] = useState('');
   const [courseDescription, setCourseDescription] = useState('');
+  const location = useLocation();
+  const course = location.state; 
+  useEffect(() => {
+    if (course) {
+      setcourseId(course.courseId);
+      setCourseCode(course.courseCode);
+      setName(course.name);
+      setCredits(course.credits);
+      setDepartment(course.department);
+      setCourseDescription(course.description);
+      // Ensure valid dayjs date
+      setStartDate(dayjs(course.startDate).isValid() ? dayjs(course.startDate) : dayjs());
+    }
+  }, [course]);
+  
+  
 
   const handleNameChange = (e) => {
     const { value } = e.target;
@@ -47,9 +66,9 @@ const CourseUpdate = () => {
   };
   
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     // Validation
     if (!courseCode || !name || !credits || !department || !courseDescription) {
       Swal.fire({
@@ -59,8 +78,7 @@ const CourseUpdate = () => {
       });
       return;
     }
-
-    // Validate Credits should be a number
+  
     if (credits && isNaN(credits)) {
       Swal.fire({
         icon: "error",
@@ -69,45 +87,35 @@ const CourseUpdate = () => {
       });
       return;
     }
-
-    // Validate email (for the name field assuming it's an email)
-    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-    if (!emailRegex.test(name)) {
-      Swal.fire({
-        icon: "error",
-        title: "Invalid Email",
-        text: "Please enter a valid email address for the name field.",
-      });
-      return;
-    }
-
-    // Check if start date is before end date
-    if (startDate.isAfter(endDate)) {
-      Swal.fire({
-        icon: "error",
-        title: "Invalid Date Range",
-        text: "The start date cannot be after the end date.",
-      });
-      return;
-    }
-
-    // If all validations pass
-    console.log('Course submitted:', {
+  
+    const updatedCourse = {
+      courseId, // Make sure this is defined
       courseCode,
       name,
-      credits,
+      credits: parseInt(credits),
       department,
-      courseDescription,
+      description: courseDescription,
       startDate: startDate.format('YYYY-MM-DD'),
-      endDate: endDate.format('YYYY-MM-DD'),
-    });
-
-    Swal.fire({
-      icon: "success",
-      title: "Course Added Successfully",
-      text: "Your course has been added.",
-    });
+    };
+  
+    try {
+      await axios.put(`http://localhost:8086/api/course/${courseId}`, updatedCourse);
+  
+      Swal.fire({
+        icon: "success",
+        title: "Course Updated Successfully",
+        text: "Your course has been updated.",
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Update Failed",
+        text: "An error occurred while updating the course.",
+      });
+      console.error("Update error:", error);
+    }
   };
+  
 
   // Handle Credits change (ensure it's a number)
   const handleCreditsChange = (e) => {
@@ -292,31 +300,20 @@ const CourseUpdate = () => {
                           </LocalizationProvider>
                         </FormGroup>
                       </Col>
-                      <Col lg="6">
-                        <FormGroup>
-                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                              <DatePicker
-                                label="End Date"
-                                value={startDate}
-                                onChange={setStartDate}
-                                renderInput={(props) => <Input {...props} />}
-                              />
-                            </LocalizationProvider>
-                          </FormGroup>
-                      </Col>
+                    
                     </Row>
                     
                       <FormGroup>
                         <label> Description </label>
                         <Input
-                          className="form-control-alternative"
-                          placeholder="A few words about you ..."
-                          rows="4"
-                          defaultValue="Description"
-                          value={courseDescription}
-                          onChange={(e) => setCourseDescription(e.target.value)}
-                          type="textarea"
-                        />
+  className="form-control-alternative"
+  placeholder="A few words about you ..."
+  rows="4"
+  value={courseDescription}
+  onChange={(e) => setCourseDescription(e.target.value)}
+  type="textarea"
+/>
+
                       </FormGroup>
                     
                  
