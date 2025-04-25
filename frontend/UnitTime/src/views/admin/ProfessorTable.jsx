@@ -30,10 +30,10 @@ import {
     useEffect(() => {
       const fetchprofessor = async () => {
         try {
-          const response = await axios.get("http://localhost:8086/api/schedule/");
+          const response = await axios.get("http://localhost:8086/api/professor/");
           setprofessor(response.data);
         } catch (error) {
-          console.error("Error fetching schedule:", error);
+          console.error("Error fetching professor:", error);
         }
       };
   
@@ -41,7 +41,7 @@ import {
     }, []);
   
     //Delete API
-    const handleDelete = (scheduleId) => {
+    const handleDelete = (professorId) => {
       Swal.fire({
         title: 'Are you sure?',
         text: 'You won\'t be able to revert this!',
@@ -52,21 +52,21 @@ import {
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
-            const response = await axios.delete(`http://localhost:8086/api/schedule/${scheduleId}`);
+            const response = await axios.delete(`http://localhost:8086/api/professor/${professorId}`);
             if (response.status === 200) {
               Swal.fire(
                 'Deleted!',
-                'The Schedule has been deleted.',
+                'The professor has been deleted.',
                 'success'
               );
   
               // Remove the deleted room from the state
-              setprofessor(professor.filter(schedule => schedule.scheduleId !== scheduleId));
+              setprofessor(professor.filter(professor => professor.professorId !== professorId));
             }
           } catch (error) {
             Swal.fire(
               'Error!',
-              'There was a problem deleting the Schedule.',
+              'There was a problem deleting the professor.',
               'error'
             );
           }
@@ -98,7 +98,8 @@ import {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
+                  {professor.map((professor, index) => (
+                    <tr key={index}>
                       <th scope="row">
                         <Media className="align-items-center">
                           <a
@@ -113,7 +114,7 @@ import {
                           </a>
                           <Media>
                             <span className="mb-0 text-sm">
-                              Mr.Aruna
+                             {professor.full_name}
                             </span>
                           </Media>
                         </Media>
@@ -122,7 +123,7 @@ import {
                       <td>
                         <Badge color="" className="badge-dot mr-4">
                           <i className="bg-warning" />
-                          aruna@gmail.com
+                          {professor.email}
                         </Badge>
                       </td>
                       
@@ -130,7 +131,7 @@ import {
                         <div className="d-flex align-items-center">
                         <Media>
                             <span className="mb-0 text-sm">
-                              Mr.Aruna
+                              {professor.module_id}
                             </span>
                           </Media>
                         </div>
@@ -150,13 +151,13 @@ import {
                           <DropdownMenu className="dropdown-menu-arrow" end>
                             <DropdownItem
                               href="#pablo"
-                              onClick={(e) => e.preventDefault()}
+                              onClick={() => handleDelete(professor.id)}
                             >
                               Delete
                             </DropdownItem>
                             <DropdownItem
-                              href="#pablo"
-                              onClick={() => navigate('/admin/update-professor')}
+                              href=""
+                              onClick={() => navigate('/admin/update-professor', { state: professor })}
 
                             >
                               Update
@@ -165,6 +166,7 @@ import {
                         </UncontrolledDropdown>
                       </td>
                     </tr>
+                  ))}
                   </tbody>
                 </Table>
                 <CardFooter className="py-4">
