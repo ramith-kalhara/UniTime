@@ -69,4 +69,21 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
         return true;
     }
+
+    @Override
+    public UserDto login(String email, String password) {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            if (user.getPassword().equals(password)) {
+                return mapper.map(user, UserDto.class);
+            } else {
+                throw new RuntimeException("Invalid password");
+            }
+        } else {
+            throw new NotFoundException("User not found with email: " + email);
+        }
+    }
+
 }

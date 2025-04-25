@@ -10,4 +10,6 @@ public interface UserService {
     public UserDto getUserById(Long id);
     public UserDto updateUser(Long id, UserDto userDto);
     public Boolean deleteUser(Long id);
+    UserDto login(String email, String password);
+
 }

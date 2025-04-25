@@ -4,6 +4,8 @@ import com.UniTime.UniTime.entity.Course; // Ensure this import is present
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 
+import java.time.LocalDate;
+
 @Data
 public class CourseDto {
     private Long courseId;
@@ -11,7 +13,7 @@ public class CourseDto {
     private String name;
     private int credits;
     private String department;
-    private String startDate;
+    private LocalDate startDate;
     private String description;
 
     // Method to convert CourseDto to Course entity

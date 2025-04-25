@@ -4,7 +4,9 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
-import Swal from 'sweetalert2';  // Import SweetAlert for alert messages
+import Swal from 'sweetalert2';
+import axios from "axios";
+
 import {
   Button,
   Card,
@@ -26,7 +28,7 @@ const Course = () => {
   const [name, setName] = useState('');
   const [credits, setCredits] = useState('');
   const [department, setDepartment] = useState('');
-  const [courseDescription, setCourseDescription] = useState('');
+  const [description, setdescription] = useState('');
 
   const handleNameChange = (e) => {
     const { value } = e.target;
@@ -46,11 +48,11 @@ const Course = () => {
   };
   
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     // Validation
-    if (!courseCode || !name || !credits || !department || !courseDescription) {
+    if (!courseCode || !name || !credits || !department || !description) {
       Swal.fire({
         icon: "error",
         title: "Missing Information",
@@ -58,8 +60,7 @@ const Course = () => {
       });
       return;
     }
-
-    // Validate Credits should be a number
+  
     if (credits && isNaN(credits)) {
       Swal.fire({
         icon: "error",
@@ -68,29 +69,46 @@ const Course = () => {
       });
       return;
     }
-
-   
-
-   
-
-    // If all validations pass
-    console.log('Course submitted:', {
+  
+    // Prepare payload
+    const newCourse = {
       courseCode,
       name,
-      credits,
+      credits: parseInt(credits),
       department,
-      courseDescription,
+      description,
       startDate: startDate.format('YYYY-MM-DD'),
-      endDate: endDate.format('YYYY-MM-DD'),
-    });
-
-    Swal.fire({
-      icon: "success",
-      title: "Course Added Successfully",
-      text: "Your course has been added.",
-    });
+    };
+  
+    try {
+      const response = await axios.post("http://localhost:8086/api/course/create", newCourse);
+  
+      if (response.status === 200 || response.status === 201) {
+        Swal.fire({
+          icon: "success",
+          title: "Course Added Successfully",
+          text: "Your course has been added.",
+        });
+  
+        // Optional: clear form
+        setCourseCode("");
+        setName("");
+        setCredits("");
+        setDepartment("");
+        setdescription("");
+        setStartDate(dayjs());
+        setEndDate(dayjs());
+      }
+    } catch (error) {
+      console.error("Error adding course:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to add course. Please try again.",
+      });
+    }
   };
-
+  
   // Handle Credits change (ensure it's a number)
   const handleCreditsChange = (e) => {
     const { value } = e.target;
@@ -284,8 +302,8 @@ const Course = () => {
                           placeholder="A few words about you ..."
                           rows="4"
                           defaultValue="Description"
-                          value={courseDescription}
-                          onChange={(e) => setCourseDescription(e.target.value)}
+                          value={description}
+                          onChange={(e) => setdescription(e.target.value)}
                           type="textarea"
                         />
                       </FormGroup>
