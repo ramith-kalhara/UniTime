@@ -1,4 +1,7 @@
 import teamImage from "../../assets/admin/img/theme/team-4-800x800.jpg";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 // reactstrap components
 import {
   Button,
@@ -15,6 +18,29 @@ import {
 } from "reactstrap";
 
 const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post('http://localhost:8086/api/user/login', {
+        email,
+        password,
+      });
+
+      if (response.status === 200) {
+        // Optional: store token or user data if needed
+        // localStorage.setItem('token', response.data.token);
+        navigate('/user/index');
+      } else {
+        alert('Login failed!');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      alert('Invalid email or password!');
+    }
+  };
   return (
     <>
       <Col lg="5" md="7">
@@ -68,6 +94,8 @@ const Login = () => {
                     placeholder="Email"
                     type="email"
                     autoComplete="new-email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </InputGroup>
               </FormGroup>
@@ -80,6 +108,8 @@ const Login = () => {
                     placeholder="Password"
                     type="password"
                     autoComplete="new-password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                 </InputGroup>
               </FormGroup>
@@ -94,7 +124,7 @@ const Login = () => {
                 </label>
               </div>
               <div className="text-center">
-                <Button className="my-4" color="primary" type="button">
+                <Button className="my-4" color="primary" type="button" onClick={handleLogin}>
                   Sign in
                 </Button>
               </div>
