@@ -1,7 +1,11 @@
 
 // reactstrap components
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
+
+import axios from 'axios';
 import teamImage from "../../assets/admin/img/theme/team-4-800x800.jpg";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -37,6 +41,11 @@ const RoomUpdate = () => {
     endDate: dayjs(),
   });
   
+// Inside your RoomUpdate component
+const location = useLocation();
+const room = location.state;
+
+console.log(location);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -88,14 +97,28 @@ const RoomUpdate = () => {
     }
   };
   const [formValues, setFormValues] = useState({
-    roomNumber: '',
+    id: '',
     capacity: '',
-    roomType: '',
+    room_type: '',
     department: '',
-    hasSmartScreen: '',
-    hasComputers: '',
-    roomDescription: '',
+    has_smart_screen: '',
+    description: '',
   });
+
+  
+  useEffect(() => {
+    if (room && room.id) {
+      console.log("Room data passed via navigate:", room);  // Log room data passed via navigation
+      axios.get(`http://localhost:8086/api/room/${room.id}`)
+        .then(response => {
+          console.log("Fetched room data from API:", response.data);  // Log fetched data from API
+          setFormValues(response.data);  // Set the form values with fetched data
+        })
+        .catch(error => {
+          console.error("Error fetching room data:", error);
+        });
+    }
+  }, [room]);  // Runs only when 'room' changes
   
 
   const handleFormChange = (e) => {
@@ -135,13 +158,11 @@ const RoomUpdate = () => {
     let errorMessages = '';
   
     // Validate required fields
-    if (!formValues.roomNumber) errorMessages += 'Room Number is required.\n';
     if (!formValues.capacity) errorMessages += 'Capacity is required.\n';
-    if (!formValues.roomType) errorMessages += 'Room Type is required.\n';
+    if (!formValues.room_type) errorMessages += 'Room Type is required.\n';
     if (!formValues.department) errorMessages += 'Department is required.\n';
-    if (!formValues.hasSmartScreen) errorMessages += 'Smart Screen option is required.\n';
-    if (!formValues.hasComputers) errorMessages += 'Computers option is required.\n';
-    if (!formValues.roomDescription) errorMessages += 'Room Description is required.\n';
+    if (!formValues.has_smart_screen) errorMessages += 'Smart Screen option is required.\n';
+    if (!formValues.description) errorMessages += 'Room Description is required.\n';
   
     // Validate Capacity should be a number
     if (formValues.capacity && isNaN(formValues.capacity)) {
@@ -164,23 +185,31 @@ const RoomUpdate = () => {
     }
     return true;
   };
-  
 
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    
-    // Run the validation function
-    if (validateRoomDetails()) {
-      // If validation passes, submit the form
+
+ // Handle form submission (PUT request)
+ const handleFormSubmit = (e) => {
+  e.preventDefault();
+
+  // PUT request to update the room data
+  axios.put(`http://localhost:8086/api/room/${formValues.id}`, formValues)
+    .then((response) => {
       Swal.fire({
         icon: 'success',
-        title: 'Form Submitted Successfully',
-        text: 'Your form has been submitted!',
+        title: 'Room Updated Successfully',
+        text: 'The room details have been updated!',
       });
-  
-      // Handle actual form submission logic here (e.g., API call)
-    }
-  };
+      window.location.href = "/admin/index"; // Redirect after successful update
+    })
+    .catch((error) => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Update Failed',
+        text: 'There was an error updating the room details.',
+      });
+      console.error("Error updating room:", error);
+    });
+};
   
 
 
@@ -305,7 +334,7 @@ const RoomUpdate = () => {
                             name="roomType"
                             bsSize="lg"
                             className="form-control form-control-alternative"
-                            value={formValues.roomType}
+                            value={formValues.description}
                             onChange={handleChange}
                           >
                             <option value="" disabled>Select room type</option>
@@ -413,147 +442,129 @@ const RoomUpdate = () => {
                 </Row>
               </CardHeader>
               <CardBody>
-                <Form onSubmit={handleFormSubmit}>
-                  <h6 className="heading-small text-muted mb-4">Room information</h6>
-                  <div className="pl-lg-4">
-                    <Row>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label className="form-control-label" htmlFor="input-roomNumber">
-                            Room Id
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            value={formValues.roomNumber}
-                            name="roomNumber"
-                            onChange={handleFormChange}
-                            placeholder="Room Number"
-                            maxLength="6"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label className="form-control-label" htmlFor="input-capacity">
-                            Capacity
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            value={formValues.capacity}
-                            name="capacity"
-                            onChange={handleFormChange}
-                            placeholder="Capacity"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label className="form-control-label" htmlFor="input-roomType">
-                            Room Type
-                          </label>
-                          <Input
-                            type="select"
-                            id="input-roomType"
-                            name="roomType"
-                            bsSize="lg"
-                            className="form-control form-control-alternative"
-                            value={formValues.roomType}
-                            onChange={handleFormChange}
-                          >
-                            <option value="" disabled>Select room type</option>
-                            <option value="Lecture Hall">Lecture Hall</option>
-                            <option value="Lab">Lab</option>
-                            <option value="Auditorium">Auditorium</option>
-                            <option value="Seminar Room">Seminar Room</option>
-                            <option value="Tutorial Room">Tutorial Room</option>
-                          </Input>
-                        </FormGroup>
-                      </Col>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label className="form-control-label" htmlFor="input-department">
-                            Department
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            value={formValues.department}
-                            name="department"
-                            onChange={handleFormChange} 
-                            placeholder="Department"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label className="form-control-label" htmlFor="input-hasSmartScreen">
-                            Has Smart Screen
-                          </label>
-                          <Input
-                            type="select"
-                            id="input-hasSmartScreen"
-                            name="hasSmartScreen"
-                            bsSize="lg"
-                            className="form-control form-control-alternative"
-                            value={formValues.hasSmartScreen}
-                            onChange={handleFormChange}
-                          >
-                            <option value="">Select</option>
-                            <option value="true">Yes</option>
-                            <option value="false">No</option>
-                          </Input>
-                        </FormGroup>
-                      </Col>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label className="form-control-label" htmlFor="input-hasComputers">
-                            Has Computers
-                          </label>
-                          <Input
-                            type="select"
-                            id="input-hasComputers"
-                            name="hasComputers"
-                            bsSize="lg"
-                            className="form-control form-control-alternative"
-                            value={formValues.hasComputers}
-                            onChange={handleFormChange}
-                          >
-                            <option value="">Select</option>
-                            <option value="true">Yes</option>
-                            <option value="false">No</option>
-                          </Input>
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                  </div>
-                  <hr className="my-4" />
-                  {/* Room Description */}
-                  <h6 className="heading-small text-muted mb-4">Room Description</h6>
-                  <div className="pl-lg-4">
-                    <FormGroup>
-                      <label>Room Description</label>
-                      <Input
-                        className="form-control-alternative"
-                        value={formValues.roomDescription}
-                        name="roomDescription"
-                        onChange={handleFormChange}
-                        placeholder="Room Description"
-                        rows="4"
-                        type="textarea"
-                      />
-                    </FormGroup>
-                  </div>
-                  <div className="text-center">
-                    <button type="submit" className="btn btn-primary">Update Room</button>
-                  </div>
-                  
-                </Form>
+
+
+              <Form onSubmit={handleFormSubmit}>
+      <h6 className="heading-small text-muted mb-4">Room information</h6>
+      <div className="pl-lg-4">
+        <Row>
+          <Col lg="6">
+            <FormGroup>
+              <label className="form-control-label" htmlFor="input-roomNumber">
+                Room Id
+              </label>
+              <Input
+                className="form-control-alternative"
+                value={formValues.id}
+                name="id"
+                onChange={handleFormChange}
+                placeholder="Room Id"
+                maxLength="6"
+                type="text"
+                readOnly
+              />
+            </FormGroup>
+          </Col>
+          <Col lg="6">
+            <FormGroup>
+              <label className="form-control-label" htmlFor="input-capacity">
+                Capacity
+              </label>
+              <Input
+                className="form-control-alternative"
+                value={formValues.capacity}
+                name="capacity"
+                onChange={handleFormChange}
+                placeholder="Capacity"
+                type="text"
+              />
+            </FormGroup>
+          </Col>
+        </Row>
+        <Row>
+          <Col lg="6">
+            <FormGroup>
+              <label className="form-control-label" htmlFor="input-roomType">
+                Room Type
+              </label>
+              <Input
+                type="select"
+                id="input-roomType"
+                name="roomType"
+                bsSize="lg"
+                className="form-control form-control-alternative"
+                value={formValues.room_type}
+                onChange={handleFormChange}
+              >
+                <option value="" disabled>Select room type</option>
+                <option value="Lecture Hall">Lecture Hall</option>
+                <option value="Lab">Lab</option>
+                <option value="Auditorium">Auditorium</option>
+                <option value="Seminar Room">Seminar Room</option>
+                <option value="Tutorial Room">Tutorial Room</option>
+              </Input>
+            </FormGroup>
+          </Col>
+          <Col lg="6">
+            <FormGroup>
+              <label className="form-control-label" htmlFor="input-department">
+                Department
+              </label>
+              <Input
+                className="form-control-alternative"
+                value={formValues.department}
+                name="department"
+                onChange={handleFormChange}
+                placeholder="Department"
+                type="text"
+              />
+            </FormGroup>
+          </Col>
+        </Row>
+        <Row>
+          <Col lg="6">
+            <FormGroup>
+              <label className="form-control-label" htmlFor="input-hasSmartScreen">
+                Has Smart Screen
+              </label>
+              <Input
+                type="select"
+                id="input-hasSmartScreen"
+                name="hasSmartScreen"
+                bsSize="lg"
+                className="form-control form-control-alternative"
+                value={formValues.has_smart_screen}
+                onChange={handleFormChange}
+              >
+                <option value="">Select</option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+              </Input>
+            </FormGroup>
+          </Col>
+        </Row>
+      </div>
+      <hr className="my-4" />
+      {/* Room Description */}
+      <h6 className="heading-small text-muted mb-4">Room Description</h6>
+      <div className="pl-lg-4">
+        <FormGroup>
+          <label>Room Description</label>
+          <Input
+            className="form-control-alternative"
+            value={formValues.description}
+            name="roomDescription"
+            onChange={handleFormChange}
+            placeholder="Room Description"
+            rows="4"
+            type="textarea"
+          />
+        </FormGroup>
+      </div>
+      <div className="text-center">
+        <button type="submit" className="btn btn-primary">Update Room</button>
+      </div>
+    </Form>
               </CardBody>
             </Card>
           </Col>

@@ -13,12 +13,10 @@ function BookRoom() {
               <p className="section-title pr-5">
                 <span className="pr-2">Book A Seat</span>
               </p>
-              <h1 className="mb-4">Book A Seat For Your Kid</h1>
+              <h1 className="mb-4">Book A Seat For Your Future</h1>
               <p>
-                Invidunt lorem justo sanctus clita. Erat lorem labore ea, justo
-                dolor lorem ipsum ut sed eos, ipsum et dolor kasd sit ea justo.
-                Erat justo sed sed diam. Ea et erat ut sed diam sea ipsum est
-                dolor
+              Easily book your seat for university events, lectures, or campus programs through our streamlined platform. 
+              Stay ahead by securing your spot with just a few clicks—quick, simple, and hassle-free.
               </p>
               <ul className="list-inline m-0">
                 <li className="py-2">

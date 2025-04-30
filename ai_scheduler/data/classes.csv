@@ -1,0 +1,3 @@
+course_id,module_id,required_capacity,needs_projector,needs_computer
+C101,M101,30,True,False
+C102,M102,25,False,True

@@ -12,10 +12,8 @@ function Hero() {
               New Approach to Student Education
             </h1>
             <p className="text-white mb-4">
-              Sea ipsum kasd eirmod kasd magna, est sea et diam ipsum est amet sed
-              sit. Ipsum dolor no justo dolor et, lorem ut dolor erat dolore sed
-              ipsum at ipsum nonumy amet. Clita lorem dolore sed stet et est justo
-              dolore.
+            A comprehensive web application for efficient university scheduling and management. 
+            Streamline course planning, room assignments, and faculty coordination.
             </p>
             <a href="/" className="btn btn-secondary mt-1 py-3 px-5">Learn More</a>
           </div>
