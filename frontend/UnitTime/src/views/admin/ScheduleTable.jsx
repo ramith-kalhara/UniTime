@@ -95,7 +95,7 @@ const ScheduleTable = () => {
                     <th scope="col">Start Time</th>
                     <th scope="col">End Time</th>
                     <th scope="col">Room Id</th>
-                    <th scope="col">Lecure Title</th>
+                    <th scope="col">Shedule Title</th>
                     <th scope="col">Professor</th>
                     <th scope="col">Students</th>
                     <th scope="col">Module Name</th>
