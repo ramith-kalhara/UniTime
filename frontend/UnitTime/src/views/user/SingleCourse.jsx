@@ -32,8 +32,7 @@ function SingleCourse() {
                 rebum et lorem magna kasd, stet amet magna accusam consetetur
                 eirmod. Kasd accusam sit ipsum sadipscing et at at sanctus et.
                 Ipsum sit gubergren dolores et, consetetur justo invidunt at et
-                aliquyam ut et vero clita. Diam sea sea no sed dolores diam
-                nonumy, gubergren sit stet no diam kasd vero.
+                aliquyam ut et vero clita. 
               </p>
               <p>
                 Voluptua est takimata stet invidunt sed rebum nonumy stet, clita
@@ -42,7 +41,7 @@ function SingleCourse() {
                 sanctus lorem kasd duo dolor dolor vero sit et. Labore ipsum duo
                 sanctus amet eos et. Consetetur no sed et aliquyam ipsum justo et,
                 clita lorem sit vero amet amet est dolor elitr, stet et no diam
-                sit. Dolor erat justo dolore sit invidunt.
+                sit. Dolor erat 
               </p>
               <h2 className="mb-4">Est dolor lorem et ea</h2>
               <img className="img-fluid rounded w-50 float-left mr-4 mb-3" src={detail} alt="Image" />
