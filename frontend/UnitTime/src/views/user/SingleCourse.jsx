@@ -41,7 +41,7 @@ function SingleCourse() {
                 sanctus lorem kasd duo dolor dolor vero sit et. Labore ipsum duo
                 sanctus amet eos et. Consetetur no sed et aliquyam ipsum justo et,
                 clita lorem sit vero amet amet est dolor elitr, stet et no diam
-                sit. Dolor erat justo dolore 
+                sit. Dolor erat 
               </p>
               <h2 className="mb-4">Est dolor lorem et ea</h2>
               <img className="img-fluid rounded w-50 float-left mr-4 mb-3" src={detail} alt="Image" />
