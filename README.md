@@ -35,7 +35,4 @@ Implemented as a microservice using Python (scikit-learn) integrated with the co
 - **React Router**
 - **SweetAlert2** – For prompts/alerts
 
----
-
-## 📂 Project Structure
 
