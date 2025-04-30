@@ -32,8 +32,7 @@ function SingleCourse() {
                 rebum et lorem magna kasd, stet amet magna accusam consetetur
                 eirmod. Kasd accusam sit ipsum sadipscing et at at sanctus et.
                 Ipsum sit gubergren dolores et, consetetur justo invidunt at et
-                aliquyam ut et vero clita. Diam sea sea no sed dolores diam
-                nonumy, gubergren sit stet no diam kasd vero.
+                aliquyam ut et vero clita. 
               </p>
               <p>
                 Voluptua est takimata stet invidunt sed rebum nonumy stet, clita
