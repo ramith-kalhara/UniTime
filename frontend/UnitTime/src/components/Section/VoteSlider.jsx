@@ -40,7 +40,7 @@ function VoteSlider() {
         <div className="slider_content">
           {/* <h1 data-content="Vote Here">Vote Here</h1> */}
          
-          <div className="model"></div>
+          {/* <div className="model"></div> */}
         </div>
       </div>
     </div>

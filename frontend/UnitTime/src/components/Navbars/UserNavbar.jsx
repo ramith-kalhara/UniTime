@@ -29,8 +29,7 @@ function UserNavbar() {
                 href="#"
                 class="nav-link dropdown-toggle"
                 data-toggle="dropdown"
-                >Pages</a
-              >
+                >Pages</a>
               <div class="dropdown-menu rounded-0 m-0">
                 <a href="blog.html" class="dropdown-item">Blog Grid</a>
                 <a href="single.html" class="dropdown-item">Blog Detail</a>
@@ -38,7 +37,8 @@ function UserNavbar() {
             </div> */}
               <Link to="/user/contact" className="nav-item nav-link">Contact</Link>
             </div>
-            <a href ="" className="btn btn-primary px-4">Login</a>
+            <a href ="" className="btn btn-primary px-4 mr-2">Login</a>
+            <a href ="" className="btn btn-primary px-4 ">Logout</a>
           </div>
         </nav>
       </div>
