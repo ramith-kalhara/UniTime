@@ -10,9 +10,7 @@ function Room({ ScheduleData }) {
         <div className="card-body text-center">
           <h4 className="card-title">{ScheduleData.room_type}</h4>
           <p className="card-text">{ScheduleData.description}</p>
-          <p className="card-text">
-            *Any food and beverage items are not allowed except water*
-          </p>
+        
         </div>
         <div className="card-footer bg-transparent py-4 px-5">
           <div className="row border-bottom">
