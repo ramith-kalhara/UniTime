@@ -35,6 +35,11 @@ const userHeaderData = [
       id: 6,
       title: "Course Detail",
       breadcrumb: ["Home", "Course Detail"]
+    },
+    {
+      id: 7,
+      title: "Vote Page",
+      breadcrumb: ["Home", "Vote Detail"]
     }
     
   ];

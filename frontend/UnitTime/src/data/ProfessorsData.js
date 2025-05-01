@@ -8,54 +8,64 @@ const ProfessorsData = [
       imageUrl: team1,
  // Dynamically resolve the image
       name: "Julia Smith",
-      module: "Music Teacher"
+      moduleId : "IT2030",
+      module: "Music Teacher",
+      
     },
     {
       id: 1,
       imageUrl: team2, 
       name: "Jhone Smith",
+      moduleId : "IT2040",
       module: "Art Teacher"
     },
     {
       id: 2,
       imageUrl: team4, 
       name: "Ramith Kalhara",
+      moduleId : "IOT20",
       module: "Music Teacher"
     },
     {
       id: 3,
       imageUrl: team3, 
       name: "Saliya Smith",
+      moduleId : "IOT20",
       module: "Music Teacher"
     },
     {
       id: 3,
       imageUrl: team3, 
       name: "Saliya Smith",
+      moduleId : "IOT20",
       module: "Music Teacher"
     },
     {
       id: 3,
       imageUrl: team3, 
       name: "Saliya Smith",
+      moduleId : "IOT20",
       module: "Music Teacher"
     },
     {
       id: 3,
       imageUrl: team3, 
       name: "Saliya Smith",
+      moduleId : "IOT20",
       module: "Music Teacher"
     },
     {
       id: 3,
       imageUrl: team3, 
       name: "Saliya Smith",
+      moduleId : "IOT20",
       module: "Music Teacher"
     },
     {
       id: 3,
       imageUrl: team3, 
       name: "Saliya Smith",
+      moduleId : "IOT20",
       module: "Music Teacher"
     },
     

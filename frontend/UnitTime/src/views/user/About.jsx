@@ -11,7 +11,7 @@ function About() {
       <UserHeader pageIndex={1} /> 
       <Aboutsection />
       <Facilities />
-      <Professors />
+      {/* <Professors /> */}
     </div>
   );
 }
