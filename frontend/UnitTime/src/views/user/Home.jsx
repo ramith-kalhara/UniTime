@@ -10,8 +10,9 @@ import Blog from '../../components/Section/Blog'
 import VoteSlider from '../../components/Section/VoteSlider'
 import ScheduleData from '../../data/ScheduleData'
 import ProfessorsData from '../../data/ProfessorsData'
-
-
+import CourseHeader from '../../components/Headers/CourseHeader'
+import CourseCard from "../../components/Section/CourseCard"
+import CourseData from "../../data/CourseData"
 function Home() {
  
   return (
@@ -54,7 +55,31 @@ function Home() {
         </div>
       </div>
       
-       <Blog/>
+      
+      <div className="container-fluid pt-5 pb-3">
+        <div className="container">
+          <div className="text-center pb-2">
+            <p className="section-title px-5">
+              <span className="px-2">Our Course</span>
+            </p>
+            <h1 className="mb-4">Our Student University Course</h1>
+          </div>
+
+        
+
+          {/* Course Cards Section */}
+          <div className="row">
+            {CourseData.slice(0,3).map(item => (
+              <div className="col-lg-4 col-md-6 mb-4" key={item.id}>
+                <div className="card border-0 shadow-sm h-100">
+                  <CourseCard CourseData={item} />
+                </div>
+              </div>
+            ))}
+          </div>
+
+        </div>
+      </div>
     </div>
   )
 }

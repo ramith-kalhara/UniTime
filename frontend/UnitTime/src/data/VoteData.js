@@ -19,7 +19,32 @@ const VoteData = [
         imageUrl: team1,
         name: "Julia Smith",
         module: "Music Teacher"
+      },
+      {
+        id: 1,
+        imageUrl: team2,
+        name: "Jhone Smith",
+        module: "Art Teacher"
+      },
+      {
+        id: 0,
+        imageUrl: team1,
+        name: "Julia Smith",
+        module: "Music Teacher"
+      },
+      {
+        id: 1,
+        imageUrl: team2,
+        name: "Jhone Smith",
+        module: "Art Teacher"
+      },
+      {
+        id: 0,
+        imageUrl: team1,
+        name: "Julia Smith",
+        module: "Music Teacher"
       }
+
     ]
   },
   {
