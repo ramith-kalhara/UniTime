@@ -1,6 +1,7 @@
 package com.UniTime.UniTime.entity;
 
 import com.UniTime.UniTime.dto.ScheduleDto;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.modelmapper.ModelMapper;
@@ -23,7 +24,12 @@ public class Schedule {
     private Long scheduleId;
 
     private String roomNumber;
-    private String professorName;
+    @ManyToOne
+    @JoinColumn(name = "professor_id", nullable = false)
+    @JsonBackReference
+    private Professor professor;
+
+
     private int capacity;
     private String moduleCode;
     private String lectureTitle;

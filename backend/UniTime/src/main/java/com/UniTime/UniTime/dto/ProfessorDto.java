@@ -3,6 +3,7 @@ package com.UniTime.UniTime.dto;
 import com.UniTime.UniTime.entity.Course;
 import com.UniTime.UniTime.entity.Professor;
 import com.UniTime.UniTime.entity.Vote;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 
@@ -22,6 +23,12 @@ public class ProfessorDto {
     private String postal_code;
 //    private Set<CourseDto> courses;
     private String description;
+
+//    private Set<ScheduleDto> schedules;
+// Optional: instead of full objects, use just schedule IDs
+    @JsonIgnore
+private Set<Long> scheduleIds;
+
 
     // Add votes as a Set of VoteDto
     private Set<VoteDto> votes;

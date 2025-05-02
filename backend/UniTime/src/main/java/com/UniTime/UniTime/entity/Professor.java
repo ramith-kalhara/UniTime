@@ -2,6 +2,7 @@ package com.UniTime.UniTime.entity;
 
 import com.UniTime.UniTime.dto.ProfessorDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.modelmapper.ModelMapper;
@@ -55,6 +56,11 @@ public class Professor {
     // Many-to-Many mappedBy in Vote
     @ManyToMany(mappedBy = "professors")
     private Set<Vote> votes = new HashSet<>();
+
+    //schedule relation
+    @OneToMany(mappedBy = "professor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private Set<Schedule> schedules = new HashSet<>();
 
 
 

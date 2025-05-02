@@ -1,8 +1,10 @@
 package com.UniTime.UniTime.service.impl;
 
 import com.UniTime.UniTime.dto.ScheduleDto;
+import com.UniTime.UniTime.entity.Professor;
 import com.UniTime.UniTime.entity.Schedule;
 import com.UniTime.UniTime.exception.NotFoundException;
+import com.UniTime.UniTime.repository.ProfessorRepository;
 import com.UniTime.UniTime.repository.ScheduleRepository;
 import com.UniTime.UniTime.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
@@ -18,14 +20,25 @@ import java.util.Optional;
 public class ScheduleServiceImpl implements ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final ModelMapper mapper;
+    private final ProfessorRepository professorRepository;
+
 
     // Create schedule
     @Override
     public ScheduleDto postSchedule(ScheduleDto scheduleDto) {
         Schedule schedule = mapper.map(scheduleDto, Schedule.class);
+
+        if (scheduleDto.getProfessor() != null && scheduleDto.getProfessor().getId() != null) {
+            Professor professor = professorRepository.findById(scheduleDto.getProfessor().getId())
+                    .orElseThrow(() -> new NotFoundException("Professor not found"));
+            schedule.setProfessor(professor);
+        }
+
         Schedule savedSchedule = scheduleRepository.save(schedule);
         return mapper.map(savedSchedule, ScheduleDto.class);
     }
+
+
 
     // Get all schedules
     @Override
@@ -54,9 +67,18 @@ public class ScheduleServiceImpl implements ScheduleService {
     public ScheduleDto updateSchedule(Long id, ScheduleDto scheduleDto) {
         Schedule schedule = scheduleDto.toEntity(mapper);
         schedule.setScheduleId(id);
+
+        if (scheduleDto.getProfessor() != null && scheduleDto.getProfessor().getId() != null) {
+            Professor professor = professorRepository.findById(scheduleDto.getProfessor().getId())
+                    .orElseThrow(() -> new NotFoundException("Professor not found"));
+            schedule.setProfessor(professor);
+        }
+
         Schedule savedSchedule = scheduleRepository.save(schedule);
-        return savedSchedule.toDto(mapper);
+        return mapper.map(savedSchedule, ScheduleDto.class);
     }
+
+
 
     // Delete schedule
     @Override
