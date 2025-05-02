@@ -59,7 +59,7 @@ var UserRoutes = [
         hidden: true,
       },
       {
-        path: "/singleCourse",
+        path: "/singleCourse/:id",
         name: "singleCourse",
         component: < SingleCourse/>,
         layout: "/user",

@@ -3,8 +3,8 @@
 const userHeaderData = [
     {
       id: 0,
-      title: "Our Rooms", 
-      breadcrumb: ["Home", "Our Rooms"]
+      title: "Our Schedule", 
+      breadcrumb: ["Home", "Our Schedule"]
     },
     {
       id: 1,

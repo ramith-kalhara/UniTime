@@ -39,7 +39,7 @@ function LocationHandler() {
 
       <Route path="/register" element={<Register />} />
       <Route path="/user/*" element={<UserLayout />} />
-      <Route path="*" element={<Navigate to="/admin/index" replace />} />
+      <Route path="*" element={<Navigate to="/register" replace />} />
     </Routes>
   );
 }
