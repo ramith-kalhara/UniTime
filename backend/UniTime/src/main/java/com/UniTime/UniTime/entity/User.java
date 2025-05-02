@@ -37,6 +37,15 @@ public class User {
     )
     private Set<Schedule> schedules = new HashSet<>();
 
+    @ManyToMany
+    @JoinTable(
+            name = "user_course",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "course_id")
+    )
+    private Set<Course> courses = new HashSet<>();
+
+
     public UserDto toDto(ModelMapper mapper) {
         return mapper.map(this, UserDto.class);
     }

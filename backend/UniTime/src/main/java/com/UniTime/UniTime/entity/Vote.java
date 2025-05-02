@@ -3,12 +3,16 @@ package com.UniTime.UniTime.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "votes") // Naming the table explicitly
+@Table(name = "votes")
 public class Vote {
 
     @Id
@@ -17,23 +21,30 @@ public class Vote {
     private Long id;
 
     @Column(name = "start_date", length = 10)
-    private String start_date; // Format: YYYY-MM-DD
+    private String start_date;
 
     @Column(name = "end_date", length = 10)
-    private String end_date; // Format: YYYY-MM-DD
+    private String end_date;
 
     @Column(name = "start_time", length = 8)
-    private String start_time; // Format: HH:mm:ss
+    private String start_time;
 
     @Column(name = "end_time", length = 8)
-    private String end_time; // Format: HH:mm:ss
+    private String end_time;
 
     @Column(name = "description", columnDefinition = "TEXT")
-    private String description; // Detailed vote description
+    private String description;
 
-    @Column(name = "module_id", length = 50)
-    private String module_id; // Associated module ID
+    @Column(name = "course_id", length = 50)
+    private String course_id;
 
-    @Column(name = "professor_id", length = 50)
-    private String professor_id; // Voted professor ID
+    //  Many-to-Many with Professor
+    @ManyToMany
+    @JoinTable(
+            name = "vote_professors",
+            joinColumns = @JoinColumn(name = "vote_id"),
+            inverseJoinColumns = @JoinColumn(name = "professor_id")
+    )
+    private List<Professor> professors;
+
 }

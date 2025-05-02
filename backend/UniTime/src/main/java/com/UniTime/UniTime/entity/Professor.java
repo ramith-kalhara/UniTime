@@ -1,11 +1,13 @@
 package com.UniTime.UniTime.entity;
+
 import com.UniTime.UniTime.dto.ProfessorDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.modelmapper.ModelMapper;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -14,36 +16,49 @@ import org.modelmapper.ModelMapper;
 @Entity
 @Table(name = "professor")
 public class Professor {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", updatable = false, nullable = false)
     private Long id;
-
-
 
     @Column(name = "full_name", nullable = false)
     private String full_name;
+
     @Column(name = "email", nullable = false)
     private String email;
+
     @Column(name = "tp_num", nullable = false)
     private String tp_num;
+
     @Column(name = "department_name", nullable = false)
     private String department_name;
+
     @Column(name = "address", nullable = false)
     private String address;
+
     @Column(name = "city", nullable = false)
     private String city;
+
     @Column(name = "country", nullable = false)
     private String country;
+
     @Column(name = "postal_code", nullable = false)
     private String postal_code;
-    @Column(name = "module_id", nullable = false)
-    private String module_id;
+
+    @ManyToMany(mappedBy = "professors")
+    private Set<Course> courses = new HashSet<>();
+
+
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
+    // Many-to-Many mappedBy in Vote
+    @ManyToMany(mappedBy = "professors")
+    private Set<Vote> votes = new HashSet<>();
+
+
+
     public ProfessorDto toDto(ModelMapper mapper) {
-        ProfessorDto professorDto = mapper.map(this, ProfessorDto.class);
-        return professorDto;
+        return mapper.map(this, ProfessorDto.class);
     }
 }

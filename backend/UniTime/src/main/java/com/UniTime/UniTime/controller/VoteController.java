@@ -17,7 +17,7 @@ import java.util.List;
 @CrossOrigin("*")
 public class VoteController {
     private final VoteServiceImpl voteService;
-    private final RoomService roomService;
+
 
     //create Vote
     @PostMapping("/create")
