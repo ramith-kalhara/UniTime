@@ -26,8 +26,8 @@ public class ProfessorDto {
 
 //    private Set<ScheduleDto> schedules;
 // Optional: instead of full objects, use just schedule IDs
-    @JsonIgnore
-private Set<Long> scheduleIds;
+//    @JsonIgnore
+//private Set<Long> scheduleIds;
 
 
     // Add votes as a Set of VoteDto

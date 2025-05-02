@@ -2,6 +2,7 @@ package com.UniTime.UniTime.dto;
 
 import com.UniTime.UniTime.entity.Course; // Ensure this import is present
 import com.UniTime.UniTime.entity.Professor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 
@@ -19,6 +20,9 @@ public class CourseDto {
     private LocalDate startDate;
     private String description;
     private Set<ProfessorDto> professors;
+//    @JsonIgnore
+//    private Set<ScheduleDto> schedules;
+
     // Method to convert CourseDto to Course entity
     public Course toEntity(ModelMapper mapper) {
         Course course = mapper.map(this, Course.class);

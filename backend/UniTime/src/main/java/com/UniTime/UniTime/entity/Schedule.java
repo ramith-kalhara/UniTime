@@ -1,5 +1,6 @@
 package com.UniTime.UniTime.entity;
 
+import com.UniTime.UniTime.dto.CourseDto;
 import com.UniTime.UniTime.dto.ScheduleDto;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
@@ -23,7 +24,7 @@ public class Schedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long scheduleId;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "room_id", nullable = false)
     private Room room;
 
@@ -31,7 +32,12 @@ public class Schedule {
     @JoinColumn(name = "professor_id", nullable = false)
     @JsonBackReference
     private Professor professor;
-    private String moduleCode;
+
+    @ManyToOne
+    @JoinColumn(name = "course_id", nullable = false)
+    private Course course;
+
+
     private String lectureTitle;
     private LocalDate startDate;
     private LocalTime startTime;
@@ -44,6 +50,12 @@ public class Schedule {
     private Set<User> users = new HashSet<>();
 
     public ScheduleDto toDto(ModelMapper mapper) {
-        return mapper.map(this, ScheduleDto.class);
+        ScheduleDto dto = mapper.map(this, ScheduleDto.class);
+        if (this.course != null) {
+            dto.setCourse(mapper.map(this.course, CourseDto.class));
+        }
+        return dto;
     }
+
+
 }

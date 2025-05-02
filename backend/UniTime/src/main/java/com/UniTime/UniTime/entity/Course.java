@@ -48,4 +48,9 @@ public class Course {
             inverseJoinColumns = @JoinColumn(name = "professor_id")
     )
     private Set<Professor> professors = new HashSet<>();
+
+    @OneToMany(mappedBy = "course")
+    private Set<Schedule> schedules;
+
+
 }

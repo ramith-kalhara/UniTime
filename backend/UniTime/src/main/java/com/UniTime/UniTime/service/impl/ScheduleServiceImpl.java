@@ -1,10 +1,12 @@
 package com.UniTime.UniTime.service.impl;
 
 import com.UniTime.UniTime.dto.ScheduleDto;
+import com.UniTime.UniTime.entity.Course;
 import com.UniTime.UniTime.entity.Professor;
 import com.UniTime.UniTime.entity.Room;
 import com.UniTime.UniTime.entity.Schedule;
 import com.UniTime.UniTime.exception.NotFoundException;
+import com.UniTime.UniTime.repository.CourseRepository;
 import com.UniTime.UniTime.repository.ProfessorRepository;
 import com.UniTime.UniTime.repository.RoomRepository;
 import com.UniTime.UniTime.repository.ScheduleRepository;
@@ -23,7 +25,9 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final ModelMapper mapper;
     private final ProfessorRepository professorRepository;
-    private final RoomRepository roomRepository; // ✅ Add this
+    private final RoomRepository roomRepository;
+    private final CourseRepository courseRepository;
+
 
     @Override
     public ScheduleDto postSchedule(ScheduleDto scheduleDto) {
@@ -41,8 +45,17 @@ public class ScheduleServiceImpl implements ScheduleService {
             schedule.setRoom(room);
         }
 
+        if (scheduleDto.getCourse() != null && scheduleDto.getCourse().getCourseId() != null) {
+            Course course = courseRepository.findById(scheduleDto.getCourse().getCourseId())
+                    .orElseThrow(() -> new NotFoundException("Course not found"));
+            schedule.setCourse(course);
+        }
+
+
         Schedule savedSchedule = scheduleRepository.save(schedule);
-        return mapper.map(savedSchedule, ScheduleDto.class);
+        return savedSchedule.toDto(mapper); // Ensure proper nested mapping
+
+
     }
 
     @Override
@@ -78,6 +91,13 @@ public class ScheduleServiceImpl implements ScheduleService {
                     .orElseThrow(() -> new NotFoundException("Room not found"));
             schedule.setRoom(room);
         }
+
+        if (scheduleDto.getCourse() != null && scheduleDto.getCourse().getCourseId() != null) {
+            Course course = courseRepository.findById(scheduleDto.getCourse().getCourseId())
+                    .orElseThrow(() -> new NotFoundException("Course not found"));
+            schedule.setCourse(course);
+        }
+
 
         Schedule savedSchedule = scheduleRepository.save(schedule);
         return mapper.map(savedSchedule, ScheduleDto.class);

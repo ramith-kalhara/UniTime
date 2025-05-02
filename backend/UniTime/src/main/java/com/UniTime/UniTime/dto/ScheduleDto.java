@@ -1,9 +1,6 @@
 package com.UniTime.UniTime.dto;
 
-import com.UniTime.UniTime.entity.Professor;
-import com.UniTime.UniTime.entity.Room;
-import com.UniTime.UniTime.entity.Schedule;
-import com.UniTime.UniTime.entity.User;
+import com.UniTime.UniTime.entity.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
@@ -17,15 +14,15 @@ public class ScheduleDto {
     private Long scheduleId;
     private ProfessorDto professor;
     private RoomDto room;
-    private String moduleCode;
+    private CourseDto course;
     private String lectureTitle;
     private LocalDate startDate;
     private LocalTime startTime;
     private LocalTime endTime;
     private String scheduleDescription;
 
-    @JsonIgnore
-    private Set<User> users;
+//    @JsonIgnore
+//    private Set<User> users;
 
     public Schedule toEntity(ModelMapper mapper) {
         Schedule schedule = mapper.map(this, Schedule.class);
@@ -41,6 +38,15 @@ public class ScheduleDto {
             roomEntity.setSchedules(null);
             schedule.setRoom(roomEntity);
         }
+
+        if (this.course != null) {
+            Course courseEntity = this.course.toEntity(mapper);
+            courseEntity.setSchedules(null); // Avoid infinite loop
+            schedule.setCourse(courseEntity);
+        }
+
+
+
 
         return schedule;
     }
