@@ -2,7 +2,9 @@ package com.UniTime.UniTime.dto;
 
 import lombok.Data;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 public class VoteDto {
@@ -14,6 +16,6 @@ public class VoteDto {
     private String description;
     private String course_id;
 
-    // List of professors for the vote
     private List<Long> professorIds;
+    private Set<Long> userIds = new HashSet<>();
 }

@@ -1,6 +1,7 @@
 package com.UniTime.UniTime.entity;
 
 import com.UniTime.UniTime.dto.UserDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.modelmapper.ModelMapper;
@@ -24,18 +25,9 @@ public class User {
     private String lastName;
     private String tpNum;
     private String password;
-    private String bookRoomId;
-    private String courseId;
     private String email;
     private String moduleId;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_schedule",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "schedule_id")
-    )
-    private Set<Schedule> schedules = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
@@ -45,8 +37,33 @@ public class User {
     )
     private Set<Course> courses = new HashSet<>();
 
+    @ManyToMany
+    @JoinTable(
+            name = "user_schedule",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "schedule_id")
+    )
+    @JsonIgnore  // Avoid circular reference in serialization
+    private Set<Schedule> schedules = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_vote",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "vote_id")
+    )
+    @JsonIgnore // Prevent circular reference during JSON serialization
+    private Set<Vote> votes = new HashSet<>();
+
+
+
+
 
     public UserDto toDto(ModelMapper mapper) {
-        return mapper.map(this, UserDto.class);
+        UserDto userDto = mapper.map(this, UserDto.class);
+        // Avoid mapping circular reference for schedules
+        userDto.setSchedules(new HashSet<>());
+        return userDto;
     }
+
 }
