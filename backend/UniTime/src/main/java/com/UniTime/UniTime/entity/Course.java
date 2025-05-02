@@ -52,5 +52,9 @@ public class Course {
     @OneToMany(mappedBy = "course")
     private Set<Schedule> schedules;
 
+    @OneToOne(mappedBy = "course")
+    private Vote vote;
+
+
 
 }

@@ -2,6 +2,7 @@ package com.UniTime.UniTime.dto;
 
 import com.UniTime.UniTime.entity.Course; // Ensure this import is present
 import com.UniTime.UniTime.entity.Professor;
+import com.UniTime.UniTime.entity.Vote;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
@@ -9,7 +10,6 @@ import org.modelmapper.ModelMapper;
 import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 @Data
 public class CourseDto {
     private Long courseId;
@@ -20,8 +20,8 @@ public class CourseDto {
     private LocalDate startDate;
     private String description;
     private Set<ProfessorDto> professors;
-//    @JsonIgnore
-//    private Set<ScheduleDto> schedules;
+
+    private VoteDto vote; // Add this field to handle VoteDto
 
     // Method to convert CourseDto to Course entity
     public Course toEntity(ModelMapper mapper) {
@@ -34,7 +34,14 @@ public class CourseDto {
                     .collect(Collectors.toSet());
             course.setProfessors(professorEntities);
         }
+
+        // Handle Vote mapping if present
+        if (this.vote != null) {
+            // Optionally, map VoteDto to Vote entity if you're passing the vote DTO to the backend
+            Vote voteEntity = mapper.map(this.vote, Vote.class);
+            course.setVote(voteEntity);
+        }
+
         return course;
     }
 }
-
