@@ -1,6 +1,7 @@
 package com.UniTime.UniTime.dto;
 
 import com.UniTime.UniTime.entity.Professor;
+import com.UniTime.UniTime.entity.Room;
 import com.UniTime.UniTime.entity.Schedule;
 import com.UniTime.UniTime.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -10,15 +11,12 @@ import org.modelmapper.ModelMapper;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Set;
-
 @Data
 public class ScheduleDto {
 
     private Long scheduleId;
-    private String roomNumber;
     private ProfessorDto professor;
-
-    private int capacity;
+    private RoomDto room;
     private String moduleCode;
     private String lectureTitle;
     private LocalDate startDate;
@@ -32,15 +30,18 @@ public class ScheduleDto {
     public Schedule toEntity(ModelMapper mapper) {
         Schedule schedule = mapper.map(this, Schedule.class);
 
-        // ✅ This line may still cause cycle if professor has schedules filled in
         if (this.professor != null) {
             Professor profEntity = this.professor.toEntity(mapper);
-            profEntity.setSchedules(null); // ✅ Break the cycle
+            profEntity.setSchedules(null);
             schedule.setProfessor(profEntity);
+        }
+
+        if (this.room != null) {
+            Room roomEntity = this.room.toEntity(mapper);
+            roomEntity.setSchedules(null);
+            schedule.setRoom(roomEntity);
         }
 
         return schedule;
     }
-
-
 }

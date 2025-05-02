@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.modelmapper.ModelMapper;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Setter
 @Getter
 @AllArgsConstructor
@@ -35,6 +38,10 @@ public class Room {
 
     @Column(name = "has_smart_screen", nullable = false)
     private boolean smart_screen;
+
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Schedule> schedules = new HashSet<>();
+
 
     public RoomDto toDto(ModelMapper mapper) {
         RoomDto roomDto = mapper.map(this, RoomDto.class);

@@ -23,14 +23,14 @@ public class Schedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long scheduleId;
 
-    private String roomNumber;
+    @ManyToOne
+    @JoinColumn(name = "room_id", nullable = false)
+    private Room room;
+
     @ManyToOne
     @JoinColumn(name = "professor_id", nullable = false)
     @JsonBackReference
     private Professor professor;
-
-
-    private int capacity;
     private String moduleCode;
     private String lectureTitle;
     private LocalDate startDate;

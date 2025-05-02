@@ -2,9 +2,11 @@ package com.UniTime.UniTime.service.impl;
 
 import com.UniTime.UniTime.dto.ScheduleDto;
 import com.UniTime.UniTime.entity.Professor;
+import com.UniTime.UniTime.entity.Room;
 import com.UniTime.UniTime.entity.Schedule;
 import com.UniTime.UniTime.exception.NotFoundException;
 import com.UniTime.UniTime.repository.ProfessorRepository;
+import com.UniTime.UniTime.repository.RoomRepository;
 import com.UniTime.UniTime.repository.ScheduleRepository;
 import com.UniTime.UniTime.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +23,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final ModelMapper mapper;
     private final ProfessorRepository professorRepository;
+    private final RoomRepository roomRepository; // ✅ Add this
 
-
-    // Create schedule
     @Override
     public ScheduleDto postSchedule(ScheduleDto scheduleDto) {
         Schedule schedule = mapper.map(scheduleDto, Schedule.class);
@@ -34,13 +35,16 @@ public class ScheduleServiceImpl implements ScheduleService {
             schedule.setProfessor(professor);
         }
 
+        if (scheduleDto.getRoom() != null && scheduleDto.getRoom().getId() != null) { // ✅ Room handling
+            Room room = roomRepository.findById(scheduleDto.getRoom().getId())
+                    .orElseThrow(() -> new NotFoundException("Room not found"));
+            schedule.setRoom(room);
+        }
+
         Schedule savedSchedule = scheduleRepository.save(schedule);
         return mapper.map(savedSchedule, ScheduleDto.class);
     }
 
-
-
-    // Get all schedules
     @Override
     public List<ScheduleDto> getAllSchedules() {
         List<Schedule> schedules = scheduleRepository.findAll();
@@ -51,21 +55,16 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
     }
 
-    // Get schedule by id
     @Override
     public ScheduleDto getScheduleById(Long id) {
-        Optional<Schedule> schedule = scheduleRepository.findById(id);
-        if (schedule.isPresent()) {
-            return schedule.get().toDto(mapper);
-        } else {
-            throw new NotFoundException("Schedule not found by this ID");
-        }
+        Schedule schedule = scheduleRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Schedule not found by this ID"));
+        return schedule.toDto(mapper);
     }
 
-    // Update schedule by id
     @Override
     public ScheduleDto updateSchedule(Long id, ScheduleDto scheduleDto) {
-        Schedule schedule = scheduleDto.toEntity(mapper);
+        Schedule schedule = mapper.map(scheduleDto, Schedule.class);
         schedule.setScheduleId(id);
 
         if (scheduleDto.getProfessor() != null && scheduleDto.getProfessor().getId() != null) {
@@ -74,13 +73,16 @@ public class ScheduleServiceImpl implements ScheduleService {
             schedule.setProfessor(professor);
         }
 
+        if (scheduleDto.getRoom() != null && scheduleDto.getRoom().getId() != null) { // ✅ Room handling
+            Room room = roomRepository.findById(scheduleDto.getRoom().getId())
+                    .orElseThrow(() -> new NotFoundException("Room not found"));
+            schedule.setRoom(room);
+        }
+
         Schedule savedSchedule = scheduleRepository.save(schedule);
         return mapper.map(savedSchedule, ScheduleDto.class);
     }
 
-
-
-    // Delete schedule
     @Override
     public Boolean deleteSchedule(Long id) {
         scheduleRepository.deleteById(id);
