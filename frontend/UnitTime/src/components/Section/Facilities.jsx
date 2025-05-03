@@ -13,8 +13,8 @@ function Facilities() {
                 <div className="pl-4">
                   <h4>Play Ground</h4>
                   <p className="m-0">
-                    Kasd labore kasd et dolor est rebum dolor ut, clita dolor vero
-                    lorem amet elitr vero...
+                  A vibrant outdoor and indoor spaces on campus designed for students to relax, socialize, 
+                  and stay active with recreational activities.
                   </p>
                 </div>
               </div>
@@ -25,8 +25,8 @@ function Facilities() {
                 <div className="pl-4">
                   <h4>Music and Dance</h4>
                   <p className="m-0">
-                    Kasd labore kasd et dolor est rebum dolor ut, clita dolor vero
-                    lorem amet elitr vero...
+                  A dynamic space where students explore their passion for music and dance through performances, 
+                  practice, and creative expression.
                   </p>
                 </div>
               </div>
@@ -37,8 +37,8 @@ function Facilities() {
                 <div className="pl-4">
                   <h4>Arts and Crafts</h4>
                   <p className="m-0">
-                    Kasd labore kasd et dolor est rebum dolor ut, clita dolor vero
-                    lorem amet elitr vero...
+                  A creative hub for students to express themselves through painting, sculpture, 
+                  design, and hands-on artistic projects.
                   </p>
                 </div>
               </div>
@@ -49,8 +49,7 @@ function Facilities() {
                 <div className="pl-4">
                   <h4>Safe Transportation</h4>
                   <p className="m-0">
-                    Kasd labore kasd et dolor est rebum dolor ut, clita dolor vero
-                    lorem amet elitr vero...
+                  Reliable and secure transportation services to ensure students travel safely to and from campus.
                   </p>
                 </div>
               </div>
@@ -61,8 +60,7 @@ function Facilities() {
                 <div className="pl-4">
                   <h4>Healthy food</h4>
                   <p className="m-0">
-                    Kasd labore kasd et dolor est rebum dolor ut, clita dolor vero
-                    lorem amet elitr vero...
+                  Nutritious and balanced meal options served on campus to support student health and well-being.
                   </p>
                 </div>
               </div>
@@ -73,8 +71,8 @@ function Facilities() {
                 <div className="pl-4">
                   <h4>Educational Tour</h4>
                   <p className="m-0">
-                    Kasd labore kasd et dolor est rebum dolor ut, clita dolor vero
-                    lorem amet elitr vero...
+                  ngaging educational tours that provide students with hands-on learning experiences outside the classroom, 
+                  exploring real-world applications of their studies.
                   </p>
                 </div>
               </div>

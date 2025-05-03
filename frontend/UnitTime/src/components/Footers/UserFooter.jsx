@@ -49,12 +49,14 @@ function UserFooter() {
           <div className="col-lg-3 col-md-6 mb-5">
             <h3 className="text-primary mb-4">Quick Links</h3>
             <div className="d-flex flex-column justify-content-start">
-              <a className="text-white mb-2" href="#"><i className="fa fa-angle-right mr-2" />Home</a>
-              <a className="text-white mb-2" href="#"><i className="fa fa-angle-right mr-2" />About Us</a>
-              <a className="text-white mb-2" href="#"><i className="fa fa-angle-right mr-2" />Our Rooms</a>
-              <a className="text-white mb-2" href="#"><i className="fa fa-angle-right mr-2" />Our Teachers</a>
-              <a className="text-white mb-2" href="#"><i className="fa fa-angle-right mr-2" />Our Blog</a>
-              <a className="text-white" href="#"><i className="fa fa-angle-right mr-2" />Contact Us</a>
+              <a className="text-white mb-2" href="Home"><i className="fa fa-angle-right mr-2" />Home</a>
+              <a className="text-white mb-2" href="About"><i className="fa fa-angle-right mr-2" />About Us</a>
+              <a className="text-white mb-2" href="Rooms"><i className="fa fa-angle-right mr-2" />Our Rooms</a>
+              <a className="text-white mb-2" href="Professor"><i className="fa fa-angle-right mr-2" />Our Professors</a>
+              <a className="text-white mb-2" href="Course"><i className="fa fa-angle-right mr-2" />Our Course</a>
+              <a className="text-white mb-2" href="Vote"><i className="fa fa-angle-right mr-2" />Vote</a>
+              <a className="text-white mb-2" href="Shedule"><i className="fa fa-angle-right mr-2" />Calender</a>
+              <a className="text-white" href="Contact"><i className="fa fa-angle-right mr-2" />Contact Us</a>
             </div>
           </div>
           <div className="col-lg-3 col-md-6 mb-5">
