@@ -9,3 +9,4 @@ professor_id,room_id,preferred_time_slot
 4,1,Wednesday 10 AM
 6,1,Friday 7 AM
 3,2,Thursday 4 PM
+1,2,Thursday 6 PM
