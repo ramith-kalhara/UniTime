@@ -26,8 +26,4 @@ public class ScheduleDto {
     private String scheduleDescription;
     private Set<UserDto> users;
 
-
-
-
-
 }
