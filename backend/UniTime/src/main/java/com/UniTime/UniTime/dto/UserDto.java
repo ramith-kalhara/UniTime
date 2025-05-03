@@ -4,21 +4,26 @@ import com.UniTime.UniTime.entity.User;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Data
 public class UserDto {
-
     private Long id;
     private String firstName;
     private String lastName;
     private String tpNum;
     private String password;
-    private String bookRoomId;
-    private String courseId;
     private String email;
     private String moduleId;
 
-    // Convert UserDto to User entity
+    private Set<CourseDto> courses = new HashSet<>();
+    private Set<ScheduleDto> schedules = new HashSet<>();
+    private Set<Long> voteIds = new HashSet<>();  // Updated to track voteIds instead of Vote entities
+
     public User toEntity(ModelMapper mapper) {
-        return mapper.map(this, User.class);
+        User user = mapper.map(this, User.class);
+        user.setSchedules(null); // avoid circular reference
+        return user;
     }
 }

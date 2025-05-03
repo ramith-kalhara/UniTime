@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import AdminLayout from "./layouts/Admin.jsx";
 import AuthLayout from "./layouts/Auth.jsx";
 import UserLayout from "./layouts/User.jsx";
+import Register from "./views/user/Register.jsx";
 
 function App() {
   // Move useLocation hook inside BrowserRouter
@@ -26,6 +27,8 @@ function LocationHandler() {
     } else if (location.pathname.startsWith("/user")) {
       import("./assets/user/css/style.min.css");
       import("./assets/user/css/style.css");
+    } else if (location.pathname.startsWith("/register")){
+      import("./assets/Register/register.css")
     }
   }, [location]);
 
@@ -33,8 +36,10 @@ function LocationHandler() {
     <Routes>
       <Route path="/admin/*" element={<AdminLayout />} />
       <Route path="/auth/*" element={<AuthLayout />} />
+
+      <Route path="/register" element={<Register />} />
       <Route path="/user/*" element={<UserLayout />} />
-      <Route path="*" element={<Navigate to="/admin/index" replace />} />
+      <Route path="*" element={<Navigate to="/register" replace />} />
     </Routes>
   );
 }

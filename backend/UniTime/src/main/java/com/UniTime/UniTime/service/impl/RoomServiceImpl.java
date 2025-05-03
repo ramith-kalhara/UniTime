@@ -47,13 +47,11 @@ public class RoomServiceImpl implements RoomService {
     //get room by id
     @Override
     public RoomDto getRoomById(Long id) {
-        Optional<Room> room = roomRepository.findById(id);
-        if(room.isPresent()) {
-            return room.get().toDto(mapper);
-        }else {
-            throw new NotFoundException("Room not found by This Id");
-        }
+        Room room = roomRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Room not found by This Id"));
+        return room.toDto(mapper); // Assuming toDto handles schedules if required
     }
+
 
     //Room update by id
     @Override

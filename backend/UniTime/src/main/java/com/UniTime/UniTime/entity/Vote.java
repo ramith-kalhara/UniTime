@@ -1,39 +1,71 @@
 package com.UniTime.UniTime.entity;
 
+import com.UniTime.UniTime.dto.VoteDto;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
+import org.modelmapper.ModelMapper;
 
-@Setter
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
-@Table(name = "votes") // Naming the table explicitly
+@Data
 public class Vote {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
-    @Column(name = "start_date", length = 10)
-    private String start_date; // Format: YYYY-MM-DD
+    private String start_date;
+    private String end_date;
+    private String start_time;
+    private String end_time;
+    private String description;
 
-    @Column(name = "end_date", length = 10)
-    private String end_date; // Format: YYYY-MM-DD
 
-    @Column(name = "start_time", length = 8)
-    private String start_time; // Format: HH:mm:ss
 
-    @Column(name = "end_time", length = 8)
-    private String end_time; // Format: HH:mm:ss
 
-    @Column(name = "description", columnDefinition = "TEXT")
-    private String description; // Detailed vote description
+    // Mapping to professors
+    @ManyToMany
+    @JoinTable(
+            name = "vote_professor",
+            joinColumns = @JoinColumn(name = "vote_id"),
+            inverseJoinColumns = @JoinColumn(name = "professor_id")
+    )
+    private Set<Professor> professors = new HashSet<>();
 
-    @Column(name = "module_id", length = 50)
-    private String module_id; // Associated module ID
+    // Mapping to user
+    @ManyToMany(mappedBy = "votes")
+    private Set<User> users = new HashSet<>();
 
-    @Column(name = "professor_id", length = 50)
-    private String professor_id; // Voted professor ID
+    @OneToOne
+    @JoinColumn(name = "course_id", referencedColumnName = "course_id")
+    private Course course;
+
+
+    // You can also add other fields and methods if necessary
+    public VoteDto toDto(ModelMapper mapper) {
+        VoteDto dto = mapper.map(this, VoteDto.class);
+
+        // Manually map courseId if course is present
+        if (this.course != null) {
+            dto.setCourseId(this.course.getCourseId());
+        }
+
+        // Map professor IDs
+        if (this.professors != null) {
+            dto.setProfessorIds(this.professors.stream()
+                    .map(Professor::getId)
+                    .toList());
+        }
+
+        // Map user IDs
+        if (this.users != null) {
+            dto.setUserIds(this.users.stream()
+                    .map(User::getId)
+                    .collect(java.util.stream.Collectors.toSet()));
+        }
+
+        return dto;
+    }
 }

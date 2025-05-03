@@ -3,8 +3,8 @@
 const userHeaderData = [
     {
       id: 0,
-      title: "Our Rooms", 
-      breadcrumb: ["Home", "Our Rooms"]
+      title: "Our Schedule", 
+      breadcrumb: ["Home", "Our Schedule"]
     },
     {
       id: 1,
@@ -35,6 +35,11 @@ const userHeaderData = [
       id: 6,
       title: "Course Detail",
       breadcrumb: ["Home", "Course Detail"]
+    },
+    {
+      id: 7,
+      title: "Vote Page",
+      breadcrumb: ["Home", "Vote Detail"]
     }
     
   ];

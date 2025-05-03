@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -38,4 +40,21 @@ public class Course {
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
+
+    @ManyToMany
+    @JoinTable(
+            name = "course_professor",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "professor_id")
+    )
+    private Set<Professor> professors = new HashSet<>();
+
+    @OneToMany(mappedBy = "course")
+    private Set<Schedule> schedules;
+
+    @OneToOne(mappedBy = "course")
+    private Vote vote;
+
+
+
 }
