@@ -1,14 +1,18 @@
 import pandas as pd
 
-def allocate_room(rooms_file, required_capacity):
+def allocate_room(rooms_file, required_capacity, needs_projector, needs_computer):
     rooms_df = pd.read_csv(rooms_file)
 
-    # Filter rooms by required capacity and availability
-    available_rooms = rooms_df[rooms_df["capacity"] >= required_capacity]
+    # Filter rooms based on requirements
+    suitable_rooms = rooms_df[
+        (rooms_df["capacity"] >= required_capacity) &
+        (rooms_df["has_projector"] == needs_projector) &
+        (rooms_df["has_computer"] == needs_computer)
+    ]
 
-    if available_rooms.empty:
-        return None  # No room available
+    if suitable_rooms.empty:
+        return None
 
-    # Select the room with the closest matching capacity
-    best_room = available_rooms.sort_values(by="capacity").iloc[0]
-    return best_room.to_dict()
+    # Select room with the smallest adequate capacity
+    best_room = suitable_rooms.sort_values(by="capacity").iloc[0]
+    return best_room["room_id"]

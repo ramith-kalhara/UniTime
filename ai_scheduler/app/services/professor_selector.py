@@ -1,22 +1,22 @@
 import pandas as pd
-from collections import Counter
 
-def select_professor(votes_file, workload_file):
-    # Load votes and workload data
+def select_professor(votes_file, workload_file, module_id):
     votes_df = pd.read_csv(votes_file)
     workload_df = pd.read_csv(workload_file)
 
-    # Count votes per professor
-    professor_votes = Counter(votes_df['professor_id'])
+    # Filter votes for the given module
+    module_votes = votes_df[votes_df["module_id"] == module_id]
 
-    # Convert to DataFrame
-    vote_df = pd.DataFrame(professor_votes.items(), columns=['professor_id', 'vote_count'])
+    # Count votes per professor
+    vote_counts = module_votes["professor_id"].value_counts().reset_index()
+    vote_counts.columns = ["professor_id", "vote_count"]
 
     # Merge with workload
-    merged_df = vote_df.merge(workload_df, on="professor_id")
+    merged = pd.merge(vote_counts, workload_df, on="professor_id")
 
-    # Select professor with most votes and least workload
-    merged_df["score"] = merged_df["vote_count"] - merged_df["current_workload"]
-    best_professor = merged_df.loc[merged_df["score"].idxmax()]
+    # Calculate score: higher votes and lower workload preferred
+    merged["score"] = merged["vote_count"] / (merged["current_workload"] + 1)
 
-    return best_professor.to_dict()
+    # Select professor with highest score
+    best_professor = merged.sort_values(by="score", ascending=False).iloc[0]
+    return best_professor["professor_id"]

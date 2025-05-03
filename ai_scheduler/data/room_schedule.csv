@@ -1,0 +1,6 @@
+professor_id,room_id,preferred_time_slot
+P01,R101,Monday 10 AM
+P02,R102,Tuesday 2 PM
+P03,R103,Wednesday 9 AM
+P01,R101,Friday 11 AM
+P02,R102,Thursday 3 PM

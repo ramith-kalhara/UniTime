@@ -47,29 +47,27 @@ function Contact() {
             <div className="col-lg-5 mb-5">
               <p>
                 Labore sea amet kasd diam justo amet ut vero justo. Ipsum ut et
-                kasd duo sit, ipsum sea et erat est dolore, magna ipsum et magna
-                elitr. Accusam accusam lorem magna, eos et sed eirmod dolor est
-                eirmod eirmod amet.
+                kasd duo sit, 
               </p>
               <div className="d-flex">
                 <i className="fa fa-map-marker-alt d-inline-flex align-items-center justify-content-center bg-primary text-secondary rounded-circle" style={{width: '45px', height: '45px'}} />
                 <div className="pl-3">
                   <h5>Address</h5>
-                  <p>123 Street, New York, USA</p>
+                  <p>No. 25, Galle Road, Colombo 03, Sri Lanka</p>
                 </div>
               </div>
               <div className="d-flex">
                 <i className="fa fa-envelope d-inline-flex align-items-center justify-content-center bg-primary text-secondary rounded-circle" style={{width: '45px', height: '45px'}} />
                 <div className="pl-3">
                   <h5>Email</h5>
-                  <p>info@example.com</p>
+                  <p>study@unitime.lk</p>
                 </div>
               </div>
               <div className="d-flex">
                 <i className="fa fa-phone-alt d-inline-flex align-items-center justify-content-center bg-primary text-secondary rounded-circle" style={{width: '45px', height: '45px'}} />
                 <div className="pl-3">
                   <h5>Phone</h5>
-                  <p>+012 345 67890</p>
+                  <p>+94 11 234 5678</p>
                 </div>
               </div>
               <div className="d-flex">

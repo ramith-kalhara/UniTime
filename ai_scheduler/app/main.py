@@ -1,15 +1,16 @@
+import pandas as pd
+from services.professor_selector import select_professor
+from services.room_allocator import allocate_room
+from services.time_slot_predictor import predict_time_slot
 from services.schedule_generator import generate_schedule
 
+
 if __name__ == "__main__":
-    # File paths
-    votes_file = "data/votes.csv"
-    workload_file = "data/workload.csv"
-    rooms_file = "data/rooms.csv"
+    result = generate_schedule(
+        "data/votes.csv",
+        "data/workload.csv",
+        "data/rooms.csv"
+    )
 
-    # Generate Schedule
-    schedule = generate_schedule(votes_file, workload_file, rooms_file)
-
-    print("\n✅ AI-Generated Schedule:")
-    print(schedule)
-
-    print("\n📂 Schedule saved in 'data/schedule.csv'!")
+    print("✅ Schedule generated:")
+    print(result)
