@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="19847b0d-bcff-46ae-82ae-54bcd8684181" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/.idea/backend.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/.idea/material_theme_project_new.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/controller/ModuleController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/controller/VoteController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/dto/CourseDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/dto/LoginRequestDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/dto/ModuleDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/dto/ProfessorDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/dto/ScheduleDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/dto/UserDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/dto/VoteDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/entity/Module.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/entity/Schedule.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/entity/User.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/entity/Vote.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/repository/ModuleRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/service/ModuleService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/service/VoteService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/service/impl/CourseServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/service/impl/ModuleServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/service/impl/ProfessorServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/service/impl/ScheduleServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/service/impl/UserServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/service/impl/VoteServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.idea/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/.gitattributes" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/.gitattributes" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/mvnw" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/mvnw" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/mvnw.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/mvnw.cmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/UniTimeApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/UniTimeApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/configs/ApplicationConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/configs/ApplicationConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/controller/CourseController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/controller/CourseController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/controller/ProfessorController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/controller/ProfessorController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/controller/RoomController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/controller/RoomController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/controller/ScheduleController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/controller/ScheduleController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/controller/VoteController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/dto/CourseDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/dto/ProfessorDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/dto/RoomDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/dto/RoomDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/dto/ScheduleDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/dto/UserDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/dto/VoteDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/entity/Course.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/entity/Course.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/entity/Professor.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/entity/Professor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/entity/Room.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/entity/Room.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/entity/Schedule.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/entity/User.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/entity/Vote.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/exception/NotFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/exception/NotFoundException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/repository/CourseRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/repository/CourseRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/repository/ProfessorRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/repository/ProfessorRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/repository/RoomRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/repository/RoomRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/repository/ScheduleRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/repository/ScheduleRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/repository/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/repository/VoteRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/repository/VoteRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/service/CourseService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/service/CourseService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/service/ProfessorService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/service/ProfessorService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/service/RoomService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/service/RoomService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/service/ScheduleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/service/ScheduleService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/service/VoteService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/service/impl/CourseServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/service/impl/ProfessorServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/service/impl/RoomServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/service/impl/RoomServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/service/impl/ScheduleServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/service/impl/UserServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/java/com/UniTime/UniTime/service/impl/VoteServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UniTime/src/test/java/com/UniTime/UniTime/UniTimeApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/test/java/com/UniTime/UniTime/UniTimeApplicationTests.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 1
+}]]></component>
+  <component name="ProjectId" id="2wb2xj8Vdzl0Lsbw1nJ7o5I6Cc0" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "Spring Boot.UniTimeApplication.executor": "Run",
+    "git-widget-placeholder": "ramith",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration name="UniTimeApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="UniTime" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.UniTime.UniTime.UniTimeApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-125ca727e0f0-intellij.indexing.shared.core-IU-243.23654.189" />
+        <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-IU-243.23654.189" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="19847b0d-bcff-46ae-82ae-54bcd8684181" name="Changes" comment="" />
+      <created>1746296202143</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1746296202143</updated>
+      <workItem from="1746296203701" duration="4387000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
