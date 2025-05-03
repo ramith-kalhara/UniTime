@@ -1,10 +1,12 @@
 package com.UniTime.UniTime.entity;
 
+import com.UniTime.UniTime.dto.CourseDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -55,6 +57,13 @@ public class Course {
     @OneToOne(mappedBy = "course")
     private Vote vote;
 
+    // Many-to-Many Relationship with User (mappedBy = "courses")
+    @ManyToMany(mappedBy = "courses")
+    private Set<User> users = new HashSet<>();
 
 
+    // Convert the Course entity to CourseDto
+    public CourseDto toDto(ModelMapper mapper) {
+        return mapper.map(this, CourseDto.class);
+    }
 }

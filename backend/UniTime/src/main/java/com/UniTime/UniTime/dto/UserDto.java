@@ -17,13 +17,18 @@ public class UserDto {
     private String email;
     private String moduleId;
 
-    private Set<CourseDto> courses = new HashSet<>();
+    private Set<CourseDto> courses = new HashSet<>();  // Mapping courses as CourseDto
     private Set<ScheduleDto> schedules = new HashSet<>();
-    private Set<Long> voteIds = new HashSet<>();  // Updated to track voteIds instead of Vote entities
+    private Set<Long> voteIds = new HashSet<>();  // Track voteIds instead of Vote entities
 
+    // Method to convert UserDto to User entity
     public User toEntity(ModelMapper mapper) {
         User user = mapper.map(this, User.class);
-        user.setSchedules(null); // avoid circular reference
+        // Ensure the courses, schedules, and votes are not null or empty
+        user.setCourses(new HashSet<>());
+        user.setSchedules(new HashSet<>());
+        user.setVotes(new HashSet<>());
         return user;
     }
+
 }
