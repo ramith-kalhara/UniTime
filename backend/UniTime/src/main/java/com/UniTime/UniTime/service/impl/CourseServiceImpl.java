@@ -3,10 +3,12 @@ package com.UniTime.UniTime.service.impl;
 import com.UniTime.UniTime.dto.CourseDto;
 import com.UniTime.UniTime.entity.Course;
 import com.UniTime.UniTime.entity.Professor;
+import com.UniTime.UniTime.entity.User;
 import com.UniTime.UniTime.entity.Vote;
 import com.UniTime.UniTime.exception.NotFoundException;
 import com.UniTime.UniTime.repository.CourseRepository;
 import com.UniTime.UniTime.repository.ProfessorRepository;
+import com.UniTime.UniTime.repository.UserRepository;
 import com.UniTime.UniTime.repository.VoteRepository;
 import com.UniTime.UniTime.service.CourseService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ public class CourseServiceImpl implements CourseService {
     private final ProfessorRepository professorRepository;
     private final ModelMapper mapper;
     private final VoteRepository voteRepository;
+    private final UserRepository userRepository;
 
     @Override
     public CourseDto postCourse(CourseDto courseDto) {
@@ -51,8 +54,19 @@ public class CourseServiceImpl implements CourseService {
             savedCourse = courseRepository.save(savedCourse); // Update course with vote
         }
 
+        // Handle Users (if necessary)
+        if (courseDto.getUsers() != null) {
+            Set<User> users = courseDto.getUsers().stream()
+                    .map(userId -> userRepository.findById(userId.getId())
+                            .orElseThrow(() -> new NotFoundException("User not found with ID: " + userId)))
+                    .collect(Collectors.toSet());
+            savedCourse.setUsers(users); // Link users directly to course
+        }
+
         return mapper.map(savedCourse, CourseDto.class);
     }
+
+
 
     @Override
     public List<CourseDto> getAllCourses() {
@@ -96,9 +110,21 @@ public class CourseServiceImpl implements CourseService {
             updatedCourse.setVote(savedVote);
         }
 
+        // Handle Users (if necessary)
+        if (courseDto.getUsers() != null) {
+            Set<User> users = courseDto.getUsers().stream()
+                    .map(userId -> userRepository.findById(userId.getId())
+                            .orElseThrow(() -> new NotFoundException("User not found with ID: " + userId)))
+                    .collect(Collectors.toSet());
+            updatedCourse.setUsers(users); // Link users directly to course
+        }
+
+
         Course savedCourse = courseRepository.save(updatedCourse);
         return mapper.map(savedCourse, CourseDto.class);
     }
+
+
 
     @Override
     public Boolean deleteCourse(Long id) {

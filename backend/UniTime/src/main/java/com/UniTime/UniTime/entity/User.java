@@ -28,10 +28,10 @@ public class User {
     private String email;
     private String moduleId;
 
-
+    // Many-to-Many Relationship with Course
     @ManyToMany
     @JoinTable(
-            name = "user_course",
+            name = "user_course",  // Junction table for the relationship
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id")
     )
@@ -43,8 +43,9 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "schedule_id")
     )
-    @JsonIgnore  // Avoid circular reference in serialization
+    @JsonIgnore
     private Set<Schedule> schedules = new HashSet<>();
+
 
     @ManyToMany
     @JoinTable(
@@ -55,15 +56,10 @@ public class User {
     @JsonIgnore // Prevent circular reference during JSON serialization
     private Set<Vote> votes = new HashSet<>();
 
-
-
-
-
     public UserDto toDto(ModelMapper mapper) {
         UserDto userDto = mapper.map(this, UserDto.class);
         // Avoid mapping circular reference for schedules
         userDto.setSchedules(new HashSet<>());
         return userDto;
     }
-
 }

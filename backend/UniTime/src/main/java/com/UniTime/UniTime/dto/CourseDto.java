@@ -8,8 +8,10 @@ import lombok.Data;
 import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 @Data
 public class CourseDto {
     private Long courseId;
@@ -19,9 +21,11 @@ public class CourseDto {
     private String department;
     private LocalDate startDate;
     private String description;
-    private Set<ProfessorDto> professors;
 
-    private VoteDto vote; // Add this field to handle VoteDto
+    private Set<ProfessorDto> professors;
+    private Set<UserDto> users = new HashSet<>();  // Add this to track users associated with the course
+
+    private VoteDto vote;  // Add this field to handle VoteDto
 
     // Method to convert CourseDto to Course entity
     public Course toEntity(ModelMapper mapper) {
