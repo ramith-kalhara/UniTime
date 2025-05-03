@@ -31,6 +31,10 @@ public class UserServiceImpl implements UserService {
     // CREATE USER
     @Override
     public UserDto postUser(UserDto userDto) {
+        if (userDto.getId() != null) {
+            throw new IllegalArgumentException("User ID should not be set when creating a new user.");
+        }
+
         User user = mapper.map(userDto, User.class);
 
         // Assign courses
@@ -40,6 +44,12 @@ public class UserServiceImpl implements UserService {
                             .orElseThrow(() -> new NotFoundException("Course not found: ID " + dto.getCourseId())))
                     .collect(Collectors.toSet());
             user.setCourses(courses);
+
+            // Optionally, update the relationship in Course entity if needed
+            for (Course course : courses) {
+                course.getUsers().add(user);  // Add user to the course
+                courseRepository.save(course); // Update course with new user
+            }
         }
 
         // Assign schedules
@@ -49,9 +59,13 @@ public class UserServiceImpl implements UserService {
                             .orElseThrow(() -> new NotFoundException("Schedule not found: ID " + dto.getScheduleId())))
                     .collect(Collectors.toSet());
             user.setSchedules(schedules);
-        } else {
-            user.setSchedules(new HashSet<>());
+
+            //  Maintain inverse relationship
+            for (Schedule schedule : schedules) {
+                schedule.getUsers().add(user);
+            }
         }
+
 
         // Assign votes
         if (userDto.getVoteIds() != null && !userDto.getVoteIds().isEmpty()) {
@@ -65,6 +79,8 @@ public class UserServiceImpl implements UserService {
         User savedUser = userRepository.save(user);
         return mapper.map(savedUser, UserDto.class);
     }
+
+
 
     // GET ALL USERS
     @Override
@@ -98,6 +114,12 @@ public class UserServiceImpl implements UserService {
                             .orElseThrow(() -> new NotFoundException("Course not found: ID " + dto.getCourseId())))
                     .collect(Collectors.toSet());
             existingUser.setCourses(courses);
+
+            // Optionally, update the relationship in Course entity if needed
+            for (Course course : courses) {
+                course.getUsers().add(existingUser);  // Add user to the course
+                courseRepository.save(course); // Update course with new user
+            }
         }
 
         // Update schedules
@@ -121,6 +143,7 @@ public class UserServiceImpl implements UserService {
         User updatedUser = userRepository.save(existingUser);
         return mapper.map(updatedUser, UserDto.class);
     }
+
 
     // DELETE USER
     @Override
