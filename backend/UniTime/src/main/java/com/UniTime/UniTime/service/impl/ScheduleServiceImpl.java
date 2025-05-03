@@ -112,7 +112,13 @@ public class ScheduleServiceImpl implements ScheduleService {
                             .orElseThrow(() -> new NotFoundException("User not found with ID: " + userDto.getId())))
                     .collect(Collectors.toSet());
             schedule.setUsers(users);
+
+            //  Maintain inverse relationship
+            for (User user : users) {
+                user.getSchedules().add(schedule);
+            }
         }
+
 
         Schedule updatedSchedule = scheduleRepository.save(schedule);
         return updatedSchedule.toDto(mapper);
