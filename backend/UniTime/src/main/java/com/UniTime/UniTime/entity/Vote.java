@@ -23,16 +23,15 @@ public class Vote {
     private String description;
 
 
-
-
     // Mapping to professors
-    @ManyToMany
+    @ManyToMany(cascade = { CascadeType.MERGE })
     @JoinTable(
             name = "vote_professor",
             joinColumns = @JoinColumn(name = "vote_id"),
             inverseJoinColumns = @JoinColumn(name = "professor_id")
     )
     private Set<Professor> professors = new HashSet<>();
+
 
     // Mapping to user
     @ManyToMany(mappedBy = "votes")
@@ -41,6 +40,7 @@ public class Vote {
     @OneToOne
     @JoinColumn(name = "course_id", referencedColumnName = "course_id")
     private Course course;
+
 
 
     // You can also add other fields and methods if necessary

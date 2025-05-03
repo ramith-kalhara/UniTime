@@ -43,12 +43,7 @@ public class Course {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @ManyToMany
-    @JoinTable(
-            name = "course_professor",
-            joinColumns = @JoinColumn(name = "course_id"),
-            inverseJoinColumns = @JoinColumn(name = "professor_id")
-    )
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Professor> professors = new HashSet<>();
 
     @OneToMany(mappedBy = "course")
@@ -60,6 +55,8 @@ public class Course {
     // Many-to-Many Relationship with User (mappedBy = "courses")
     @ManyToMany(mappedBy = "courses")
     private Set<User> users = new HashSet<>();
+
+
 
 
     // Convert the Course entity to CourseDto

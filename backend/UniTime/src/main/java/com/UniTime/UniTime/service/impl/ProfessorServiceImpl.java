@@ -33,22 +33,32 @@ public class ProfessorServiceImpl implements ProfessorService {
     public ProfessorDto postProfessor(ProfessorDto professorDto) {
         // Convert DTO to Entity
         Professor professor = professorDto.toEntity(mapper);
+        System.out.println(professor.getAddress());
 
-        // Handle Votes: Map VoteDtos to Vote entities if present
+        //  Handle Course: Get course entity by ID
+        if (professorDto.getCourse() != null && professorDto.getCourse().getCourseId() != null) {
+            System.out.println(professor.getAddress());
+            Course course = courseRepository.findById(professorDto.getCourse().getCourseId())
+                    .orElseThrow(() -> new NotFoundException("Course not found with ID: " + professorDto.getCourse().getCourseId()));
+            professor.setCourse(course);
+        }
+
+        // Handle Votes if present
         if (professorDto.getVotes() != null) {
+            System.out.println(professorDto.getVotes());
+            System.out.println("come----------------------------------");
             Set<Vote> votes = professorDto.getVotes().stream()
-                    .map(voteDto -> voteRepository.findById(voteDto.getId())  // Assuming VoteDto has ID
+                    .map(voteDto -> voteRepository.findById(voteDto.getId())
                             .orElseThrow(() -> new NotFoundException("Vote not found with ID: " + voteDto.getId())))
                     .collect(Collectors.toSet());
             professor.setVotes(votes);
         }
 
-        // Save Entity
+        // Save and return
         Professor savedProfessor = professorRepository.save(professor);
-
-        // Convert back to DTO and return
         return savedProfessor.toDto(mapper);
     }
+
 
 
     // Get all Professors
@@ -79,34 +89,41 @@ public class ProfessorServiceImpl implements ProfessorService {
     //update professor
     @Override
     public ProfessorDto updateProfessor(Long id, ProfessorDto professorDto) {
-        Optional<Professor> existingProfessorOpt = professorRepository.findById(id);
-        if (!existingProfessorOpt.isPresent()) {
-            throw new NotFoundException("Professor not found with ID: " + id);
+        Professor existingProfessor = professorRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Professor not found with ID: " + id));
+
+        // Map updated fields
+        Professor updatedProfessor = professorDto.toEntity(mapper);
+        updatedProfessor.setId(id); // Preserve ID
+
+        //  Preserve/Set Course
+        if (professorDto.getCourse() != null && professorDto.getCourse().getCourseId() != null) {
+            Course course = courseRepository.findById(professorDto.getCourse().getCourseId())
+                    .orElseThrow(() -> new NotFoundException("Course not found with ID: " + professorDto.getCourse().getCourseId()));
+            updatedProfessor.setCourse(course);
+        } else {
+            updatedProfessor.setCourse(existingProfessor.getCourse());
         }
 
-        Professor existingProfessor = existingProfessorOpt.get();
-
-        // Convert DTO to Entity and preserve the ID
-        Professor professor = professorDto.toEntity(mapper);
-        professor.setId(id);
-
-        // Handle Votes: Map VoteDtos to Vote entities if present
+        //  Handle Votes
         if (professorDto.getVotes() != null) {
             Set<Vote> votes = professorDto.getVotes().stream()
-                    .map(voteDto -> voteRepository.findById(voteDto.getId())  // Assuming VoteDto has ID
+                    .map(voteDto -> voteRepository.findById(voteDto.getId())
                             .orElseThrow(() -> new NotFoundException("Vote not found with ID: " + voteDto.getId())))
                     .collect(Collectors.toSet());
-            professor.setVotes(votes);
+            updatedProfessor.setVotes(votes);
+        } else {
+            updatedProfessor.setVotes(existingProfessor.getVotes());
         }
 
+        // Optionally: Preserve schedules or other associations if needed
+        updatedProfessor.setSchedules(existingProfessor.getSchedules());
 
-
-        // Save Entity
-        Professor savedProfessor = professorRepository.save(professor);
-
-        // Convert back to DTO and return
+        // Save and return
+        Professor savedProfessor = professorRepository.save(updatedProfessor);
         return savedProfessor.toDto(mapper);
     }
+
 
 
     // Delete Professor by ID
@@ -119,3 +136,4 @@ public class ProfessorServiceImpl implements ProfessorService {
         return true;
     }
 }
+

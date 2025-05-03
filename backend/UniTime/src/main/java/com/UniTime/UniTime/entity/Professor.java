@@ -46,8 +46,9 @@ public class Professor {
     @Column(name = "postal_code", nullable = false)
     private String postal_code;
 
-    @ManyToMany(mappedBy = "professors")
-    private Set<Course> courses = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "course_id", nullable = false)
+    private Course course;
 
 
     @Column(name = "description", columnDefinition = "TEXT")
