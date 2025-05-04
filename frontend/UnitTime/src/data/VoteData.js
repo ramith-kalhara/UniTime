@@ -11,7 +11,7 @@ const VoteData = [
       {
         id: 1,
         imageUrl: team2,
-        name: "Jhone Smith",
+        name: "Kawya Bandara",
         module: "Art Teacher"
       },
       {
@@ -23,25 +23,25 @@ const VoteData = [
       {
         id: 1,
         imageUrl: team2,
-        name: "Jhone Smith",
+        name: "Wil Smith",
         module: "Art Teacher"
       },
       {
         id: 0,
         imageUrl: team1,
-        name: "Julia Smith",
+        name: "Kavinga Yapa Bandara",
         module: "Music Teacher"
       },
       {
         id: 1,
         imageUrl: team2,
-        name: "Jhone Smith",
+        name: "Sajith Premadasa",
         module: "Art Teacher"
       },
       {
         id: 0,
         imageUrl: team1,
-        name: "Julia Smith",
+        name: "Anura Kumara ",
         module: "Music Teacher"
       }
 

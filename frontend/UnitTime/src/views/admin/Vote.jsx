@@ -25,26 +25,22 @@ const Vote = () => {
   const [formValues, setFormValues] = useState({
     moduleCode: '',
     moduleName: '',
-    voteDescription: ''
+    voteDescription: '',
+    professorId: '', // New state for professor
   });
+
+  // List of professors
+  const professors = [
+    { id: 1, name: "Kawya Bandara" },
+    { id: 2, name: "Julia Smith" },
+    { id: 3, name: "Wil Smith" },
+    { id: 4, name: "Kavinga Yapa Bandara" },
+    { id: 5, name: "Sajith Premadasa" },
+    { id: 6, name: "Anura Kumara" }
+  ];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-
-    // If updating the moduleName field, validate it
-    if (name === 'moduleName') {
-      // Reject if value contains anything other than letters and spaces
-      if (/[^a-zA-Z\s]/.test(value)) {
-        Swal.fire({
-          icon: "error",
-          title: "Invalid Module Name",
-          text: "Module Name can only contain letters and spaces.",
-        });
-        return;
-      }
-    }
-
-    // If valid or not moduleName, update the form state
     setFormValues((prev) => ({
       ...prev,
       [name]: value,
@@ -53,9 +49,9 @@ const Vote = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const { moduleCode, moduleName, voteDescription } = formValues;
+    const { moduleCode, moduleName, voteDescription, professorId } = formValues;
 
-    if (!moduleCode || !moduleName || !voteDescription) {
+    if (!moduleCode || !moduleName || !voteDescription || !professorId) {
       Swal.fire({
         icon: 'error',
         title: 'Missing Fields',
@@ -174,6 +170,31 @@ const Vote = () => {
                             value={formValues.moduleName}
                             onChange={handleInputChange}
                           />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                  </div>
+
+                  <hr className="my-4" />
+                  <h6 className="heading-small text-muted mb-4">Professor</h6>
+                  <div className="pl-lg-4">
+                    <Row>
+                      <Col lg="12">
+                        <FormGroup>
+                          <label htmlFor="professorId">Select Professor</label>
+                          <Input
+                            type="select"
+                            name="professorId"
+                            value={formValues.professorId}
+                            onChange={handleInputChange}
+                          >
+                            <option value="">Select Professor</option>
+                            {professors.map((professor) => (
+                              <option key={professor.id} value={professor.id}>
+                                {professor.name}
+                              </option>
+                            ))}
+                          </Input>
                         </FormGroup>
                       </Col>
                     </Row>

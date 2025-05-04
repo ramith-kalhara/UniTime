@@ -71,7 +71,7 @@ function Facilities() {
                 <div className="pl-4">
                   <h4>Educational Tour</h4>
                   <p className="m-0">
-                  ngaging educational tours that provide students with hands-on learning experiences outside the classroom, 
+                  Engaging educational tours that provide students with hands-on learning experiences outside the classroom, 
                   exploring real-world applications of their studies.
                   </p>
                 </div>
