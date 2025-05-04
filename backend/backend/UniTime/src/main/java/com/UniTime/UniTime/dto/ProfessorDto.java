@@ -15,8 +15,10 @@ public class ProfessorDto {
     private String city;
     private String country;
     private String postal_code;
+    private String module_code;
     private String module_id;
     private String description;
+    private String imagePath;
 
     public Professor toEntity(ModelMapper mapper) {
         return mapper.map(this, Professor.class);

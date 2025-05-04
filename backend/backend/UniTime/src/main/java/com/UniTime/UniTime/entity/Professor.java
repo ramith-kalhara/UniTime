@@ -19,6 +19,9 @@ public class Professor {
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
+    @Column(name = "image_path")
+    private String imagePath;
+
     @Column(name = "full_name", nullable = false)
     private String full_name;
     @Column(name = "email", nullable = false)
@@ -37,6 +40,8 @@ public class Professor {
     private String postal_code;
     @Column(name = "module_id", nullable = false)
     private String module_id;
+    @Column(name = "module_code", nullable = false)
+    private String module_code;
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 

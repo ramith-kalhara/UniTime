@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import ProfileImg from "../../assets/admin/img/theme/team-4-800x800.jpg";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -22,18 +22,76 @@ import AdminHeader from "../../components/Headers/AdminHeader";
 const Vote = () => {
   const [startDateTime, setStartDateTime] = useState(dayjs());
   const [endDateTime, setEndDateTime] = useState(dayjs());
+  const [courseCodes, setCourseCodes] = useState([]);
+  const [professors, setProfessors] = useState([]);
+
+
+
   const [formValues, setFormValues] = useState({
+
     moduleCode: '',
     moduleName: '',
-    voteDescription: ''
+    voteDescription: '',
+    professor: ['']
   });
+  const handleProfessorChange = (index, value) => {
+    const updatedProfessors = [...formValues.professor];
+    updatedProfessors[index] = value;
+    setFormValues({ ...formValues, professor: updatedProfessors });
+  };
+  
+  const addProfessorField = () => {
+    setFormValues({ ...formValues, professor: [...formValues.professor, ''] });
+  };
+  
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [courseRes, professorRes] = await Promise.all([
+          fetch("http://localhost:8086/api/course/"),
+          fetch("http://localhost:8086/api/professor/")
+        ]);
+  
+        if (courseRes.ok && professorRes.ok) {
+          const courseData = await courseRes.json();
+          const professorData = await professorRes.json();
+          setCourseCodes(courseData);
+          setProfessors(professorData);
+        } else {
+          console.error("Failed to fetch courses or professors");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+  
+    fetchData();
+  }, []);
+  
 
-    // If updating the moduleName field, validate it
+
+
+
+  const handleInputChange = async (e) => {
+    const { name, value, options, type } = e.target;
+
+    // Handle professor multi-select
+    if (name === 'professor' && type === 'select-multiple') {
+      const selectedValues = Array.from(options)
+        .filter(option => option.selected)
+        .map(option => option.value);
+
+      setFormValues((prev) => ({
+        ...prev,
+        [name]: selectedValues,
+      }));
+      return;
+    }
+
+
+    // Validate module name (only letters & spaces allowed)
     if (name === 'moduleName') {
-      // Reject if value contains anything other than letters and spaces
       if (/[^a-zA-Z\s]/.test(value)) {
         Swal.fire({
           icon: "error",
@@ -44,18 +102,48 @@ const Vote = () => {
       }
     }
 
-    // If valid or not moduleName, update the form state
+    // Set form value normally
     setFormValues((prev) => ({
       ...prev,
       [name]: value,
     }));
+
+    // If user selects moduleCode (courseId), auto-fetch course info
+    if (name === 'moduleCode') {
+      try {
+        const response = await fetch(`http://localhost:8086/api/course/${value}`);
+        if (response.ok) {
+          const data = await response.json();
+          setFormValues((prev) => ({
+            ...prev,
+            moduleCode: data.courseCode,
+            moduleName: data.name || '',
+          }));
+        } else {
+          setFormValues((prev) => ({
+            ...prev,
+            moduleCode: '',
+            moduleName: '',
+          }));
+        }
+      } catch (error) {
+        console.error("Failed to fetch course name:", error);
+        setFormValues((prev) => ({
+          ...prev,
+          moduleCode: '',
+          moduleName: '',
+        }));
+      }
+    }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const { moduleCode, moduleName, voteDescription } = formValues;
 
-    if (!moduleCode || !moduleName || !voteDescription) {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { moduleCode, moduleName, voteDescription, professor } = formValues;
+
+    // Form Validation
+    if (!moduleCode || !moduleName || !voteDescription || professor.length === 0) {
       Swal.fire({
         icon: 'error',
         title: 'Missing Fields',
@@ -82,14 +170,61 @@ const Vote = () => {
       return;
     }
 
-    Swal.fire({
-      icon: 'success',
-      title: 'Vote Created Successfully',
-      text: 'Your vote has been created!',
-    });
+    // Prepare data for API request
+    const voteData = {
+      start_date: dayjs(startDateTime).format('YYYY-MM-DD'),
+      end_date: dayjs(endDateTime).format('YYYY-MM-DD'),
+      start_time: dayjs(startDateTime).format('HH:mm:ss'),
+      end_time: dayjs(endDateTime).format('HH:mm:ss'),
+      description: voteDescription,
+      module_id: moduleCode, // Send the moduleCode (assuming it's the course ID)
+      professor_id: formValues.professor.filter(Boolean) // professor is an array of selected professor names
+      // user_id: "USER567", // Replace this with the actual user ID
+    };
 
-    // TODO: Add actual submit logic here
+    try {
+      // Send the data to the API
+      const response = await fetch("http://localhost:8086/api/vote/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(voteData),
+      });
+
+      console.log(voteData)
+
+      if (response.ok) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Vote Created Successfully',
+          text: 'Your vote has been created!',
+        });
+        // Optionally, clear the form or redirect the user
+        setFormValues({
+          moduleCode: '',
+          moduleName: '',
+          voteDescription: '',
+          professor: [],
+        });
+      } else {
+        const errorData = await response.json();
+        Swal.fire({
+          icon: 'error',
+          title: 'Failed to Create Vote',
+          text: errorData.message || 'An unexpected error occurred.',
+        });
+      }
+    } catch (error) {
+      console.error('Error submitting vote:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'There was an error submitting your vote.',
+      });
+    }
   };
+
 
   return (
     <>
@@ -151,19 +286,30 @@ const Vote = () => {
                   <h6 className="heading-small text-muted mb-4">Module information</h6>
                   <div className="pl-lg-4">
                     <Row>
+
                       <Col lg="6">
                         <FormGroup>
                           <label htmlFor="moduleCode">Module Code</label>
                           <Input
-                            type="text"
+                            type="select"
                             name="moduleCode"
-                            maxLength="6"
-                            placeholder="Enter Module Code"
+                            className="form-control"
                             value={formValues.moduleCode}
                             onChange={handleInputChange}
-                          />
+                          >
+                            <option value={formValues.moduleCode || ''}>Select Module Code</option>
+                            {courseCodes.map((course) => (
+  <option key={course.courseId} value={course.courseId}>
+    {course.courseCode}
+  </option>
+))}
+
+                          </Input>
                         </FormGroup>
+
+
                       </Col>
+
                       <Col lg="6">
                         <FormGroup>
                           <label htmlFor="moduleName">Module Name</label>
@@ -173,7 +319,9 @@ const Vote = () => {
                             placeholder="Enter Module Name"
                             value={formValues.moduleName}
                             onChange={handleInputChange}
+                            disabled
                           />
+
                         </FormGroup>
                       </Col>
                     </Row>
@@ -211,6 +359,53 @@ const Vote = () => {
                           </LocalizationProvider>
                         </FormGroup>
                       </Col>
+                    </Row>
+                  </div>
+
+                  <h6 className="heading-small text-muted mb-4">Vote Time & Date Information</h6>
+                  <div className="pl-lg-4">
+                    <Row>
+                    <Col lg="6">
+  <FormGroup>
+    <label htmlFor="professor">Professors</label>
+    {formValues.professor.map((selectedProfId, index) => (
+      <div key={index} className="mb-2">
+        <Input
+          type="select"
+          name={`professor-${index}`}
+          className="form-control"
+          value={selectedProfId}
+          onChange={(e) => handleProfessorChange(index, e.target.value)}
+        >
+          <option value="">-- Select Professor --</option>
+          {professors.map((prof) => (
+            <option key={prof.id} value={prof.id}>
+              {prof.full_name}
+            </option>
+          ))}
+        </Input>
+      </div>
+    ))}
+    <Button type="button" color="secondary" onClick={addProfessorField}>
+      + Add Professor
+    </Button>
+  </FormGroup>
+
+  {/* Show selected professor names */}
+  {formValues.professor.some(id => id) && (
+    <ul className="mt-2">
+      {formValues.professor.map((id, idx) => {
+        const prof = professors.find(p => p.id === id);
+        return id ? <li key={idx}>{prof?.full_name || id}</li> : null;
+      })}
+    </ul>
+  )}
+</Col>
+
+
+
+
+
                     </Row>
                   </div>
 

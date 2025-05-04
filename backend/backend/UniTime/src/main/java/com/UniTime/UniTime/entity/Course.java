@@ -21,6 +21,9 @@ public class Course {
     @Column(name = "course_id", updatable = false, nullable = false)
     private Long courseId;
 
+    @Column(name = "image_path")
+    private String imagePath;
+
     @Column(name = "course_code", nullable = false, length = 50)
     private String courseCode;
 

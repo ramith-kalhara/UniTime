@@ -147,6 +147,7 @@ const Room = () => {
   };
   
 
+
   const validateRoomDetails = () => {
     let errorMessages = '';
   
@@ -185,12 +186,20 @@ const Room = () => {
   
     if (validateRoomDetails()) {
       try {
+        const formData = new FormData();
+        formData.append("hasSmartScreen", formValues.hasSmartScreen);
+        formData.append("capacity", formValues.capacity);
+        formData.append("roomType", formValues.roomType);
+        formData.append("department", formValues.department);
+        formData.append("description", formValues.description);
+  
+        if (formValues.image) {
+          formData.append("image", formValues.image);
+        }
+  
         const response = await fetch("http://localhost:8086/api/room/create", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(formValues)
+          body: formData
         });
   
         if (!response.ok) {
@@ -203,13 +212,13 @@ const Room = () => {
           text: 'Room has been successfully added!',
         });
   
-        // Reset form after submit
         setFormValues({
           hasSmartScreen: '',
           capacity: '',
           roomType: '',
           department: '',
-          description: ''
+          description: '',
+          image: null
         });
   
       } catch (error) {
@@ -222,6 +231,7 @@ const Room = () => {
       }
     }
   };
+  
   
   
 
@@ -534,6 +544,22 @@ const Room = () => {
                             type="text"
                           />
                         </FormGroup>
+                      </Col>
+                      <Col lg="6">
+                     <FormGroup>
+  <label className="form-control-label" htmlFor="input-image">
+    Image
+  </label>
+  <Input
+    type="file"
+    name="image"
+    onChange={(e) => setFormValues({
+      ...formValues,
+      image: e.target.files[0]  // store the File object, not just the path
+    })}
+  />
+</FormGroup>
+
                       </Col>
                     </Row>
                     <Row>

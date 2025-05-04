@@ -23,7 +23,7 @@ public class ScheduleDto {
     private LocalTime endTime;
     private String scheduleDescription;
 
-    private Set<User> users;
+//    private Set<User> users;
 
     public Schedule toEntity(ModelMapper mapper) {
         return mapper.map(this, Schedule.class);

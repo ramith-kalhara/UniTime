@@ -1,6 +1,7 @@
 import team1 from "../assets/user/img/team-1.jpg";
 import team2 from "../assets/user/img/team-2.jpg";
 
+
 const VoteData = [
   {
     id: 0,

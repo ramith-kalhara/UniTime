@@ -19,6 +19,11 @@ import {
 import AdminHeader from "../../components/Headers/AdminHeader";
 
 const Professor = () => {
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFormData({ ...formData, file }); // assuming your state has a `file` key
+  };
+  
 
 
   const [formData, setFormData] = useState({
@@ -108,7 +113,7 @@ const Professor = () => {
       city: city,
       country: country,
       postal_code: postalCode,
-      module_id: moduleCode,
+      module_code: moduleCode,
       description: description,
     };
     
@@ -184,7 +189,9 @@ const Professor = () => {
       const response = await axios.post(
         "http://localhost:8086/api/professor/create",
         professorData
+        
       );
+      console.log(professorData)
   
       Swal.fire({
         icon: "success",
@@ -374,6 +381,21 @@ const Professor = () => {
                           />
                         </FormGroup>
                       </Col>
+                      <Col lg="6">
+  <FormGroup>
+    <label className="form-control-label" htmlFor="fileUpload">
+      Upload File
+    </label>
+    <Input
+      className="form-control-alternative"
+      id="fileUpload"
+      name="file"
+      type="file"
+      onChange={handleFileChange} // define this handler
+    />
+  </FormGroup>
+</Col>
+
                       <Col lg="6">
                         <FormGroup>
                           <label className="form-control-label" htmlFor="departmentName">

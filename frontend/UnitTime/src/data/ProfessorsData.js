@@ -6,7 +6,6 @@ const ProfessorsData = [
     {
       id: 0,
       imageUrl: team1,
- // Dynamically resolve the image
       name: "Julia Smith",
       moduleId : "IT2030",
       module: "Music Teacher",
@@ -26,48 +25,8 @@ const ProfessorsData = [
       moduleId : "IOT20",
       module: "Music Teacher"
     },
-    {
-      id: 3,
-      imageUrl: team3, 
-      name: "Saliya Smith",
-      moduleId : "IOT20",
-      module: "Music Teacher"
-    },
-    {
-      id: 3,
-      imageUrl: team3, 
-      name: "Saliya Smith",
-      moduleId : "IOT20",
-      module: "Music Teacher"
-    },
-    {
-      id: 3,
-      imageUrl: team3, 
-      name: "Saliya Smith",
-      moduleId : "IOT20",
-      module: "Music Teacher"
-    },
-    {
-      id: 3,
-      imageUrl: team3, 
-      name: "Saliya Smith",
-      moduleId : "IOT20",
-      module: "Music Teacher"
-    },
-    {
-      id: 3,
-      imageUrl: team3, 
-      name: "Saliya Smith",
-      moduleId : "IOT20",
-      module: "Music Teacher"
-    },
-    {
-      id: 3,
-      imageUrl: team3, 
-      name: "Saliya Smith",
-      moduleId : "IOT20",
-      module: "Music Teacher"
-    },
+   
+ 
     
     
   ];
