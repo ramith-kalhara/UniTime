@@ -20,19 +20,22 @@ public class ProfessorDto {
     private String postal_code;
     private String description;
 
-    // Add reference to the CourseDto
+    // Add reference
     private CourseDto course;
 
     private VoteDto vote;
 
     private List<UserVoteDto> userVote;
 
+    private List<ScheduleDto> schedules;
+
+
 
     public Professor toEntity(ModelMapper mapper) {
 
         Professor professor = mapper.map(this, Professor.class);
-        professor.setUserVote(new ArrayList<>()); // prevent automatic mapping of user votes
-
+        professor.setUserVote(new ArrayList<>());// prevent automatic mapping of user votes
+        professor.setSchedules(new ArrayList<>());
         return professor;
     }
 }

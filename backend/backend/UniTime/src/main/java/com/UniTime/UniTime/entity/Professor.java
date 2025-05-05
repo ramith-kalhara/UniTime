@@ -1,5 +1,6 @@
 package com.UniTime.UniTime.entity;
 import com.UniTime.UniTime.dto.ProfessorDto;
+import com.UniTime.UniTime.dto.ScheduleDto;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -11,6 +12,7 @@ import org.modelmapper.ModelMapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Setter
 @Getter
@@ -57,12 +59,24 @@ public class Professor {
     @JsonManagedReference
     private List<UserVote> userVote = new ArrayList<>();
 
+    @OneToMany(mappedBy = "professor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Schedule> schedules = new ArrayList<>();
+
 
 
     public ProfessorDto toDto(ModelMapper mapper) {
-        ProfessorDto professorDto = mapper.map(this, ProfessorDto.class);
+        ProfessorDto dto = mapper.map(this, ProfessorDto.class);
 
-        return professorDto;
+        List<ScheduleDto> scheduleDtos = this.schedules != null ?
+                this.schedules.stream()
+                        .map(schedule -> mapper.map(schedule, ScheduleDto.class))
+                        .collect(Collectors.toList())
+                : new ArrayList<>();
+
+        dto.setSchedules(scheduleDtos);
+        return dto;
     }
+
 
 }

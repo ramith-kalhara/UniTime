@@ -42,6 +42,7 @@ public class ApplicationConfig {
             }
         });
 
+
         modelMapper.addMappings(new PropertyMap<Vote, VoteDto>() {
             @Override
             protected void configure() {
@@ -50,14 +51,17 @@ public class ApplicationConfig {
             }
         });
 
-        //professor and UserVote
+        //professor -> UserVote, Schedule
         modelMapper.addMappings(new PropertyMap<Professor, ProfessorDto>() {
             @Override
             protected void configure() {
                 // Skip the professors field to avoid circular reference
                 skip(destination.getUserVote());
+                skip(destination.getSchedules());
             }
         });
+
+
 
         return modelMapper;
     }

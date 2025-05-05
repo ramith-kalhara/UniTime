@@ -41,6 +41,12 @@ public class Schedule {
     @JsonBackReference
     private Room room;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "professor_id")
+    @JsonBackReference
+    private Professor professor;
+
+
 
     public ScheduleDto toDto(ModelMapper mapper) {
         return mapper.map(this, ScheduleDto.class);

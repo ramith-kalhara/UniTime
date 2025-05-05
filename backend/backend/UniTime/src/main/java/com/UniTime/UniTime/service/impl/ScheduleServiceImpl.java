@@ -1,9 +1,11 @@
 package com.UniTime.UniTime.service.impl;
 
 import com.UniTime.UniTime.dto.ScheduleDto;
+import com.UniTime.UniTime.entity.Professor;
 import com.UniTime.UniTime.entity.Room;
 import com.UniTime.UniTime.entity.Schedule;
 import com.UniTime.UniTime.exception.NotFoundException;
+import com.UniTime.UniTime.repository.ProfessorRepository;
 import com.UniTime.UniTime.repository.RoomRepository;
 import com.UniTime.UniTime.repository.ScheduleRepository;
 import com.UniTime.UniTime.service.ScheduleService;
@@ -20,6 +22,7 @@ import java.util.Optional;
 public class ScheduleServiceImpl implements ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final RoomRepository roomRepository;
+    private final ProfessorRepository professorRepository;
 
     private final ModelMapper mapper;
 
@@ -34,6 +37,13 @@ public class ScheduleServiceImpl implements ScheduleService {
             Room room = roomRepository.findById(scheduleDto.getRoom().getId())
                     .orElseThrow(() -> new NotFoundException("Room not found with id: " + scheduleDto.getRoom().getId()));
             schedule.setRoom(room); // Set the room in the schedule
+        }
+
+        //  Set Professor
+        if (scheduleDto.getProfessor() != null && scheduleDto.getProfessor().getId() != null) {
+            Professor professor = professorRepository.findById(scheduleDto.getProfessor().getId())
+                    .orElseThrow(() -> new NotFoundException("Professor not found with id: " + scheduleDto.getProfessor().getId()));
+            schedule.setProfessor(professor);
         }
 
         // Save the schedule entity

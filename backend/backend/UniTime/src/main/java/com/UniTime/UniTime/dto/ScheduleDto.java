@@ -23,7 +23,11 @@ public class ScheduleDto {
     private LocalTime endTime;
     private String scheduleDescription;
 
+    // Add reference
     private RoomDto room;
+
+    private ProfessorDto professor;
+
 
 
     public Schedule toEntity(ModelMapper mapper) {

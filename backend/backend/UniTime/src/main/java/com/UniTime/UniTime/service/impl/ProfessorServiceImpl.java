@@ -1,13 +1,12 @@
 package com.UniTime.UniTime.service.impl;
 
 import com.UniTime.UniTime.dto.ProfessorDto;
+import com.UniTime.UniTime.dto.ScheduleDto;
 import com.UniTime.UniTime.dto.UserVoteDto;
 import com.UniTime.UniTime.dto.VoteDto;
 import com.UniTime.UniTime.entity.*;
 import com.UniTime.UniTime.exception.NotFoundException;
-import com.UniTime.UniTime.repository.CourseRepository;
-import com.UniTime.UniTime.repository.ProfessorRepository;
-import com.UniTime.UniTime.repository.VoteRepository;
+import com.UniTime.UniTime.repository.*;
 import com.UniTime.UniTime.service.ProfessorService;
 import com.UniTime.UniTime.service.UserVoteService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,9 @@ public class ProfessorServiceImpl implements ProfessorService {
     private final ProfessorRepository professorRepository;
     private final CourseRepository courseRepository;
     private final VoteRepository voteRepository;
+    private final RoomRepository roomRepository;
     private final UserVoteService userVoteService;
+    private final ScheduleRepository scheduleRepository;
     private final ModelMapper mapper;
 
     // Create Professor
@@ -49,29 +50,50 @@ public class ProfessorServiceImpl implements ProfessorService {
             professor.setVote(vote);
         }
 
-        // 🔹 Handle userVote list manually
+        // Handle UserVotes manually
         List<UserVote> userVotes = new ArrayList<>();
         if (professorDto.getUserVote() != null) {
             for (UserVoteDto userVoteDto : professorDto.getUserVote()) {
-//                User user = userVoteService.findById(userVoteDto.getUser().getId())
-//                        .orElseThrow(() -> new NotFoundException("User not found"));
-//
-//                Vote vote = voteRepository.findById(userVoteDto.getVote().getId())
-//                        .orElseThrow(() -> new NotFoundException("Vote not found"));
-
                 UserVote userVote = new UserVote();
-//                userVote.setUser(user);
-//                userVote.setVote(vote);
-                userVote.setProfessor(professor);
-
+                userVote.setProfessor(professor); // attach the professor reference
                 userVotes.add(userVote);
             }
         }
+        professor.setUserVote(userVotes); // attach votes to professor
 
-        professor.setUserVote(userVotes); // attach to professor
-
-        // Save
+        // Save professor first to get the ID (important before setting relationships that need ID)
         Professor savedProfessor = professorRepository.save(professor);
+
+        // Handle schedules after saving professor
+        List<Schedule> schedules = new ArrayList<>();
+        if (professorDto.getSchedules() != null) {
+            for (ScheduleDto scheduleDto : professorDto.getSchedules()) {
+                Schedule schedule;
+
+                if (scheduleDto.getScheduleId() != null) {
+                    // Fetch and update existing schedule
+                    schedule = scheduleRepository.findById(scheduleDto.getScheduleId())
+                            .orElseThrow(() -> new NotFoundException("Schedule not found with id: " + scheduleDto.getScheduleId()));
+                } else {
+                    // Create new schedule from DTO
+                    schedule = mapper.map(scheduleDto, Schedule.class);
+                }
+
+                // Set the professor (new or existing)
+                schedule.setProfessor(savedProfessor);
+                schedules.add(schedule);
+            }
+
+            // Save all new or updated schedules
+            scheduleRepository.saveAll(schedules);
+            System.out.println("Final Schedule Entities: " + schedules);
+
+        }
+
+
+        // Now update savedProfessor with the schedule list (optional)
+        savedProfessor.setSchedules(schedules);
+        System.out.println( "Schedule : " + schedules);
 
         return savedProfessor.toDto(mapper);
     }
