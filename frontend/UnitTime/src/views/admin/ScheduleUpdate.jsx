@@ -8,7 +8,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from "react-router-dom";
 
 import axios from "axios";
-import teamImage from "../../assets/admin/img/theme/team-4-800x800.jpg";
+import teamImage from "../../assets/admin/img/theme/team-1-800x800.jpg";
 import {
   Button,
   Card,

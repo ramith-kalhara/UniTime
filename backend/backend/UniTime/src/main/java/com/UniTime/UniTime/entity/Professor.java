@@ -38,7 +38,7 @@ public class Professor {
     private String country;
     @Column(name = "postal_code", nullable = false)
     private String postal_code;
-    @Column(name = "module_id", nullable = false)
+    @Column(name = "module_id")
     private String module_id;
     @Column(name = "module_code", nullable = false)
     private String module_code;

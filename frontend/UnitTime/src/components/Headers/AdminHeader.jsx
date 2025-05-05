@@ -15,7 +15,7 @@ const AdminHeader = ({ pageIndex }) => {
         className="header pb-8 pt-5 pt-lg-8 d-flex align-items-center"
         style={{
           minHeight: "600px",
-          backgroundImage: `url(${ProfileCover})`,
+          // backgroundImage: `url(${ProfileCover})`,
           backgroundSize: "cover",
           backgroundPosition: "center top",
         }}
