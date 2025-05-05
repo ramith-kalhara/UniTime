@@ -1,5 +1,6 @@
 package com.UniTime.UniTime.entity;
 import com.UniTime.UniTime.dto.ProfessorDto;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,9 +20,6 @@ public class Professor {
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
-    @Column(name = "image_path")
-    private String imagePath;
-
     @Column(name = "full_name", nullable = false)
     private String full_name;
     @Column(name = "email", nullable = false)
@@ -38,12 +36,14 @@ public class Professor {
     private String country;
     @Column(name = "postal_code", nullable = false)
     private String postal_code;
-    @Column(name = "module_id", nullable = false)
-    private String module_id;
-    @Column(name = "module_code", nullable = false)
-    private String module_code;
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_id", nullable = false)
+    @JsonBackReference
+    private Course course;
+
 
     public ProfessorDto toDto(ModelMapper mapper) {
         ProfessorDto professorDto = mapper.map(this, ProfessorDto.class);

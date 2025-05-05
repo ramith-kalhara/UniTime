@@ -1,8 +1,10 @@
 package com.UniTime.UniTime.service.impl;
 
 import com.UniTime.UniTime.dto.ProfessorDto;
+import com.UniTime.UniTime.entity.Course;
 import com.UniTime.UniTime.entity.Professor;
 import com.UniTime.UniTime.exception.NotFoundException;
+import com.UniTime.UniTime.repository.CourseRepository;
 import com.UniTime.UniTime.repository.ProfessorRepository;
 import com.UniTime.UniTime.service.ProfessorService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import java.util.Optional;
 public class ProfessorServiceImpl implements ProfessorService {
 
     private final ProfessorRepository professorRepository;
+    private final CourseRepository courseRepository;
     private final ModelMapper mapper;
 
     // Create Professor
@@ -25,6 +28,17 @@ public class ProfessorServiceImpl implements ProfessorService {
     public ProfessorDto postProfessor(ProfessorDto professorDto) {
         // Convert DTO to Entity
         Professor professor = professorDto.toEntity(mapper);
+
+        // Check if the course is provided and exists, if not, create or retrieve it
+        if (professorDto.getCourse() != null) {
+            Long courseId = professorDto.getCourse().getCourseId();
+            System.out.println("Course Id is : " + courseId);
+            Course course = courseRepository.findById(professorDto.getCourse().getCourseId())
+                    .orElseThrow(() -> new NotFoundException("Course not found with id: " + professorDto.getCourse().getCourseId()));
+
+            // Set the course to the professor
+            professor.setCourse(course);
+        }
 
         // Save Entity
         Professor savedProfessor = professorRepository.save(professor);
@@ -60,6 +74,16 @@ public class ProfessorServiceImpl implements ProfessorService {
     public ProfessorDto updateProfessor(Long id, ProfessorDto professorDto) {
         Professor professor = professorDto.toEntity(mapper);
         professor.setId(id);
+
+        // Check if the course is provided and exists, if not, create or retrieve it
+        if (professorDto.getCourse() != null) {
+            Course course = courseRepository.findById(professorDto.getCourse().getCourseId())
+                    .orElseThrow(() -> new NotFoundException("Course not found with id: " + professorDto.getCourse().getCourseId()));
+
+            // Set the course to the professor
+            professor.setCourse(course);
+        }
+
         Professor savedProfessor = professorRepository.save(professor);
         return savedProfessor.toDto(mapper);
     }

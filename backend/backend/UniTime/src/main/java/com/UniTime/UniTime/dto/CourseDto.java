@@ -5,6 +5,7 @@ import lombok.Data;
 import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 public class CourseDto {
@@ -15,6 +16,10 @@ public class CourseDto {
     private String department;
     private LocalDate startDate;
     private String description;
+
+    // List of professors associated with the course
+    private List<ProfessorDto> professors;
+
 
     // Method to convert CourseDto to Course entity
     public Course toEntity(ModelMapper mapper) {

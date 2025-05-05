@@ -1,12 +1,17 @@
 package com.UniTime.UniTime.entity;
 
+import com.UniTime.UniTime.dto.CourseDto;
+import com.UniTime.UniTime.dto.ProfessorDto;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,9 +25,6 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "course_id", updatable = false, nullable = false)
     private Long courseId;
-
-    @Column(name = "image_path")
-    private String imagePath;
 
     @Column(name = "course_code", nullable = false, length = 50)
     private String courseCode;
@@ -41,4 +43,14 @@ public class Course {
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<Professor> professors;
+
+    public CourseDto toDto(ModelMapper mapper) {
+        CourseDto courseDto = mapper.map(this, CourseDto.class);
+        return courseDto;
+    }
+
 }

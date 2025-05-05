@@ -30,7 +30,7 @@ public class CourseServiceImpl implements CourseService {
         Course savedCourse = courseRepository.save(course);
 
         // Convert back to DTO and return
-        return mapper.map(savedCourse, CourseDto.class);
+        return savedCourse.toDto(mapper);
     }
 
     // Get all courses
@@ -40,7 +40,7 @@ public class CourseServiceImpl implements CourseService {
         if (courseRepositoryAll.isEmpty()) {
             return new ArrayList<>();
         } else {
-            return courseRepositoryAll.stream().map(course -> mapper.map(course, CourseDto.class)).toList();
+            return courseRepositoryAll.stream().map(course -> course.toDto(mapper)).toList();
         }
     }
 
@@ -49,7 +49,7 @@ public class CourseServiceImpl implements CourseService {
     public CourseDto getCourseById(Long id) {
         Optional<Course> course = courseRepository.findById(id);
         if (course.isPresent()) {
-            return mapper.map(course.get(), CourseDto.class);
+            return course.get().toDto(mapper);
         } else {
             throw new NotFoundException("Course not found by this Id");
         }
@@ -61,7 +61,7 @@ public class CourseServiceImpl implements CourseService {
         Course course = mapper.map(courseDto, Course.class);
         course.setCourseId(id);
         Course savedCourse = courseRepository.save(course);
-        return mapper.map(savedCourse, CourseDto.class);
+        return savedCourse.toDto(mapper);
     }
 
     // Delete course
