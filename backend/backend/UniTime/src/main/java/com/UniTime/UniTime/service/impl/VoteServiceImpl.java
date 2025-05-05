@@ -1,8 +1,11 @@
 package com.UniTime.UniTime.service.impl;
 
+import com.UniTime.UniTime.dto.ProfessorDto;
 import com.UniTime.UniTime.dto.VoteDto;
+import com.UniTime.UniTime.entity.Course;
 import com.UniTime.UniTime.entity.Vote;
 import com.UniTime.UniTime.exception.NotFoundException;
+import com.UniTime.UniTime.repository.CourseRepository;
 import com.UniTime.UniTime.repository.VoteRepository;
 import com.UniTime.UniTime.service.VoteService;
 import lombok.RequiredArgsConstructor;
@@ -19,14 +22,17 @@ import java.util.stream.Collectors;
 public class VoteServiceImpl implements VoteService {
 
     private final VoteRepository voteRepository;
+    private final CourseRepository courseRepository;
     private final ModelMapper mapper;
 
     // Create Vote
     @Override
     public VoteDto postVote(VoteDto voteDto) {
-        Vote vote = mapper.map(voteDto, Vote.class);
+        Vote vote = voteDto.toEntity(mapper);
+
+
         Vote savedVote = voteRepository.save(vote);
-        return mapper.map(savedVote, VoteDto.class);
+        return savedVote.toDto(mapper);
     }
 
     // Get All Votes
@@ -37,7 +43,7 @@ public class VoteServiceImpl implements VoteService {
             return new ArrayList<>();
         } else {
             return votes.stream()
-                    .map(vote -> mapper.map(vote, VoteDto.class))
+                    .map(vote -> vote.toDto(mapper))
                     .collect(Collectors.toList());
         }
     }
@@ -47,7 +53,7 @@ public class VoteServiceImpl implements VoteService {
     public VoteDto getVoteById(Long id) {
         Optional<Vote> voteOptional = voteRepository.findById(id);
         if (voteOptional.isPresent()) {
-            return mapper.map(voteOptional.get(), VoteDto.class);
+            return voteOptional.get().toDto(mapper);
         } else {
             throw new NotFoundException("Vote not found with ID: " + id);
         }
@@ -60,11 +66,11 @@ public class VoteServiceImpl implements VoteService {
             throw new NotFoundException("Vote not found with ID: " + id);
         }
 
-        Vote vote = mapper.map(voteDto, Vote.class);
-        vote.setId(id);
+        Vote vote = voteDto.toEntity(mapper);
+        vote.setId(id); // Ensure your Vote entity has a setId(Long id) method
 
         Vote updatedVote = voteRepository.save(vote);
-        return mapper.map(updatedVote, VoteDto.class);
+        return updatedVote.toDto(mapper);
     }
 
     // Delete Vote

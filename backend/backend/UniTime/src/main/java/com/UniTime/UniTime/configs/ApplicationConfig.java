@@ -2,8 +2,10 @@ package com.UniTime.UniTime.configs;
 
 import com.UniTime.UniTime.dto.CourseDto;
 import com.UniTime.UniTime.dto.ProfessorDto;
+import com.UniTime.UniTime.dto.VoteDto;
 import com.UniTime.UniTime.entity.Course;
 import com.UniTime.UniTime.entity.Professor;
+import com.UniTime.UniTime.entity.Vote;
 import com.UniTime.UniTime.repository.CourseRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -33,6 +35,14 @@ public class ApplicationConfig {
 //        });
 //
         modelMapper.addMappings(new PropertyMap<Course, CourseDto>() {
+            @Override
+            protected void configure() {
+                // Skip the professors field to avoid circular reference
+                skip(destination.getProfessors());
+            }
+        });
+
+        modelMapper.addMappings(new PropertyMap<Vote, VoteDto>() {
             @Override
             protected void configure() {
                 // Skip the professors field to avoid circular reference

@@ -1,11 +1,14 @@
 package com.UniTime.UniTime.service.impl;
 
 import com.UniTime.UniTime.dto.ProfessorDto;
+import com.UniTime.UniTime.dto.VoteDto;
 import com.UniTime.UniTime.entity.Course;
 import com.UniTime.UniTime.entity.Professor;
+import com.UniTime.UniTime.entity.Vote;
 import com.UniTime.UniTime.exception.NotFoundException;
 import com.UniTime.UniTime.repository.CourseRepository;
 import com.UniTime.UniTime.repository.ProfessorRepository;
+import com.UniTime.UniTime.repository.VoteRepository;
 import com.UniTime.UniTime.service.ProfessorService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -21,6 +24,7 @@ public class ProfessorServiceImpl implements ProfessorService {
 
     private final ProfessorRepository professorRepository;
     private final CourseRepository courseRepository;
+    private final VoteRepository voteRepository;
     private final ModelMapper mapper;
 
     // Create Professor
@@ -39,6 +43,16 @@ public class ProfessorServiceImpl implements ProfessorService {
             // Set the course to the professor
             professor.setCourse(course);
         }
+
+
+        // 🔹 Handle Vote
+        if (professorDto.getVote() != null && professorDto.getVote().getId() != null) {
+            Long voteId = professorDto.getVote().getId();
+            Vote vote = voteRepository.findById(voteId)
+                    .orElseThrow(() -> new NotFoundException("Vote not found with id: " + voteId));
+            professor.setVote(vote);
+        }
+
 
         // Save Entity
         Professor savedProfessor = professorRepository.save(professor);
@@ -82,6 +96,14 @@ public class ProfessorServiceImpl implements ProfessorService {
 
             // Set the course to the professor
             professor.setCourse(course);
+        }
+
+        // 🔹 Handle Vote
+        if (professorDto.getVote() != null && professorDto.getVote().getId() != null) {
+            Long voteId = professorDto.getVote().getId();
+            Vote vote = voteRepository.findById(voteId)
+                    .orElseThrow(() -> new NotFoundException("Vote not found with id: " + voteId));
+            professor.setVote(vote);
         }
 
         Professor savedProfessor = professorRepository.save(professor);

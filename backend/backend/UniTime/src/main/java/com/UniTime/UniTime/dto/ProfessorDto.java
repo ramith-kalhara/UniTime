@@ -20,6 +20,8 @@ public class ProfessorDto {
     // Add reference to the CourseDto
     private CourseDto course;
 
+    private VoteDto vote;
+
 
     public Professor toEntity(ModelMapper mapper) {
         return mapper.map(this, Professor.class);

@@ -44,6 +44,12 @@ public class Professor {
     @JsonBackReference
     private Course course;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vote_id")
+    @JsonBackReference
+    private Vote vote;
+
+
 
     public ProfessorDto toDto(ModelMapper mapper) {
         ProfessorDto professorDto = mapper.map(this, ProfessorDto.class);
