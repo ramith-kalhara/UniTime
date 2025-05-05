@@ -1,5 +1,6 @@
 package com.UniTime.UniTime.entity;
 
+import com.UniTime.UniTime.dto.CourseDto;
 import com.UniTime.UniTime.dto.ProfessorDto;
 import com.UniTime.UniTime.dto.VoteDto;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -43,9 +44,20 @@ public class Vote {
     @JsonManagedReference
     private List<Professor> professors = new ArrayList<>();
 
+    // Add the relationship with Course
+    @OneToOne
+    @JoinColumn(name = "course_id")
+    private Course course;
+
 
     public VoteDto toDto(ModelMapper mapper) {
         VoteDto voteDto = mapper.map(this, VoteDto.class);
+
+
+        if (this.course != null) {
+            CourseDto courseDto = this.course.toDto(mapper); // ensure this method maps all fields
+            voteDto.setCourse(courseDto);
+        }
         return voteDto;
     }
 

@@ -4,6 +4,7 @@ import com.UniTime.UniTime.dto.CourseDto;
 import com.UniTime.UniTime.dto.ScheduleDto;
 import com.UniTime.UniTime.entity.Course;
 import com.UniTime.UniTime.entity.Schedule;
+import com.UniTime.UniTime.entity.Vote;
 import com.UniTime.UniTime.exception.NotFoundException;
 import com.UniTime.UniTime.repository.CourseRepository;
 import com.UniTime.UniTime.repository.ScheduleRepository;
@@ -51,6 +52,12 @@ public class CourseServiceImpl implements CourseService {
 
         // Set the schedules on the course (cascade will handle saving them)
         course.setSchedules(schedules);
+
+        if (courseDto.getVote() != null) {
+            Vote vote = courseDto.getVote().toEntity(mapper);
+            course.setVote(vote);
+            vote.setCourse(course);
+        }
 
         // Save course and all cascaded schedules
         Course savedCourse = courseRepository.save(course);

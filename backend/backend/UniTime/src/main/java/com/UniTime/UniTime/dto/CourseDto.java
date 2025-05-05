@@ -22,10 +22,16 @@ public class CourseDto {
 
     private List<ScheduleDto> schedules;
 
+    private VoteDto vote;
+
 
     // Method to convert CourseDto to Course entity
     public Course toEntity(ModelMapper mapper) {
+
         Course course = mapper.map(this, Course.class);
+        if (this.vote != null) {
+            course.setVote(this.vote.toEntity(mapper));
+        }
         return course;
     }
 }

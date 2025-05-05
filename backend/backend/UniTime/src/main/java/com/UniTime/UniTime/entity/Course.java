@@ -55,6 +55,9 @@ public class Course {
     @JsonManagedReference
     private List<Schedule> schedules = new ArrayList<>();
 
+    @OneToOne(mappedBy = "course")
+    private Vote vote;
+
     public CourseDto toDto(ModelMapper mapper) {
         CourseDto dto = mapper.map(this, CourseDto.class);
 

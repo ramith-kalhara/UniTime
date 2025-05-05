@@ -20,8 +20,16 @@ public class VoteDto {
 
     private List<ProfessorDto> professors;
 
+    private CourseDto course;
+
+
 
     public Vote toEntity(ModelMapper mapper) {
-        return mapper.map(this, Vote.class);
+        // Convert VoteDto to Vote entity, also converting CourseDto to Course entity
+        Vote vote = mapper.map(this, Vote.class);
+        if (this.course != null) {
+            vote.setCourse(this.course.toEntity(mapper)); // Set the Course entity on Vote
+        }
+        return vote;
     }
 }
