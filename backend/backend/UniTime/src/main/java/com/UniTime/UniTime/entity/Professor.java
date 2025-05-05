@@ -1,12 +1,16 @@
 package com.UniTime.UniTime.entity;
 import com.UniTime.UniTime.dto.ProfessorDto;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.modelmapper.ModelMapper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Setter
 @Getter
@@ -48,6 +52,10 @@ public class Professor {
     @JoinColumn(name = "vote_id")
     @JsonBackReference
     private Vote vote;
+
+    @OneToMany(mappedBy = "professor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<UserVote> studentVotes = new ArrayList<>();
 
 
 

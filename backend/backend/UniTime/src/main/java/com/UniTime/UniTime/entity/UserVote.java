@@ -1,6 +1,7 @@
 package com.UniTime.UniTime.entity;
 
 import com.UniTime.UniTime.dto.UserVoteDto;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,8 +27,10 @@ public class UserVote {
     @Column(name = "user")
     private String user;
 
-    @Column(name = "professor")
-    private String professor;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "professor_id", nullable = false)
+    @JsonBackReference
+    private Professor professor;
 
     public UserVoteDto toDto(ModelMapper mapper) {
         UserVoteDto userVoteDto = mapper.map(this, UserVoteDto.class);

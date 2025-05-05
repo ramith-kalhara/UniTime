@@ -33,7 +33,7 @@ public class ApplicationConfig {
 //                skip(destination.getCourse());
 //            }
 //        });
-//
+
         modelMapper.addMappings(new PropertyMap<Course, CourseDto>() {
             @Override
             protected void configure() {

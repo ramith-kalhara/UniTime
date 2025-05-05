@@ -4,6 +4,8 @@ import com.UniTime.UniTime.entity.Professor;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 
+import java.util.List;
+
 @Data
 public class ProfessorDto {
     private Long id;
@@ -21,6 +23,8 @@ public class ProfessorDto {
     private CourseDto course;
 
     private VoteDto vote;
+
+    private List<UserVoteDto> userVotes;
 
 
     public Professor toEntity(ModelMapper mapper) {
