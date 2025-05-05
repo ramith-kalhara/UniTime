@@ -1,6 +1,8 @@
 package com.UniTime.UniTime.entity;
 
 import com.UniTime.UniTime.dto.ScheduleDto;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.modelmapper.ModelMapper;
@@ -34,8 +36,11 @@ public class Schedule {
     @Column(columnDefinition = "TEXT")
     private String scheduleDescription;
 
-    @ManyToMany(mappedBy = "schedules")
-    private Set<User> users = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    @JsonBackReference
+    private Room room;
+
 
     public ScheduleDto toDto(ModelMapper mapper) {
         return mapper.map(this, ScheduleDto.class);

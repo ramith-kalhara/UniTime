@@ -20,13 +20,13 @@ public class UserVote {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn(name = "vote")
+    @Column(name = "vote")
     private String vote;
 
-    @JoinColumn(name = "user")
+    @Column(name = "user")
     private String user;
 
-    @JoinColumn(name = "professor")
+    @Column(name = "professor")
     private String professor;
 
     public UserVoteDto toDto(ModelMapper mapper) {

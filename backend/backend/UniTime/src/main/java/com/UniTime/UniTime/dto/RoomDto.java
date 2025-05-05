@@ -5,6 +5,8 @@ import jakarta.persistence.Column;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 
+import java.util.List;
+
 @Data
 public class RoomDto {
     private Long id;
@@ -13,7 +15,9 @@ public class RoomDto {
     private int capacity;
     private String roomType;
     private boolean smart_screen;
-//    private String imagePath;
+
+//    private List<ScheduleDto> schedules;
+
 
     public Room toEntity(ModelMapper mapper) {
         Room room = mapper.map(this, Room.class);

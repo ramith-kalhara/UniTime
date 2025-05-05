@@ -37,9 +37,7 @@ public class Vote {
     @Column(name = "module_id", length = 50)
     private String module_id; // Associated module ID
 
-    @Column(name = "professor_id", columnDefinition = "TEXT")
-    @ElementCollection
-    private List<String> professor_id;
+
    // Voted professor ID
     @Column(name = "user_id", length = 50)
     private String user_id;

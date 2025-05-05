@@ -18,7 +18,7 @@ public class VoteDto {
     private String end_time;
     private String description;
     private String module_id;
-    private List<String> professor_id;
+
     private String user_id;
 
 

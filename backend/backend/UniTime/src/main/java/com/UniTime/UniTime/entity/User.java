@@ -29,13 +29,6 @@ public class User {
     private String email;
     private String moduleId;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_schedule",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "schedule_id")
-    )
-    private Set<Schedule> schedules = new HashSet<>();
 
     public UserDto toDto(ModelMapper mapper) {
         return mapper.map(this, UserDto.class);
