@@ -21,8 +21,8 @@ public class Room {
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
-    @Column(name = "image_path")
-    private String imagePath;
+//    @Column(name = "image_path")
+//    private String imagePath;
 
     @Column(name = "department", nullable = false, length = 100)
     private String department;

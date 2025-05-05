@@ -13,7 +13,7 @@ public class RoomDto {
     private int capacity;
     private String roomType;
     private boolean smart_screen;
-    private String imagePath;
+//    private String imagePath;
 
     public Room toEntity(ModelMapper mapper) {
         Room room = mapper.map(this, Room.class);
