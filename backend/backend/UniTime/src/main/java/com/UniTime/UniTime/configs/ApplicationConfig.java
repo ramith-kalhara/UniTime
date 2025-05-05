@@ -50,6 +50,15 @@ public class ApplicationConfig {
             }
         });
 
+        //professor and UserVote
+        modelMapper.addMappings(new PropertyMap<Professor, ProfessorDto>() {
+            @Override
+            protected void configure() {
+                // Skip the professors field to avoid circular reference
+                skip(destination.getUserVote());
+            }
+        });
+
         return modelMapper;
     }
 }

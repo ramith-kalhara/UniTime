@@ -1,8 +1,11 @@
 package com.UniTime.UniTime.service.impl;
 
 import com.UniTime.UniTime.dto.UserVoteDto;
+import com.UniTime.UniTime.entity.Course;
+import com.UniTime.UniTime.entity.Professor;
 import com.UniTime.UniTime.entity.UserVote;
 import com.UniTime.UniTime.exception.NotFoundException;
+import com.UniTime.UniTime.repository.ProfessorRepository;
 import com.UniTime.UniTime.repository.UserVoteRepository;
 import com.UniTime.UniTime.service.UserVoteService;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +21,22 @@ import java.util.Optional;
 public class UserVoteServiceImpl implements UserVoteService {
 
     private final UserVoteRepository userVoteRepository;
+    private final ProfessorRepository professorRepository;
     private final ModelMapper mapper;
 
     // Create vote
     @Override
     public UserVoteDto postUserVote(UserVoteDto voteDto) {
         UserVote vote = voteDto.toEntity(mapper);
+
+        // Associate Professor
+        if (voteDto.getProfessor() != null && voteDto.getProfessor().getId() != null) {
+            Long professorId = voteDto.getProfessor().getId();
+            System.out.println("professorId: " + professorId);
+            Professor professor = professorRepository.findById(professorId)
+                    .orElseThrow(() -> new NotFoundException("Professor not found with id: " + professorId));
+            vote.setProfessor(professor);
+        }
         UserVote savedVote = userVoteRepository.save(vote);
         return savedVote.toDto(mapper);
     }
@@ -55,6 +68,15 @@ public class UserVoteServiceImpl implements UserVoteService {
     public UserVoteDto updateUserVote(Long id, UserVoteDto voteDto) {
         UserVote vote = voteDto.toEntity(mapper);
         vote.setId(id);
+
+        // Associate Professor
+        if (voteDto.getProfessor() != null && voteDto.getProfessor().getId() != null) {
+            Long professorId = voteDto.getProfessor().getId();
+            Professor professor = professorRepository.findById(professorId)
+                    .orElseThrow(() -> new NotFoundException("Professor not found with id: " + professorId));
+            vote.setProfessor(professor);
+        }
+
         UserVote updatedVote = userVoteRepository.save(vote);
         return updatedVote.toDto(mapper);
     }

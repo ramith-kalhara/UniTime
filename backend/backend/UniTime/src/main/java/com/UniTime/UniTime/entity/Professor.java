@@ -55,12 +55,14 @@ public class Professor {
 
     @OneToMany(mappedBy = "professor", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<UserVote> studentVotes = new ArrayList<>();
+    private List<UserVote> userVote = new ArrayList<>();
 
 
 
     public ProfessorDto toDto(ModelMapper mapper) {
         ProfessorDto professorDto = mapper.map(this, ProfessorDto.class);
+
         return professorDto;
     }
+
 }

@@ -4,6 +4,7 @@ import com.UniTime.UniTime.entity.Professor;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -24,10 +25,14 @@ public class ProfessorDto {
 
     private VoteDto vote;
 
-    private List<UserVoteDto> userVotes;
+    private List<UserVoteDto> userVote;
 
 
     public Professor toEntity(ModelMapper mapper) {
-        return mapper.map(this, Professor.class);
+
+        Professor professor = mapper.map(this, Professor.class);
+        professor.setUserVote(new ArrayList<>()); // prevent automatic mapping of user votes
+
+        return professor;
     }
 }
