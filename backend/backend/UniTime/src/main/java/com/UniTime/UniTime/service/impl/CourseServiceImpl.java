@@ -1,9 +1,12 @@
 package com.UniTime.UniTime.service.impl;
 
 import com.UniTime.UniTime.dto.CourseDto;
+import com.UniTime.UniTime.dto.ScheduleDto;
 import com.UniTime.UniTime.entity.Course;
+import com.UniTime.UniTime.entity.Schedule;
 import com.UniTime.UniTime.exception.NotFoundException;
 import com.UniTime.UniTime.repository.CourseRepository;
+import com.UniTime.UniTime.repository.ScheduleRepository;
 import com.UniTime.UniTime.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -18,6 +21,7 @@ import java.util.Optional;
 public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
+    private final ScheduleRepository scheduleRepository;
     private final ModelMapper mapper;
 
     // Create course
@@ -26,12 +30,38 @@ public class CourseServiceImpl implements CourseService {
         // Convert DTO to Entity
         Course course = mapper.map(courseDto, Course.class);
 
-        // Save Entity
+        // Handle new schedules before saving the course
+        List<Schedule> schedules = new ArrayList<>();
+        if (courseDto.getSchedules() != null) {
+            for (ScheduleDto scheduleDto : courseDto.getSchedules()) {
+                // Ensure scheduleId is null for new schedules
+                scheduleDto.setScheduleId(null);  // Explicitly set to null before mapping to the entity
+
+                // If scheduleDto contains an ID, it's an existing schedule, not allowed for a new course
+                if (scheduleDto.getScheduleId() != null) {
+                    throw new IllegalArgumentException("Cannot attach an existing schedule to a new course.");
+                }
+
+                // Create a new schedule from DTO
+                Schedule schedule = mapper.map(scheduleDto, Schedule.class);
+                schedule.setCourse(course); // Link the schedule to the course
+                schedules.add(schedule);
+            }
+        }
+
+        // Set the schedules on the course (cascade will handle saving them)
+        course.setSchedules(schedules);
+
+        // Save course and all cascaded schedules
         Course savedCourse = courseRepository.save(course);
 
-        // Convert back to DTO and return
+        // Return the DTO of the saved course
         return savedCourse.toDto(mapper);
     }
+
+
+
+
 
     // Get all courses
     @Override

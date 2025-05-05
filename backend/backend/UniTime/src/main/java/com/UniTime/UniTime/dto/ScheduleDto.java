@@ -28,9 +28,11 @@ public class ScheduleDto {
 
     private ProfessorDto professor;
 
-
+    private CourseDto course;
 
     public Schedule toEntity(ModelMapper mapper) {
+
+        this.scheduleId = null;
         return mapper.map(this, Schedule.class);
     }
 }

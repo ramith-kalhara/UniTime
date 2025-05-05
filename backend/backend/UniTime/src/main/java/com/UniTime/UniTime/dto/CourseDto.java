@@ -17,8 +17,10 @@ public class CourseDto {
     private LocalDate startDate;
     private String description;
 
-    // List of professors associated with the course
+    // Create ref
     private List<ProfessorDto> professors;
+
+    private List<ScheduleDto> schedules;
 
 
     // Method to convert CourseDto to Course entity

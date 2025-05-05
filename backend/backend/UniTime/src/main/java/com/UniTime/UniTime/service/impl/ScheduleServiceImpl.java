@@ -1,10 +1,12 @@
 package com.UniTime.UniTime.service.impl;
 
 import com.UniTime.UniTime.dto.ScheduleDto;
+import com.UniTime.UniTime.entity.Course;
 import com.UniTime.UniTime.entity.Professor;
 import com.UniTime.UniTime.entity.Room;
 import com.UniTime.UniTime.entity.Schedule;
 import com.UniTime.UniTime.exception.NotFoundException;
+import com.UniTime.UniTime.repository.CourseRepository;
 import com.UniTime.UniTime.repository.ProfessorRepository;
 import com.UniTime.UniTime.repository.RoomRepository;
 import com.UniTime.UniTime.repository.ScheduleRepository;
@@ -23,6 +25,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final RoomRepository roomRepository;
     private final ProfessorRepository professorRepository;
+    private final CourseRepository courseRepository;
 
     private final ModelMapper mapper;
 
@@ -44,6 +47,13 @@ public class ScheduleServiceImpl implements ScheduleService {
             Professor professor = professorRepository.findById(scheduleDto.getProfessor().getId())
                     .orElseThrow(() -> new NotFoundException("Professor not found with id: " + scheduleDto.getProfessor().getId()));
             schedule.setProfessor(professor);
+        }
+
+        // set Course
+        if (scheduleDto.getCourse() != null && scheduleDto.getCourse().getCourseId() != null) {
+            Course course = courseRepository.findById(scheduleDto.getCourse().getCourseId())
+                    .orElseThrow(() -> new NotFoundException("Course not found with id: " + scheduleDto.getProfessor().getId()));
+            schedule.setCourse(course);
         }
 
         // Save the schedule entity

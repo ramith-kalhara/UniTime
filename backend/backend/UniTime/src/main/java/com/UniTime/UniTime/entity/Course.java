@@ -2,6 +2,7 @@ package com.UniTime.UniTime.entity;
 
 import com.UniTime.UniTime.dto.CourseDto;
 import com.UniTime.UniTime.dto.ProfessorDto;
+import com.UniTime.UniTime.dto.ScheduleDto;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,7 +12,9 @@ import lombok.Setter;
 import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -48,9 +51,21 @@ public class Course {
     @JsonManagedReference
     private List<Professor> professors;
 
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Schedule> schedules = new ArrayList<>();
+
     public CourseDto toDto(ModelMapper mapper) {
-        CourseDto courseDto = mapper.map(this, CourseDto.class);
-        return courseDto;
+        CourseDto dto = mapper.map(this, CourseDto.class);
+
+        List<ScheduleDto> scheduleDtos = this.schedules != null ?
+                this.schedules.stream()
+                        .map(schedule -> mapper.map(schedule, ScheduleDto.class))
+                        .collect(Collectors.toList())
+                : new ArrayList<>();
+
+        dto.setSchedules(scheduleDtos);
+        return dto;
     }
 
 }
