@@ -6,15 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="19847b0d-bcff-46ae-82ae-54bcd8684181" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/dto/RoomDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/dto/RoomDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/dto/ScheduleDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/dto/ScheduleDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/dto/VoteDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/dto/VoteDto.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/entity/Room.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/entity/Room.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/entity/Schedule.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/entity/Schedule.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/entity/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/entity/UserVote.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/entity/UserVote.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/entity/Vote.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/entity/Vote.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/service/impl/ScheduleServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/service/impl/ScheduleServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/service/impl/RoomServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/service/impl/RoomServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -43,7 +43,7 @@ public class Room {
     @Column(name = "has_smart_screen", nullable = false)
     private boolean smart_screen;
 
-    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference // Ensures the schedule is serialized correctly
     private List<Schedule> schedules;
 
