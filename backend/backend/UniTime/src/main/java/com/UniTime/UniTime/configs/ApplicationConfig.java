@@ -74,6 +74,7 @@ public class ApplicationConfig {
                 // Skip the professors field to avoid circular reference
                 skip(destination.getUserVotes());
                 skip(destination.getCourses());
+                skip(destination.getSchedules());
 
             }
         });

@@ -1,6 +1,7 @@
 package com.UniTime.UniTime.entity;
 
 import com.UniTime.UniTime.dto.CourseDto;
+import com.UniTime.UniTime.dto.ScheduleDto;
 import com.UniTime.UniTime.dto.UserDto;
 import com.UniTime.UniTime.dto.UserVoteDto;
 import jakarta.persistence.*;
@@ -42,7 +43,13 @@ public class User {
     )
     private List<Course> courses = new ArrayList<>();
 
-
+    @ManyToMany
+    @JoinTable(
+            name = "user_schedules",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "schedule_id")
+    )
+    private List<Schedule> schedules = new ArrayList<>();
 
 
     public UserDto toDto(ModelMapper mapper) {
@@ -64,6 +71,15 @@ public class User {
                     .collect(Collectors.toList());
             dto.setUserVotes(uvDtos);
         }
+
+        // Map the many-to-many schedules → List<ScheduleDto>
+        if (this.getSchedules() != null) {
+            List<ScheduleDto> schedDtos = this.getSchedules().stream()
+                    .map(s -> mapper.map(s, ScheduleDto.class))
+                    .collect(Collectors.toList());
+            dto.setSchedules(schedDtos);
+        }
+
 
         return dto;
     }

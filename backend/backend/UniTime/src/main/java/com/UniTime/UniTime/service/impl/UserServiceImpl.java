@@ -1,6 +1,7 @@
 package com.UniTime.UniTime.service.impl;
 
 import com.UniTime.UniTime.dto.CourseDto;
+import com.UniTime.UniTime.dto.ScheduleDto;
 import com.UniTime.UniTime.dto.UserDto;
 import com.UniTime.UniTime.dto.UserVoteDto;
 import com.UniTime.UniTime.entity.*;
@@ -24,6 +25,7 @@ public class UserServiceImpl implements UserService {
     private final ProfessorRepository  professorRepository;
     private final VoteRepository voteRepository;
     private final CourseRepository courseRepository;
+    private final ScheduleRepository scheduleRepository;
     private final ModelMapper mapper;
 
     //create user
@@ -54,6 +56,7 @@ public class UserServiceImpl implements UserService {
                     uv.setVote(vote);
                 }
 
+                //many to many user and course
                 if (userDto.getCourses() != null && !userDto.getCourses().isEmpty()) {
                     List<Course> courses = new ArrayList<>();
                     for (CourseDto cd : userDto.getCourses()) {
@@ -68,6 +71,22 @@ public class UserServiceImpl implements UserService {
                         course.getUsers().add(user);
                     }
                     user.setCourses(courses);
+                }
+
+                if (userDto.getSchedules() != null && !userDto.getSchedules().isEmpty()) {
+                    List<Schedule> schedules = new ArrayList<>();
+                    for (ScheduleDto sd : userDto.getSchedules()) {
+                        if (sd.getScheduleId() == null) {
+                            throw new IllegalArgumentException("Schedule ID is required to enroll user.");
+                        }
+                        Schedule schedule = scheduleRepository.findById(sd.getScheduleId())
+                                .orElseThrow(() -> new NotFoundException("Schedule not found with id: " + sd.getScheduleId()));
+                        schedules.add(schedule);
+
+                        // maintain inverse side (optional, but keeps the in-memory model consistent)
+                        schedule.getUsers().add(user);
+                    }
+                    user.setSchedules(schedules);
                 }
 
                 // Link back to the new User

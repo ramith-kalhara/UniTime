@@ -7,6 +7,8 @@ import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -29,6 +31,8 @@ public class ScheduleDto {
     private ProfessorDto professor;
 
     private CourseDto course;
+
+    private List<UserDto> users = new ArrayList<>();
 
     public Schedule toEntity(ModelMapper mapper) {
 

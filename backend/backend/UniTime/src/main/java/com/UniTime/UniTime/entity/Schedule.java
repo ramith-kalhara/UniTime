@@ -1,6 +1,7 @@
 package com.UniTime.UniTime.entity;
 
 import com.UniTime.UniTime.dto.ScheduleDto;
+import com.UniTime.UniTime.dto.UserDto;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -9,8 +10,11 @@ import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -51,9 +55,22 @@ public class Schedule {
     @JsonBackReference
     private Course course;
 
+    @ManyToMany(mappedBy = "schedules")
+    private List<User> users = new ArrayList<>();
+
 
 
     public ScheduleDto toDto(ModelMapper mapper) {
+        ScheduleDto dto = mapper.map(this, ScheduleDto.class);
+
+        // Map the many-to-many users → List<UserDto>
+        if (this.getUsers() != null) {
+            List<UserDto> userDtos = this.getUsers().stream()
+                    .map(u -> mapper.map(u, UserDto.class))
+                    .collect(Collectors.toList());
+            dto.setUsers(userDtos);
+        }
+
         return mapper.map(this, ScheduleDto.class);
     }
 }
