@@ -21,9 +21,6 @@ public class UserVote {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user")
-    private String user;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "professor_id", nullable = false)
     @JsonBackReference
@@ -33,6 +30,15 @@ public class UserVote {
     @JoinColumn(name = "vote_id", nullable = false)
     @JsonBackReference
     private Vote vote;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+
+
+
+
 
     public UserVoteDto toDto(ModelMapper mapper) {
         UserVoteDto userVoteDto = mapper.map(this, UserVoteDto.class);

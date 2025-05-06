@@ -4,6 +4,8 @@ import com.UniTime.UniTime.entity.User;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 
+import java.util.List;
+
 @Data
 public class UserDto {
 
@@ -12,10 +14,10 @@ public class UserDto {
     private String lastName;
     private String tpNum;
     private String password;
-    private String bookRoomId;
-    private String courseId;
     private String email;
-    private String moduleId;
+
+    private List<UserVoteDto> userVotes;
+
 
     // Convert UserDto to User entity
     public User toEntity(ModelMapper mapper) {

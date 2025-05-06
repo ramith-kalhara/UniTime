@@ -1,12 +1,10 @@
 package com.UniTime.UniTime.service.impl;
 
 import com.UniTime.UniTime.dto.UserVoteDto;
-import com.UniTime.UniTime.entity.Course;
-import com.UniTime.UniTime.entity.Professor;
-import com.UniTime.UniTime.entity.UserVote;
-import com.UniTime.UniTime.entity.Vote;
+import com.UniTime.UniTime.entity.*;
 import com.UniTime.UniTime.exception.NotFoundException;
 import com.UniTime.UniTime.repository.ProfessorRepository;
+import com.UniTime.UniTime.repository.UserRepository;
 import com.UniTime.UniTime.repository.UserVoteRepository;
 import com.UniTime.UniTime.repository.VoteRepository;
 import com.UniTime.UniTime.service.UserVoteService;
@@ -25,6 +23,7 @@ public class UserVoteServiceImpl implements UserVoteService {
     private final UserVoteRepository userVoteRepository;
     private final ProfessorRepository professorRepository;
     private final VoteRepository voteRepository;
+    private final UserRepository userRepository;
     private final ModelMapper mapper;
 
     // Create vote
@@ -49,6 +48,15 @@ public class UserVoteServiceImpl implements UserVoteService {
                     .orElseThrow(() -> new NotFoundException("Vote not found with id: " + voteId));
             vote.setVote(existingVote);
         }
+
+        // Associate User
+        if (voteDto.getUser() != null && voteDto.getUser().getId() != null) {
+            Long userId = voteDto.getUser().getId();
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
+            vote.setUser(user);
+        }
+
 
         UserVote savedVote = userVoteRepository.save(vote);
         return savedVote.toDto(mapper);

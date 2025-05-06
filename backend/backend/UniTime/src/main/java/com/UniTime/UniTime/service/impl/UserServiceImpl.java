@@ -1,10 +1,18 @@
 package com.UniTime.UniTime.service.impl;
 
 import com.UniTime.UniTime.dto.UserDto;
+import com.UniTime.UniTime.dto.UserVoteDto;
+import com.UniTime.UniTime.entity.Professor;
 import com.UniTime.UniTime.entity.User;
+import com.UniTime.UniTime.entity.UserVote;
+import com.UniTime.UniTime.entity.Vote;
 import com.UniTime.UniTime.exception.NotFoundException;
+import com.UniTime.UniTime.repository.ProfessorRepository;
 import com.UniTime.UniTime.repository.UserRepository;
+import com.UniTime.UniTime.repository.UserVoteRepository;
+import com.UniTime.UniTime.repository.VoteRepository;
 import com.UniTime.UniTime.service.UserService;
+import com.UniTime.UniTime.service.UserVoteService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -17,20 +25,56 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final UserVoteRepository userVoteRepository;
+    private final ProfessorRepository  professorRepository;
+    private final VoteRepository voteRepository;
     private final ModelMapper mapper;
 
     //create user
     @Override
     public UserDto postUser(UserDto userDto) {
-        // Convert DTO to Entity
+        // 1️⃣ Map the User (no save yet)
         User user = mapper.map(userDto, User.class);
 
-        // Save Entity
-        User savedUser = userRepository.save(user);
+        // 2️⃣ Build the UserVote list before saving
+        if (userDto.getUserVotes() != null && !userDto.getUserVotes().isEmpty()) {
+            List<UserVote> uvs = new ArrayList<>();
+            System.out.println("User Votes " + userDto.getUserVotes());
+            for (UserVoteDto uvDto : userDto.getUserVotes()) {
+                // Create fresh UserVote
+                UserVote uv = new UserVote();
 
-        // Convert back to DTO and return
-        return mapper.map(savedUser, UserDto.class);
+                // Associate Professor if provided
+                if (uvDto.getProfessor() != null && uvDto.getProfessor().getId() != null) {
+                    Professor prof = professorRepository.findById(uvDto.getProfessor().getId())
+                            .orElseThrow(() -> new NotFoundException("Professor not found"));
+                    uv.setProfessor(prof);
+                }
+
+                // Associate Vote (master) if provided
+                if (uvDto.getVote() != null && uvDto.getVote().getId() != null) {
+                    Vote vote = voteRepository.findById(uvDto.getVote().getId())
+                            .orElseThrow(() -> new NotFoundException("Vote not found"));
+                    uv.setVote(vote);
+                }
+
+                // Link back to the new User
+                uv.setUser(user);
+
+                uvs.add(uv);
+            }
+            user.setUserVotes(uvs);
+        }
+
+        // 3️⃣ Now save the User (cascades to userVotes)
+        User saved = userRepository.save(user);
+
+        // 4️⃣ Return the DTO
+        return saved.toDto(mapper);
     }
+
+
+
 
     //get all users
     @Override

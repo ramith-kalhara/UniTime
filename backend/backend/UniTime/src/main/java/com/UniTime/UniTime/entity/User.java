@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.modelmapper.ModelMapper;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -24,10 +26,12 @@ public class User {
     private String lastName;
     private String tpNum;
     private String password;
-    private String bookRoomId;
-    private String courseId;
     private String email;
-    private String moduleId;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserVote> userVotes = new ArrayList<>();
+
+
 
 
     public UserDto toDto(ModelMapper mapper) {
