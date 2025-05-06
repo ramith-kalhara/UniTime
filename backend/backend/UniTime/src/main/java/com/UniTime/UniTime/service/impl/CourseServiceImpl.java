@@ -117,6 +117,50 @@ public class CourseServiceImpl implements CourseService {
     public CourseDto updateCourse(Long id, CourseDto courseDto) {
         Course course = mapper.map(courseDto, Course.class);
         course.setCourseId(id);
+
+        // Handle new schedules before saving the course
+        List<Schedule> schedules = new ArrayList<>();
+        if (courseDto.getSchedules() != null) {
+            for (ScheduleDto scheduleDto : courseDto.getSchedules()) {
+                // Ensure scheduleId is null for new schedules
+                scheduleDto.setScheduleId(null);  // Explicitly set to null before mapping to the entity
+
+                // If scheduleDto contains an ID, it's an existing schedule, not allowed for a new course
+                if (scheduleDto.getScheduleId() != null) {
+                    throw new IllegalArgumentException("Cannot attach an existing schedule to a new course.");
+                }
+
+                // Create a new schedule from DTO
+                Schedule schedule = mapper.map(scheduleDto, Schedule.class);
+                schedule.setCourse(course); // Link the schedule to the course
+                schedules.add(schedule);
+            }
+        }
+
+        //  Handle many-to-many Users
+        if (courseDto.getUsers() != null && !courseDto.getUsers().isEmpty()) {
+            List<User> users = new ArrayList<>();
+            for (UserDto ud : courseDto.getUsers()) {
+                if (ud.getId() == null) {
+                    throw new IllegalArgumentException("User ID is required to enroll in course.");
+                }
+                User user = userRepository.findById(ud.getId())
+                        .orElseThrow(() -> new NotFoundException("User not found with id: " + ud.getId()));
+                users.add(user);
+                // maintain the inverse side (optional)
+                user.getCourses().add(course);
+            }
+            course.setUsers(users);
+        }
+
+        // Set the schedules on the course (cascade will handle saving them)
+        course.setSchedules(schedules);
+
+        if (courseDto.getVote() != null) {
+            Vote vote = courseDto.getVote().toEntity(mapper);
+            course.setVote(vote);
+            vote.setCourse(course);
+        }
         Course savedCourse = courseRepository.save(course);
         return savedCourse.toDto(mapper);
     }

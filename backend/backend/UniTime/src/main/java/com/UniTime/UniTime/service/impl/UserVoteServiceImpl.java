@@ -91,12 +91,31 @@ public class UserVoteServiceImpl implements UserVoteService {
         UserVote vote = voteDto.toEntity(mapper);
         vote.setId(id);
 
+
         // Associate Professor
         if (voteDto.getProfessor() != null && voteDto.getProfessor().getId() != null) {
             Long professorId = voteDto.getProfessor().getId();
+            System.out.println("professorId: " + professorId);
             Professor professor = professorRepository.findById(professorId)
                     .orElseThrow(() -> new NotFoundException("Professor not found with id: " + professorId));
             vote.setProfessor(professor);
+        }
+
+        // Associate Vote
+        if (voteDto.getVote() != null && voteDto.getVote().getId() != null) {
+            Long voteId = voteDto.getVote().getId();
+            System.out.println("voteId: " + voteId);
+            Vote existingVote = voteRepository.findById(voteId)
+                    .orElseThrow(() -> new NotFoundException("Vote not found with id: " + voteId));
+            vote.setVote(existingVote);
+        }
+
+        // Associate User
+        if (voteDto.getUser() != null && voteDto.getUser().getId() != null) {
+            Long userId = voteDto.getUser().getId();
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
+            vote.setUser(user);
         }
 
         UserVote updatedVote = userVoteRepository.save(vote);

@@ -144,7 +144,52 @@ public class ProfessorServiceImpl implements ProfessorService {
             professor.setVote(vote);
         }
 
+        // Handle UserVotes manually
+        List<UserVote> userVotes = new ArrayList<>();
+        if (professorDto.getUserVote() != null) {
+            for (UserVoteDto userVoteDto : professorDto.getUserVote()) {
+                UserVote userVote = new UserVote();
+                userVote.setProfessor(professor); // attach the professor reference
+                userVotes.add(userVote);
+            }
+        }
+        professor.setUserVote(userVotes); // attach votes to professor
+
+        // Save professor first to get the ID (important before setting relationships that need ID)
         Professor savedProfessor = professorRepository.save(professor);
+
+        // Handle schedules after saving professor
+        List<Schedule> schedules = new ArrayList<>();
+        if (professorDto.getSchedules() != null) {
+            for (ScheduleDto scheduleDto : professorDto.getSchedules()) {
+                Schedule schedule;
+
+                if (scheduleDto.getScheduleId() != null) {
+                    // Fetch and update existing schedule
+                    schedule = scheduleRepository.findById(scheduleDto.getScheduleId())
+                            .orElseThrow(() -> new NotFoundException("Schedule not found with id: " + scheduleDto.getScheduleId()));
+                } else {
+                    // Create new schedule from DTO
+                    schedule = mapper.map(scheduleDto, Schedule.class);
+                }
+
+                // Set the professor (new or existing)
+                schedule.setProfessor(savedProfessor);
+                schedules.add(schedule);
+            }
+
+            // Save all new or updated schedules
+            scheduleRepository.saveAll(schedules);
+            System.out.println("Final Schedule Entities: " + schedules);
+
+        }
+
+
+        // Now update savedProfessor with the schedule list (optional)
+        savedProfessor.setSchedules(schedules);
+        System.out.println( "Schedule : " + schedules);
+
+//        Professor savedProfessor = professorRepository.save(professor);
         return savedProfessor.toDto(mapper);
     }
 

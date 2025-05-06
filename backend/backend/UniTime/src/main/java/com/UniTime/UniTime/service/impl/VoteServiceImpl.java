@@ -92,11 +92,8 @@ public class VoteServiceImpl implements VoteService {
             }
         }
 
-// Attach to vote
+        // Attach to vote
         vote.setUserVotes(userVoteEntities);
-
-
-
 
 
         Vote savedVote = voteRepository.save(vote);
@@ -137,6 +134,63 @@ public class VoteServiceImpl implements VoteService {
 
         Vote vote = voteDto.toEntity(mapper);
         vote.setId(id); // Ensure your Vote entity has a setId(Long id) method
+
+        // Set associated course properly
+        if (voteDto.getCourse() != null) {
+            Course course = voteDto.getCourse().toEntity(mapper);
+            vote.setCourse(course);
+            course.setVote(vote);
+        }
+
+        // Fetch existing professors and associate them
+        if (voteDto.getProfessors() != null && !voteDto.getProfessors().isEmpty()) {
+            List<Professor> attachedProfessors = new ArrayList<>();
+            for (ProfessorDto professorDto : voteDto.getProfessors()) {
+                if (professorDto.getId() == null) {
+                    throw new IllegalArgumentException("Professor ID must not be null when attaching to a vote.");
+                }
+
+                // Fetch existing professor from DB
+                Professor professor = professorRepository.findById(professorDto.getId())
+                        .orElseThrow(() -> new EntityNotFoundException("Professor not found with ID: " + professorDto.getId()));
+
+                // Set the vote for the professor
+                professor.setVote(vote);
+                attachedProfessors.add(professor);
+            }
+            vote.setProfessors(attachedProfessors);
+        }
+
+        List<UserVote> userVoteEntities = new ArrayList<>();
+
+        if (voteDto.getUserVotes() != null) {
+            for (UserVoteDto userVoteDto : voteDto.getUserVotes()) {
+                // Treat as new entity: clear any ID
+                userVoteDto.setId(null);  // optional, if your DTO has an ID field
+
+                // Ensure professor is valid
+                if (userVoteDto.getProfessor() == null || userVoteDto.getProfessor().getId() == null) {
+                    throw new IllegalArgumentException("Each UserVote must reference a valid professor.");
+                }
+
+                // Fetch professor from DB
+                Professor professor = professorRepository.findById(userVoteDto.getProfessor().getId())
+                        .orElseThrow(() -> new EntityNotFoundException(
+                                "Professor not found with ID: " + userVoteDto.getProfessor().getId()));
+
+                // Map UserVoteDto to entity
+                UserVote userVote = mapper.map(userVoteDto, UserVote.class);
+
+                // Set foreign keys
+                userVote.setProfessor(professor);
+                userVote.setVote(vote);
+
+                userVoteEntities.add(userVote);
+            }
+        }
+
+        // Attach to vote
+        vote.setUserVotes(userVoteEntities);
 
         Vote updatedVote = voteRepository.save(vote);
         return updatedVote.toDto(mapper);

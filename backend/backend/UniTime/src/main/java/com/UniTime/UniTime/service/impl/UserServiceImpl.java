@@ -134,6 +134,69 @@ public class UserServiceImpl implements UserService {
     public UserDto updateUser(Long id, UserDto userDto) {
         User user = mapper.map(userDto, User.class);
         user.setId(id);
+
+        //  Build the UserVote list before saving
+        if (userDto.getUserVotes() != null && !userDto.getUserVotes().isEmpty()) {
+            List<UserVote> uvs = new ArrayList<>();
+            System.out.println("User Votes " + userDto.getUserVotes());
+            for (UserVoteDto uvDto : userDto.getUserVotes()) {
+                // Create fresh UserVote
+                UserVote uv = new UserVote();
+
+                // Associate Professor if provided
+                if (uvDto.getProfessor() != null && uvDto.getProfessor().getId() != null) {
+                    Professor prof = professorRepository.findById(uvDto.getProfessor().getId())
+                            .orElseThrow(() -> new NotFoundException("Professor not found"));
+                    uv.setProfessor(prof);
+                }
+
+                // Associate Vote (master) if provided
+                if (uvDto.getVote() != null && uvDto.getVote().getId() != null) {
+                    Vote vote = voteRepository.findById(uvDto.getVote().getId())
+                            .orElseThrow(() -> new NotFoundException("Vote not found"));
+                    uv.setVote(vote);
+                }
+
+                //many to many user and course
+                if (userDto.getCourses() != null && !userDto.getCourses().isEmpty()) {
+                    List<Course> courses = new ArrayList<>();
+                    for (CourseDto cd : userDto.getCourses()) {
+                        if (cd.getCourseId() == null) {
+                            throw new IllegalArgumentException("Course ID is required to enroll user.");
+                        }
+                        Course course = courseRepository.findById(cd.getCourseId())
+                                .orElseThrow(() -> new NotFoundException("Course not found with id: " + cd.getCourseId()));
+                        courses.add(course);
+
+                        // maintain inverse side (optional, but keeps the in-memory model consistent)
+                        course.getUsers().add(user);
+                    }
+                    user.setCourses(courses);
+                }
+
+                if (userDto.getSchedules() != null && !userDto.getSchedules().isEmpty()) {
+                    List<Schedule> schedules = new ArrayList<>();
+                    for (ScheduleDto sd : userDto.getSchedules()) {
+                        if (sd.getScheduleId() == null) {
+                            throw new IllegalArgumentException("Schedule ID is required to enroll user.");
+                        }
+                        Schedule schedule = scheduleRepository.findById(sd.getScheduleId())
+                                .orElseThrow(() -> new NotFoundException("Schedule not found with id: " + sd.getScheduleId()));
+                        schedules.add(schedule);
+
+                        // maintain inverse side (optional, but keeps the in-memory model consistent)
+                        schedule.getUsers().add(user);
+                    }
+                    user.setSchedules(schedules);
+                }
+
+                // Link back to the new User
+                uv.setUser(user);
+
+                uvs.add(uv);
+            }
+            user.setUserVotes(uvs);
+        }
         User savedUser = userRepository.save(user);
         return mapper.map(savedUser, UserDto.class);
     }

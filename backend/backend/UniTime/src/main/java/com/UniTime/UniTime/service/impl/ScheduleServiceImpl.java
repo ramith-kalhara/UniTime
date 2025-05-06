@@ -105,12 +105,45 @@ public class ScheduleServiceImpl implements ScheduleService {
         Schedule schedule = scheduleDto.toEntity(mapper);
         schedule.setScheduleId(id);
 
-        //check room and schedule relation
+
+        // Check if the room is provided in the DTO and set it
         if (scheduleDto.getRoom() != null && scheduleDto.getRoom().getId() != null) {
             Room room = roomRepository.findById(scheduleDto.getRoom().getId())
                     .orElseThrow(() -> new NotFoundException("Room not found with id: " + scheduleDto.getRoom().getId()));
-            schedule.setRoom(room);
+            schedule.setRoom(room); // Set the room in the schedule
         }
+
+        //  Set Professor
+        if (scheduleDto.getProfessor() != null && scheduleDto.getProfessor().getId() != null) {
+            Professor professor = professorRepository.findById(scheduleDto.getProfessor().getId())
+                    .orElseThrow(() -> new NotFoundException("Professor not found with id: " + scheduleDto.getProfessor().getId()));
+            schedule.setProfessor(professor);
+        }
+
+        // set Course
+        if (scheduleDto.getCourse() != null && scheduleDto.getCourse().getCourseId() != null) {
+            Course course = courseRepository.findById(scheduleDto.getCourse().getCourseId())
+                    .orElseThrow(() -> new NotFoundException("Course not found with id: " + scheduleDto.getProfessor().getId()));
+            schedule.setCourse(course);
+        }
+        //set schedule and user many to many
+        if (scheduleDto.getUsers() != null && !scheduleDto.getUsers().isEmpty()) {
+            List<User> attendees = new ArrayList<>();
+            for (UserDto ud : scheduleDto.getUsers()) {
+                if (ud.getId() == null) {
+                    throw new IllegalArgumentException("User ID is required to enroll in schedule.");
+                }
+                // fetch the existing User
+                User user = userRepository.findById(ud.getId())
+                        .orElseThrow(() -> new NotFoundException("User not found with id: " + ud.getId()));
+                attendees.add(user);
+
+                // maintain inverse side
+                user.getSchedules().add(schedule);
+            }
+            schedule.setUsers(attendees);
+        }
+
 
 
         Schedule savedSchedule = scheduleRepository.save(schedule);
