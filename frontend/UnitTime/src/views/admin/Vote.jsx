@@ -39,11 +39,11 @@ const Vote = () => {
     updatedProfessors[index] = value;
     setFormValues({ ...formValues, professor: updatedProfessors });
   };
-  
+
   const addProfessorField = () => {
     setFormValues({ ...formValues, professor: [...formValues.professor, ''] });
   };
-  
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,7 +52,7 @@ const Vote = () => {
           fetch("http://localhost:8086/api/course/"),
           fetch("http://localhost:8086/api/professor/")
         ]);
-  
+
         if (courseRes.ok && professorRes.ok) {
           const courseData = await courseRes.json();
           const professorData = await professorRes.json();
@@ -65,10 +65,10 @@ const Vote = () => {
         console.error("Error fetching data:", error);
       }
     };
-  
+
     fetchData();
   }, []);
-  
+
 
 
 
@@ -299,10 +299,10 @@ const Vote = () => {
                           >
                             <option value={formValues.moduleCode || ''}>Select Module Code</option>
                             {courseCodes.map((course) => (
-  <option key={course.courseId} value={course.courseId}>
-    {course.courseCode}
-  </option>
-))}
+                              <option key={course.courseId} value={course.courseId}>
+                                {course.courseCode}
+                              </option>
+                            ))}
 
                           </Input>
                         </FormGroup>
@@ -365,42 +365,42 @@ const Vote = () => {
                   <h6 className="heading-small text-muted mb-4">Vote Time & Date Information</h6>
                   <div className="pl-lg-4">
                     <Row>
-                    <Col lg="6">
-  <FormGroup>
-    <label htmlFor="professor">Professors</label>
-    {formValues.professor.map((selectedProfId, index) => (
-      <div key={index} className="mb-2">
-        <Input
-          type="select"
-          name={`professor-${index}`}
-          className="form-control"
-          value={selectedProfId}
-          onChange={(e) => handleProfessorChange(index, e.target.value)}
-        >
-          <option value="">-- Select Professor --</option>
-          {professors.map((prof) => (
-            <option key={prof.id} value={prof.id}>
-              {prof.full_name}
-            </option>
-          ))}
-        </Input>
-      </div>
-    ))}
-    <Button type="button" color="secondary" onClick={addProfessorField}>
-      + Add Professor
-    </Button>
-  </FormGroup>
+                      <Col lg="6">
+                        <FormGroup>
+                          <label htmlFor="professor">Professors</label>
+                          {formValues.professor.map((selectedProfId, index) => (
+                            <div key={index} className="mb-2">
+                              <Input
+                                type="select"
+                                name={`professor-${index}`}
+                                className="form-control"
+                                value={selectedProfId}
+                                onChange={(e) => handleProfessorChange(index, e.target.value)}
+                              >
+                                <option value="">-- Select Professor --</option>
+                                {professors.map((prof) => (
+                                  <option key={prof.id} value={prof.id}>
+                                    {prof.full_name}
+                                  </option>
+                                ))}
+                              </Input>
+                            </div>
+                          ))}
+                          <Button type="button" color="secondary" onClick={addProfessorField}>
+                            + Add Professor
+                          </Button>
+                        </FormGroup>
 
-  {/* Show selected professor names */}
-  {formValues.professor.some(id => id) && (
-    <ul className="mt-2">
-      {formValues.professor.map((id, idx) => {
-        const prof = professors.find(p => p.id === id);
-        return id ? <li key={idx}>{prof?.full_name || id}</li> : null;
-      })}
-    </ul>
-  )}
-</Col>
+                        {/* Show selected professor names */}
+                        {formValues.professor.some(id => id) && (
+                          <ul className="mt-2">
+                            {formValues.professor.map((id, idx) => {
+                              const prof = professors.find(p => p.id === id);
+                              return id ? <li key={idx}>{prof?.full_name || id}</li> : null;
+                            })}
+                          </ul>
+                        )}
+                      </Col>
 
 
 

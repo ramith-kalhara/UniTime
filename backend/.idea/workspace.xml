@@ -4,10 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="19847b0d-bcff-46ae-82ae-54bcd8684181" name="Changes" comment="">
+    <list default="true" id="bc4b7341-ab38-479e-ab15-ab890ef48ab2" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/service/impl/VoteServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/service/impl/VoteServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/UnitTime/src/views/admin/Room.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/UnitTime/src/views/admin/Room.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/UnitTime/src/views/admin/Professor.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/UnitTime/src/views/admin/Professor.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/UnitTime/src/views/admin/Schedule.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/UnitTime/src/views/admin/Schedule.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/UnitTime/src/views/admin/Vote.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/UnitTime/src/views/admin/Vote.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,101 +17,15 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
-    <favorite-branches>
-      <branch-storage>
-        <map>
-          <entry type="LOCAL">
-            <value>
-              <list>
-                <branch-info repo="$PROJECT_DIR$/.." source="danuk001" />
-              </list>
-            </value>
-          </entry>
-        </map>
-      </branch-storage>
-    </favorite-branches>
-    <option name="RECENT_BRANCH_BY_REPOSITORY">
-      <map>
-        <entry key="$PROJECT_DIR$/.." value="danuk001" />
-      </map>
-    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;DanukBiyanwila&quot;
-  }
-}</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/ramith-kalhara/UniTime.git&quot;,
-    &quot;accountId&quot;: &quot;6a787b53-dc99-4b40-aa26-64a33e758abd&quot;
-  }
-}</component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 8
-}</component>
-  <component name="ProjectId" id="2v21PfvOsZXA0j2Tt4t77cZep9F" />
-  <component name="ProjectViewState">
-    <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showLibraryContents" value="true" />
-  </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;Spring Boot.UniTimeApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;relationship&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "git-widget-placeholder": "Ramith1.3",
+    "node.js.selected.package.tslint": "(autodetect)"
   }
 }]]></component>
-  <component name="RunManager">
-    <configuration name="UniTimeApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
-      <module name="UniTime" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="com.UniTime.UniTime.UniTimeApplication" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-  </component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26053.27" />
-        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.26053.27" />
-      </set>
-    </attachedChunks>
-  </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
-    <task active="true" id="Default" summary="Default task">
-      <changelist id="0588b268-76d3-40e4-a287-b8e8566ff2fb" name="Changes" comment="" />
-      <created>1743328331756</created>
-      <option name="number" value="Default" />
-      <option name="presentableId" value="Default" />
-      <updated>1743328331756</updated>
-      <workItem from="1743328332875" duration="12331000" />
-      <workItem from="1743860118354" duration="3528000" />
-      <workItem from="1743877780932" duration="955000" />
-      <workItem from="1743879018863" duration="130000" />
-    </task>
     <servers />
-  </component>
-  <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="3" />
   </component>
 </project>

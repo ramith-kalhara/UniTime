@@ -69,7 +69,7 @@ const Schedule = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    // Validate fields
+    // Validation
     if (!roomNumber || !professor_name || !lecture_title || !module_code) {
       Swal.fire({
         icon: "error",
@@ -98,22 +98,67 @@ const Schedule = () => {
       return;
     }
   
+    // Construct data
     const scheduleData = {
       roomNumber,
       professorName: professor_name,
-      lectureTitle: lecture_title,
+      capacity: parseInt(capacity),
       moduleCode: module_code,
-      capacity: parseInt(capacity), // convert to number
+      lectureTitle: lecture_title,
+      startDate: dayjs(startDate).format("YYYY-MM-DD"),
+      startTime: dayjs(startTime).format("HH:mm:ss"),
+      endTime: dayjs(endTime).format("HH:mm:ss"),
       scheduleDescription: schedule_description,
-      startDate: dayjs(startDate).format("YYYY-MM-DD"), // LocalDate
-      startTime: dayjs(startTime).format("HH:mm:ss"),   // LocalTime
-      endTime: dayjs(endTime).format("HH:mm:ss"),       // LocalTime
-    };
-    
-   
   
-    
+      // These should come from state or props ideally
+      room: {
+        id: 2
+      },
+      professor: {
+        id: 1
+      },
+      course: {
+        courseId: 3
+      },
+      users: [
+        {
+          id: 2
+        }
+      ]
+    };
+  
+    try {
+      const response = await fetch("http://localhost:8086/api/schedule/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(scheduleData)
+      });
+  
+      if (!response.ok) {
+        throw new Error("Schedule creation failed");
+      }
+  
+      Swal.fire({
+        icon: "success",
+        title: "Schedule Created",
+        text: "Schedule successfully added!"
+      });
+  
+      // Reset fields
+      // Reset logic here...
+  
+    } catch (error) {
+      console.error("Error:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to create schedule. Please try again."
+      });
+    }
   };
+  
   
   
   return (
@@ -223,6 +268,21 @@ const Schedule = () => {
                 </Row>
               </CardHeader>
               <CardBody>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 <Form onSubmit={handleSubmit}>
                   <h6 className="heading-small text-muted mb-4">Schedule Information</h6>
                   <div className="pl-lg-4">
