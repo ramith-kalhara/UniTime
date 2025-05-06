@@ -14,6 +14,7 @@ import com.UniTime.UniTime.repository.UserVoteRepository;
 import com.UniTime.UniTime.repository.VoteRepository;
 import com.UniTime.UniTime.service.VoteService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -198,11 +199,34 @@ public class VoteServiceImpl implements VoteService {
 
     // Delete Vote
     @Override
+    @Transactional
     public Boolean deleteVote(Long id) {
-        if (!voteRepository.existsById(id)) {
-            throw new NotFoundException("Vote not found with ID: " + id);
+        Vote vote = voteRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Vote not found with ID: " + id));
+
+        // 1. Break link with Course
+        if (vote.getCourse() != null) {
+            Course course = vote.getCourse();
+            course.setVote(null);         // break course -> vote
+            vote.setCourse(null);         // break vote -> course
         }
-        voteRepository.deleteById(id);
+
+        // 2. Detach professors
+        for (Professor prof : new ArrayList<>(vote.getProfessors())) {
+            prof.setVote(null);
+        }
+        vote.getProfessors().clear();
+
+        // 3. Detach user votes
+        for (UserVote uv : new ArrayList<>(vote.getUserVotes())) {
+            uv.setVote(null);
+        }
+        vote.getUserVotes().clear();
+
+        // 4. Delete the vote
+        voteRepository.delete(vote);
         return true;
     }
+
+
 }
