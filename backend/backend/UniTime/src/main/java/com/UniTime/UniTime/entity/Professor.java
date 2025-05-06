@@ -51,7 +51,7 @@ public class Professor {
     private Course course;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vote_id")
+    @JoinColumn(name = "vote_id" , nullable = true)
     @JsonBackReference
     private Vote vote;
 

@@ -196,10 +196,53 @@ public class ProfessorServiceImpl implements ProfessorService {
     // Delete Professor by ID
     @Override
     public Boolean deleteProfessor(Long id) {
-        if (!professorRepository.existsById(id)) {
-            throw new NotFoundException("Professor not found with ID: " + id);
+        Professor professor = professorRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Professor not found with ID: " + id));
+
+        // Remove from vote’s list
+        if (professor.getVote() != null) {
+            Vote vote = professor.getVote();
+            vote.getProfessors().remove(professor);
+            professor.setVote(null);
         }
-        professorRepository.deleteById(id);
+
+        // Remove from course’s list
+        if (professor.getCourse() != null) {
+            Course course = professor.getCourse();
+            course.getProfessors().remove(professor);
+            professor.setCourse(null);
+        }
+
+        // Break links with userVotes
+        for (UserVote uv : professor.getUserVote()) {
+            uv.setProfessor(null);
+        }
+        professor.getUserVote().clear();
+
+        // Break links with schedules and users properly
+        for (Schedule sch : new ArrayList<>(professor.getSchedules())) {
+            // Detach users from schedule (break many-to-many)
+            if (sch.getUsers() != null) {
+                for (User u : new ArrayList<>(sch.getUsers())) {
+                    u.getSchedules().remove(sch); // remove schedule from user side
+                }
+                sch.getUsers().clear(); // clear users from schedule side
+            }
+
+            // Detach other references
+            sch.setProfessor(null);
+            sch.setRoom(null);
+            sch.setCourse(null);
+        }
+
+        // Now clear professor's schedules (triggers orphan removal)
+        professor.getSchedules().clear();
+
+        // Finally, delete professor
+        professorRepository.delete(professor);
         return true;
     }
+
+
+
 }
