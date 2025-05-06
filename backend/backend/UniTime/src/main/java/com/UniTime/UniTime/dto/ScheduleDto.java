@@ -7,6 +7,8 @@ import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -23,9 +25,18 @@ public class ScheduleDto {
     private LocalTime endTime;
     private String scheduleDescription;
 
-//    private Set<User> users;
+    // Add reference
+    private RoomDto room;
+
+    private ProfessorDto professor;
+
+    private CourseDto course;
+
+    private List<UserDto> users = new ArrayList<>();
 
     public Schedule toEntity(ModelMapper mapper) {
+
+        this.scheduleId = null;
         return mapper.map(this, Schedule.class);
     }
 }

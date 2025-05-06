@@ -17,9 +17,13 @@ public class VoteDto {
     private String start_time;
     private String end_time;
     private String description;
-    private String module_id;
-    private List<String> professor_id;
-    private String user_id;
+
+    private List<ProfessorDto> professors;
+
+    private CourseDto course;
+
+    private List<UserVoteDto> userVotes;
+
 
 
     public Vote toEntity(ModelMapper mapper) {

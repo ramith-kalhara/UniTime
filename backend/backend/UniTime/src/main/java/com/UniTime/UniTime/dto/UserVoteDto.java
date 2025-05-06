@@ -9,9 +9,13 @@ import org.modelmapper.ModelMapper;
 public class UserVoteDto {
 
     private Long id;
-    private String vote;
-    private String user;
-    private String professor;
+
+    private ProfessorDto professor;
+
+    private VoteDto vote;
+
+    private UserDto user;
+
 
     public UserVote toEntity(ModelMapper mapper) {
         UserVote userVote = mapper.map(this, UserVote.class);

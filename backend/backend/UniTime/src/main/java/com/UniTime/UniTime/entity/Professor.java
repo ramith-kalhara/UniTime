@@ -1,11 +1,18 @@
 package com.UniTime.UniTime.entity;
 import com.UniTime.UniTime.dto.ProfessorDto;
+import com.UniTime.UniTime.dto.ScheduleDto;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.modelmapper.ModelMapper;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Setter
 @Getter
@@ -18,9 +25,6 @@ public class Professor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
-
-    @Column(name = "image_path")
-    private String imagePath;
 
     @Column(name = "full_name", nullable = false)
     private String full_name;
@@ -38,15 +42,41 @@ public class Professor {
     private String country;
     @Column(name = "postal_code", nullable = false)
     private String postal_code;
-    @Column(name = "module_id")
-    private String module_id;
-    @Column(name = "module_code", nullable = false)
-    private String module_code;
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_id", nullable = false)
+    @JsonBackReference
+    private Course course;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vote_id" , nullable = true)
+    @JsonBackReference
+    private Vote vote;
+
+    @OneToMany(mappedBy = "professor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<UserVote> userVote = new ArrayList<>();
+
+    @OneToMany(mappedBy = "professor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Schedule> schedules = new ArrayList<>();
+
+
+
     public ProfessorDto toDto(ModelMapper mapper) {
-        ProfessorDto professorDto = mapper.map(this, ProfessorDto.class);
-        return professorDto;
+        ProfessorDto dto = mapper.map(this, ProfessorDto.class);
+
+        List<ScheduleDto> scheduleDtos = this.schedules != null ?
+                this.schedules.stream()
+                        .map(schedule -> mapper.map(schedule, ScheduleDto.class))
+                        .collect(Collectors.toList())
+                : new ArrayList<>();
+
+        dto.setSchedules(scheduleDtos);
+        return dto;
     }
+
+
 }

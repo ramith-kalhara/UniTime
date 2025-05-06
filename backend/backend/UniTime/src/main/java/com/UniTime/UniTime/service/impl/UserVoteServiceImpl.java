@@ -1,9 +1,12 @@
 package com.UniTime.UniTime.service.impl;
 
 import com.UniTime.UniTime.dto.UserVoteDto;
-import com.UniTime.UniTime.entity.UserVote;
+import com.UniTime.UniTime.entity.*;
 import com.UniTime.UniTime.exception.NotFoundException;
+import com.UniTime.UniTime.repository.ProfessorRepository;
+import com.UniTime.UniTime.repository.UserRepository;
 import com.UniTime.UniTime.repository.UserVoteRepository;
+import com.UniTime.UniTime.repository.VoteRepository;
 import com.UniTime.UniTime.service.UserVoteService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -18,15 +21,47 @@ import java.util.Optional;
 public class UserVoteServiceImpl implements UserVoteService {
 
     private final UserVoteRepository userVoteRepository;
+    private final ProfessorRepository professorRepository;
+    private final VoteRepository voteRepository;
+    private final UserRepository userRepository;
     private final ModelMapper mapper;
 
     // Create vote
     @Override
     public UserVoteDto postUserVote(UserVoteDto voteDto) {
         UserVote vote = voteDto.toEntity(mapper);
+
+        // Associate Professor
+        if (voteDto.getProfessor() != null && voteDto.getProfessor().getId() != null) {
+            Long professorId = voteDto.getProfessor().getId();
+            System.out.println("professorId: " + professorId);
+            Professor professor = professorRepository.findById(professorId)
+                    .orElseThrow(() -> new NotFoundException("Professor not found with id: " + professorId));
+            vote.setProfessor(professor);
+        }
+
+        // Associate Vote
+        if (voteDto.getVote() != null && voteDto.getVote().getId() != null) {
+            Long voteId = voteDto.getVote().getId();
+            System.out.println("voteId: " + voteId);
+            Vote existingVote = voteRepository.findById(voteId)
+                    .orElseThrow(() -> new NotFoundException("Vote not found with id: " + voteId));
+            vote.setVote(existingVote);
+        }
+
+        // Associate User
+        if (voteDto.getUser() != null && voteDto.getUser().getId() != null) {
+            Long userId = voteDto.getUser().getId();
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
+            vote.setUser(user);
+        }
+
+
         UserVote savedVote = userVoteRepository.save(vote);
         return savedVote.toDto(mapper);
     }
+
 
     // Get all votes
     @Override
@@ -55,6 +90,34 @@ public class UserVoteServiceImpl implements UserVoteService {
     public UserVoteDto updateUserVote(Long id, UserVoteDto voteDto) {
         UserVote vote = voteDto.toEntity(mapper);
         vote.setId(id);
+
+
+        // Associate Professor
+        if (voteDto.getProfessor() != null && voteDto.getProfessor().getId() != null) {
+            Long professorId = voteDto.getProfessor().getId();
+            System.out.println("professorId: " + professorId);
+            Professor professor = professorRepository.findById(professorId)
+                    .orElseThrow(() -> new NotFoundException("Professor not found with id: " + professorId));
+            vote.setProfessor(professor);
+        }
+
+        // Associate Vote
+        if (voteDto.getVote() != null && voteDto.getVote().getId() != null) {
+            Long voteId = voteDto.getVote().getId();
+            System.out.println("voteId: " + voteId);
+            Vote existingVote = voteRepository.findById(voteId)
+                    .orElseThrow(() -> new NotFoundException("Vote not found with id: " + voteId));
+            vote.setVote(existingVote);
+        }
+
+        // Associate User
+        if (voteDto.getUser() != null && voteDto.getUser().getId() != null) {
+            Long userId = voteDto.getUser().getId();
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new NotFoundException("User not found with id: " + userId));
+            vote.setUser(user);
+        }
+
         UserVote updatedVote = userVoteRepository.save(vote);
         return updatedVote.toDto(mapper);
     }
