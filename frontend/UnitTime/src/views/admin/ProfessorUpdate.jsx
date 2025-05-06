@@ -15,6 +15,7 @@ import {
   Container,
   Row,
   Col,
+  Label
 } from "reactstrap";
 // core components
 import AdminHeader from "../../components/Headers/AdminHeader";
@@ -37,6 +38,30 @@ const ProfessorUpdate = () => {
     moduleCode: "",
     description: "",
   });
+  const [courseCodes, setCourseCodes] = useState([]);
+
+  useEffect(() => {
+    axios.get("http://localhost:8086/api/course/")
+      .then((res) => setCourseCodes(res.data))
+      .catch((err) => console.error("Error fetching courses:", err));
+  }, []);
+
+  useEffect(() => {
+    if (formData.moduleCode) {
+      axios.get(`http://localhost:8086/api/course/${formData.moduleCode}`)
+        .then((response) => {
+          const course = response.data;
+          setFormData((prev) => ({
+            ...prev,
+            moduleName: course.courseCode,  // Set the module code as moduleName for display
+          }));
+        })
+        .catch((error) => console.error("Failed to fetch course name:", error));
+    }
+  }, [formData.moduleCode]);  // This will trigger when moduleCode changes
+  
+
+  
 
   useEffect(() => {
     if (!professor) {
@@ -58,7 +83,7 @@ const ProfessorUpdate = () => {
       city: professor.city || "",
       country: professor.country || "",
       postalCode: professor.postal_code || "",
-      moduleCode: professor.module_id || "",
+      moduleCode: professor.course?.courseCode|| "",
       description: professor.description || "",
     });
   }, [professor, navigate]);
@@ -112,7 +137,7 @@ const ProfessorUpdate = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const {
       fullName,
       email,
@@ -122,15 +147,14 @@ const ProfessorUpdate = () => {
       city,
       country,
       postalCode,
-      // moduleName,
-      moduleCode,
+      moduleCode, // moduleCode is courseId here
       description,
     } = formData;
-
+  
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     const phoneRegex = /^[0-9]{10}$/;
     const numberRegex = /\d/;
-
+  
     if (
       !fullName ||
       !email ||
@@ -140,7 +164,6 @@ const ProfessorUpdate = () => {
       !city ||
       !country ||
       !postalCode ||
-      // !moduleName ||
       !moduleCode ||
       !description
     ) {
@@ -151,7 +174,7 @@ const ProfessorUpdate = () => {
       });
       return;
     }
-
+  
     if (!emailRegex.test(email)) {
       Swal.fire({
         icon: "error",
@@ -160,7 +183,7 @@ const ProfessorUpdate = () => {
       });
       return;
     }
-
+  
     if (!phoneRegex.test(tp_num)) {
       Swal.fire({
         icon: "error",
@@ -169,7 +192,7 @@ const ProfessorUpdate = () => {
       });
       return;
     }
-
+  
     if (numberRegex.test(city)) {
       Swal.fire({
         icon: "error",
@@ -178,7 +201,7 @@ const ProfessorUpdate = () => {
       });
       return;
     }
-
+  
     if (numberRegex.test(country)) {
       Swal.fire({
         icon: "error",
@@ -188,34 +211,40 @@ const ProfessorUpdate = () => {
       return;
     }
 
-    // ✅ AXIOS PUT REQUEST HERE
+    console.log("Couse Id : " + moduleCode)
+  
+    //  AXIOS PUT REQUEST HERE
     try {
       const response = await axios.put(
-        `http://localhost:8086/api/professor/${professor.id}`
-        ,
+        `http://localhost:8086/api/professor/${professor.id}`,
         {
           id: professor.id,
           full_name: formData.fullName,
           email: formData.email,
-          tp_num: parseInt(formData.contactNumber, 10),
+          tp_num: formData.tp_num,
           department_name: formData.departmentName,
           address: formData.address,
           city: formData.city,
           country: formData.country,
           postal_code: formData.postalCode,
-          module_id: formData.moduleCode,
-          description: formData.description
+          description: formData.description,
+          course: { // send course as an object
+            courseId: formData.moduleCode // courseId here is moduleCode
+          
+          }
         }
       );
 
+      console.log("Couse Id : " + moduleCode)
+  
       Swal.fire({
         icon: "success",
         title: "Success",
         text: "Professor updated successfully!",
       }).then(() => {
-        navigate('/admin/index'); // redirect to list page or wherever you want
+        navigate('/admin/professor-table'); 
       });
-
+  
     } catch (error) {
       console.error("Error updating professor:", error);
       Swal.fire({
@@ -225,7 +254,7 @@ const ProfessorUpdate = () => {
       });
     }
   };
-
+  
 
   return (
     <>
@@ -479,35 +508,29 @@ const ProfessorUpdate = () => {
                   <h6 className="heading-small text-muted mb-4">Module Information</h6>
                   <div className="pl-lg-4">
                     <Row>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label className="form-control-label" htmlFor="moduleName">
-                            Module Name
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            id="moduleName"
-                            value={formData.moduleName}
-                            onChange={handleChange}
-                            placeholder="Module Name"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label className="form-control-label" htmlFor="moduleCode">
-                            Module Code
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            id="moduleCode"
-                            value={formData.moduleCode}
-                            onChange={handleChange}
-                            placeholder="Module Code"
-                            type="text"
-                          />
-                        </FormGroup>
+                
+                    <Col lg="6">
+                    <FormGroup>
+  <Label htmlFor="moduleCode" className="form-control-label">Module Code </Label>
+<Input
+  type="select"
+  name="moduleCode"
+  id="moduleCode"
+  className="form-control"
+  value={formData.moduleCode?.toString() || ""}
+  onChange={handleChange}
+>
+  <option value="">{formData.moduleCode}</option>
+  {courseCodes.map((course) => (
+    <option key={course.courseId} value={course.courseId.toString()}>
+      {course.courseCode}
+    </option>
+  ))}
+</Input>
+
+</FormGroup>
+
+
                       </Col>
                     </Row>
                   </div>

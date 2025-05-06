@@ -12,6 +12,7 @@ import com.UniTime.UniTime.repository.CourseRepository;
 import com.UniTime.UniTime.repository.ScheduleRepository;
 import com.UniTime.UniTime.repository.UserRepository;
 import com.UniTime.UniTime.service.CourseService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -166,9 +167,34 @@ public class CourseServiceImpl implements CourseService {
     }
 
     // Delete course
+    @Transactional
     @Override
     public Boolean deleteCourse(Long id) {
-        courseRepository.deleteById(id);
+        Course course = courseRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Course not found with id: " + id));
+
+        // Remove course from all associated schedules
+        for (Schedule schedule : course.getSchedules()) {
+            schedule.setCourse(null);  // Remove reference to course
+        }
+        course.getSchedules().clear();
+
+        // Remove course from users' course list (many-to-many relationship)
+        for (User user : course.getUsers()) {
+            user.getCourses().remove(course); // Remove course reference from user
+        }
+        course.getUsers().clear();
+
+        // Remove course from associated vote (if present)
+        if (course.getVote() != null) {
+            Vote vote = course.getVote();
+            vote.setCourse(null); // Remove the course reference from vote
+        }
+
+        // Now safely delete the course
+        courseRepository.delete(course);
         return true;
     }
+
+
 }

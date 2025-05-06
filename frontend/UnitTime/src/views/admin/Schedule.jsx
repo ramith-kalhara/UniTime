@@ -285,24 +285,6 @@ const Schedule = () => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 <Form onSubmit={handleSubmit}>
                   <h6 className="heading-small text-muted mb-4">Schedule Information</h6>
                   <div className="pl-lg-4">
