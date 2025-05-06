@@ -46,8 +46,8 @@ function Contact() {
             </div>
             <div className="col-lg-5 mb-5">
               <p>
-                A comprehensive web application for efficient university scheduling and management. 
-                Streamline course planning, room assignments, and faculty coordination.
+                Labore sea amet kasd diam justo amet ut vero justo. Ipsum ut et
+                kasd duo sit, 
               </p>
               <div className="d-flex">
                 <i className="fa fa-map-marker-alt d-inline-flex align-items-center justify-content-center bg-primary text-secondary rounded-circle" style={{width: '45px', height: '45px'}} />

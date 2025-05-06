@@ -1,6 +1,12 @@
 professor_id,room_id,preferred_time_slot
-P01,R101,Monday 10 AM
-P02,R102,Tuesday 2 PM
-P03,R103,Wednesday 9 AM
-P01,R101,Friday 11 AM
-P02,R102,Thursday 3 PM
+1,1,Monday 10 AM
+2,2,Tuesday 2 PM
+3,3,Wednesday 9 AM
+1,1,Friday 11 AM
+2,2,Thursday 3 PM
+5,2,Monday 12 AM
+2,4,Tuesday 4 PM
+4,1,Wednesday 10 AM
+6,1,Friday 7 AM
+3,2,Thursday 4 PM
+1,2,Thursday 6 PM
