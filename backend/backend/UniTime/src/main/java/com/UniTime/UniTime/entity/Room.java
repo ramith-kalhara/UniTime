@@ -31,6 +31,9 @@ public class Room {
     @Column(name = "department", nullable = false, length = 100)
     private String department;
 
+    @Column(name = "room_name", nullable = false, length = 100)
+    private String roomName;
+
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 

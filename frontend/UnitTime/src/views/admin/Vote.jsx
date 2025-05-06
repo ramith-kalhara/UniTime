@@ -75,49 +75,29 @@ const Vote = () => {
 
   const handleInputChange = async (e) => {
     const { name, value, options, type } = e.target;
-
-    // Handle professor multi-select
+  
     if (name === 'professor' && type === 'select-multiple') {
       const selectedValues = Array.from(options)
         .filter(option => option.selected)
         .map(option => option.value);
-
+  
       setFormValues((prev) => ({
         ...prev,
         [name]: selectedValues,
       }));
       return;
     }
-
-
-    // Validate module name (only letters & spaces allowed)
-    if (name === 'moduleName') {
-      if (/[^a-zA-Z\s]/.test(value)) {
-        Swal.fire({
-          icon: "error",
-          title: "Invalid Module Name",
-          text: "Module Name can only contain letters and spaces.",
-        });
-        return;
-      }
-    }
-
-    // Set form value normally
-    setFormValues((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    // If user selects moduleCode (courseId), auto-fetch course info
-    if (name === 'moduleCode') {
+  
+    // When user selects moduleCode (which is actually courseId)
+    if (name === "moduleCode") {
       try {
         const response = await fetch(`http://localhost:8086/api/course/${value}`);
         if (response.ok) {
           const data = await response.json();
           setFormValues((prev) => ({
             ...prev,
-            moduleCode: data.courseCode,
-            moduleName: data.name || '',
+            moduleCode: value, // ✅ Keep the ID
+            moduleName: data.name || '', // ✅ Only use courseCode as name/label
           }));
         } else {
           setFormValues((prev) => ({
@@ -134,9 +114,25 @@ const Vote = () => {
           moduleName: '',
         }));
       }
+      return;
     }
+  
+    // Validate module name
+    if (name === 'moduleName' && /[^a-zA-Z\s]/.test(value)) {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Module Name",
+        text: "Module Name can only contain letters and spaces.",
+      });
+      return;
+    }
+  
+    setFormValues((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
-
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -177,10 +173,12 @@ const Vote = () => {
       start_time: dayjs(startDateTime).format('HH:mm:ss'),
       end_time: dayjs(endDateTime).format('HH:mm:ss'),
       description: voteDescription,
-      module_id: moduleCode, // Send the moduleCode (assuming it's the course ID)
-      professor_id: formValues.professor.filter(Boolean) // professor is an array of selected professor names
-      // user_id: "USER567", // Replace this with the actual user ID
+      course: {
+        courseId: moduleCode
+      },
+      professors: formValues.professor.filter(Boolean).map(id => ({ id }))
     };
+    
 
     try {
       // Send the data to the API
@@ -282,6 +280,8 @@ const Vote = () => {
                 </Row>
               </CardHeader>
               <CardBody>
+
+
                 <Form onSubmit={handleSubmit}>
                   <h6 className="heading-small text-muted mb-4">Module information</h6>
                   <div className="pl-lg-4">
@@ -297,7 +297,7 @@ const Vote = () => {
                             value={formValues.moduleCode}
                             onChange={handleInputChange}
                           >
-                            <option value={formValues.moduleCode || ''}>Select Module Code</option>
+                            <option value={''}>Select Module Code</option>
                             {courseCodes.map((course) => (
                               <option key={course.courseId} value={course.courseId}>
                                 {course.courseCode}
@@ -307,6 +307,7 @@ const Vote = () => {
                           </Input>
                         </FormGroup>
 
+                    
 
                       </Col>
 

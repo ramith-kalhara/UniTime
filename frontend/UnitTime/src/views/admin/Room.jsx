@@ -111,6 +111,7 @@ const Room = () => {
     hasSmartScreen: '',
     hasComputers: '',
     description: '',
+    roomName:''
   });
   
 
@@ -157,6 +158,7 @@ const Room = () => {
     if (!formValues.department) errorMessages += 'Department is required.\n';
     if (!formValues.hasSmartScreen) errorMessages += 'Smart Screen option is required.\n';
     if (!formValues.description) errorMessages += 'Room Description is required.\n';
+    if (!formValues.roomName) errorMessages += 'Room Name is required.\n';
   
     // Validate Capacity should be a number
     if (formValues.capacity && isNaN(formValues.capacity)) {
@@ -191,7 +193,8 @@ const Room = () => {
           capacity: formValues.capacity,
           roomType: formValues.roomType,
           department: formValues.department,
-          description: formValues.description
+          description: formValues.description,
+          roomName: formValues.roomName
         };
   
         const response = await fetch("http://localhost:8086/api/room/create", {
@@ -217,7 +220,8 @@ const Room = () => {
           capacity: '',
           roomType: '',
           department: '',
-          description: ''
+          description: '',
+          roomName:''
           // image: null (not needed now)
         });
   
@@ -562,6 +566,22 @@ const Room = () => {
   />
 </FormGroup>
 
+                      </Col>
+
+                      <Col lg="6">
+                        <FormGroup>
+                          <label className="form-control-label" htmlFor="input-department">
+                            Room Name 
+                          </label>
+                          <Input
+                            className="form-control-alternative"
+                            value={formValues.roomName}
+                            name="roomName"
+                            onChange={handleFormChange} 
+                            placeholder="Room Name"
+                            type="text"
+                          />
+                        </FormGroup>
                       </Col>
                     </Row>
                     <Row>

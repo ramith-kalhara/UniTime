@@ -83,6 +83,14 @@ public class Course {
             dto.setUsers(userDtos);
         }
 
+        //  Map enrolled users (the many-to-many side)
+        if (this.getProfessors() != null) {
+            List<ProfessorDto> professorDtos = this.getProfessors().stream()
+                    .map(u -> mapper.map(u, ProfessorDto.class))
+                    .collect(Collectors.toList());
+            dto.setProfessors(professorDtos);
+        }
+
 
 
         return dto;

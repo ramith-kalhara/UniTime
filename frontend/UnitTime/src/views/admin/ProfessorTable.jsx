@@ -131,7 +131,7 @@ import {
                         <div className="d-flex align-items-center">
                         <Media>
                             <span className="mb-0 text-sm">
-                              {professor.module_id}
+                            {professor.course?.name}
                             </span>
                           </Media>
                         </div>

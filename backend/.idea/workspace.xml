@@ -5,11 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bc4b7341-ab38-479e-ab15-ab890ef48ab2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/UnitTime/src/views/admin/Professor.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/UnitTime/src/views/admin/Professor.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/dto/RoomDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/dto/RoomDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/entity/Course.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/entity/Course.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/entity/Room.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/entity/Room.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/UniTime/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/UnitTime/src/views/admin/Room.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/UnitTime/src/views/admin/Room.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/UnitTime/src/views/admin/Schedule.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/UnitTime/src/views/admin/Schedule.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/UnitTime/src/views/admin/Vote.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/UnitTime/src/views/admin/Vote.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,7 +23,13 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "Spring Boot.UniTimeApplication.executor": "Run",
     "git-widget-placeholder": "Ramith1.3",
+    "last_opened_file_path": "C:/Users/kalha/Documents/GitHub/-CraftIQ/backend",
     "node.js.selected.package.tslint": "(autodetect)"
   }
 }]]></component>

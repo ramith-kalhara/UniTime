@@ -10,6 +10,7 @@ import java.util.List;
 @Data
 public class RoomDto {
     private Long id;
+    private String roomName;
     private String department;
     private String description;
     private int capacity;
