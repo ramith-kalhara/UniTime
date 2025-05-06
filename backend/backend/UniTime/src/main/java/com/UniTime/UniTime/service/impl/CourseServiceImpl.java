@@ -2,12 +2,15 @@ package com.UniTime.UniTime.service.impl;
 
 import com.UniTime.UniTime.dto.CourseDto;
 import com.UniTime.UniTime.dto.ScheduleDto;
+import com.UniTime.UniTime.dto.UserDto;
 import com.UniTime.UniTime.entity.Course;
 import com.UniTime.UniTime.entity.Schedule;
+import com.UniTime.UniTime.entity.User;
 import com.UniTime.UniTime.entity.Vote;
 import com.UniTime.UniTime.exception.NotFoundException;
 import com.UniTime.UniTime.repository.CourseRepository;
 import com.UniTime.UniTime.repository.ScheduleRepository;
+import com.UniTime.UniTime.repository.UserRepository;
 import com.UniTime.UniTime.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -23,6 +26,7 @@ public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
     private final ScheduleRepository scheduleRepository;
+    private final UserRepository userRepository;
     private final ModelMapper mapper;
 
     // Create course
@@ -48,6 +52,22 @@ public class CourseServiceImpl implements CourseService {
                 schedule.setCourse(course); // Link the schedule to the course
                 schedules.add(schedule);
             }
+        }
+
+        //  Handle many-to-many Users
+        if (courseDto.getUsers() != null && !courseDto.getUsers().isEmpty()) {
+            List<User> users = new ArrayList<>();
+            for (UserDto ud : courseDto.getUsers()) {
+                if (ud.getId() == null) {
+                    throw new IllegalArgumentException("User ID is required to enroll in course.");
+                }
+                User user = userRepository.findById(ud.getId())
+                        .orElseThrow(() -> new NotFoundException("User not found with id: " + ud.getId()));
+                users.add(user);
+                // maintain the inverse side (optional)
+                user.getCourses().add(course);
+            }
+            course.setUsers(users);
         }
 
         // Set the schedules on the course (cascade will handle saving them)

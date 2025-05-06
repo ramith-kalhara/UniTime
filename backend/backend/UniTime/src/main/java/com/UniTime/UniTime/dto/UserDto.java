@@ -18,6 +18,8 @@ public class UserDto {
 
     private List<UserVoteDto> userVotes;
 
+    private List<CourseDto> courses;
+
 
     // Convert UserDto to User entity
     public User toEntity(ModelMapper mapper) {

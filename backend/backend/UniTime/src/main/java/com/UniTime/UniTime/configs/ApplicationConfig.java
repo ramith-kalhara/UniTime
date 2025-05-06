@@ -73,6 +73,7 @@ public class ApplicationConfig {
             protected void configure() {
                 // Skip the professors field to avoid circular reference
                 skip(destination.getUserVotes());
+                skip(destination.getCourses());
 
             }
         });

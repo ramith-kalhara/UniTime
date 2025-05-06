@@ -24,6 +24,8 @@ public class CourseDto {
 
     private VoteDto vote;
 
+    private List<UserDto> users;
+
 
     // Method to convert CourseDto to Course entity
     public Course toEntity(ModelMapper mapper) {

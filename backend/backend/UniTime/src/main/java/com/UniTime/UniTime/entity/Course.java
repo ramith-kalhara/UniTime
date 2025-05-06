@@ -3,6 +3,7 @@ package com.UniTime.UniTime.entity;
 import com.UniTime.UniTime.dto.CourseDto;
 import com.UniTime.UniTime.dto.ProfessorDto;
 import com.UniTime.UniTime.dto.ScheduleDto;
+import com.UniTime.UniTime.dto.UserDto;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -58,17 +59,34 @@ public class Course {
     @OneToOne(mappedBy = "course")
     private Vote vote;
 
+    @ManyToMany(mappedBy = "courses")
+    private List<User> users = new ArrayList<>();
+
+
     public CourseDto toDto(ModelMapper mapper) {
+        // 1. Map simple fields
         CourseDto dto = mapper.map(this, CourseDto.class);
 
-        List<ScheduleDto> scheduleDtos = this.schedules != null ?
-                this.schedules.stream()
-                        .map(schedule -> mapper.map(schedule, ScheduleDto.class))
-                        .collect(Collectors.toList())
-                : new ArrayList<>();
+        //  Map schedules
+        if (this.getSchedules() != null) {
+            List<ScheduleDto> scheduleDtos = this.getSchedules().stream()
+                    .map(s -> mapper.map(s, ScheduleDto.class))
+                    .collect(Collectors.toList());
+            dto.setSchedules(scheduleDtos);
+        }
 
-        dto.setSchedules(scheduleDtos);
+        //  Map enrolled users (the many-to-many side)
+        if (this.getUsers() != null) {
+            List<UserDto> userDtos = this.getUsers().stream()
+                    .map(u -> mapper.map(u, UserDto.class))
+                    .collect(Collectors.toList());
+            dto.setUsers(userDtos);
+        }
+
+
+
         return dto;
     }
+
 
 }
