@@ -186,20 +186,20 @@ const Room = () => {
   
     if (validateRoomDetails()) {
       try {
-        const formData = new FormData();
-        formData.append("hasSmartScreen", formValues.hasSmartScreen);
-        formData.append("capacity", formValues.capacity);
-        formData.append("roomType", formValues.roomType);
-        formData.append("department", formValues.department);
-        formData.append("description", formValues.description);
-  
-        if (formValues.image) {
-          formData.append("image", formValues.image);
-        }
+        const jsonBody = {
+          hasSmartScreen: formValues.hasSmartScreen,
+          capacity: formValues.capacity,
+          roomType: formValues.roomType,
+          department: formValues.department,
+          description: formValues.description
+        };
   
         const response = await fetch("http://localhost:8086/api/room/create", {
           method: "POST",
-          body: formData
+          headers: {
+            "Content-Type": "application/json"  // tell server this is JSON
+          },
+          body: JSON.stringify(jsonBody)        // send as JSON string
         });
   
         if (!response.ok) {
@@ -217,8 +217,8 @@ const Room = () => {
           capacity: '',
           roomType: '',
           department: '',
-          description: '',
-          image: null
+          description: ''
+          // image: null (not needed now)
         });
   
       } catch (error) {
@@ -231,6 +231,8 @@ const Room = () => {
       }
     }
   };
+  
+  
   
   
   

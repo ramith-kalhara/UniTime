@@ -112,29 +112,7 @@ const Schedule = () => {
     
    
   
-    try {
-      const response = await axios.post(
-        "http://localhost:8086/api/schedule/create",
-        scheduleData
-      );
-  
-      Swal.fire({
-        icon: "success",
-        title: "Success!",
-        text: "Schedule created successfully!",
-      });
-  
-      // Optionally redirect or reset form here
-      // window.location.href = "/admin/index";
-  
-    } catch (error) {
-      console.error("Error creating schedule:", error);
-      Swal.fire({
-        icon: "error",
-        title: "API Error",
-        text: error.response?.data?.message || "Something went wrong.",
-      });
-    }
+    
   };
   
   

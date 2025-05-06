@@ -204,14 +204,14 @@ public class VoteServiceImpl implements VoteService {
         Vote vote = voteRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Vote not found with ID: " + id));
 
-        // 1. Break link with Course
+        //  Break link with Course
         if (vote.getCourse() != null) {
             Course course = vote.getCourse();
             course.setVote(null);         // break course -> vote
             vote.setCourse(null);         // break vote -> course
         }
 
-        // 2. Detach professors
+        //  Detach professors
         for (Professor prof : new ArrayList<>(vote.getProfessors())) {
             prof.setVote(null);
         }
@@ -223,7 +223,7 @@ public class VoteServiceImpl implements VoteService {
         }
         vote.getUserVotes().clear();
 
-        // 4. Delete the vote
+        //  Delete the vote
         voteRepository.delete(vote);
         return true;
     }
