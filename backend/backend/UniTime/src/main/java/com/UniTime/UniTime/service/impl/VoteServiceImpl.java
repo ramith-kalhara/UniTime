@@ -1,13 +1,16 @@
 package com.UniTime.UniTime.service.impl;
 
 import com.UniTime.UniTime.dto.ProfessorDto;
+import com.UniTime.UniTime.dto.UserVoteDto;
 import com.UniTime.UniTime.dto.VoteDto;
 import com.UniTime.UniTime.entity.Course;
 import com.UniTime.UniTime.entity.Professor;
+import com.UniTime.UniTime.entity.UserVote;
 import com.UniTime.UniTime.entity.Vote;
 import com.UniTime.UniTime.exception.NotFoundException;
 import com.UniTime.UniTime.repository.CourseRepository;
 import com.UniTime.UniTime.repository.ProfessorRepository;
+import com.UniTime.UniTime.repository.UserVoteRepository;
 import com.UniTime.UniTime.repository.VoteRepository;
 import com.UniTime.UniTime.service.VoteService;
 import jakarta.persistence.EntityNotFoundException;
@@ -27,6 +30,7 @@ public class VoteServiceImpl implements VoteService {
     private final VoteRepository voteRepository;
     private final CourseRepository courseRepository;
     private final ProfessorRepository professorRepository;
+    private final UserVoteRepository userVoteRepository;
     private final ModelMapper mapper;
 
     // Create Vote
@@ -59,6 +63,41 @@ public class VoteServiceImpl implements VoteService {
             }
             vote.setProfessors(attachedProfessors);
         }
+
+        List<UserVote> userVoteEntities = new ArrayList<>();
+
+        if (voteDto.getUserVotes() != null) {
+            for (UserVoteDto userVoteDto : voteDto.getUserVotes()) {
+                // Treat as new entity: clear any ID
+                userVoteDto.setId(null);  // optional, if your DTO has an ID field
+
+                // Ensure professor is valid
+                if (userVoteDto.getProfessor() == null || userVoteDto.getProfessor().getId() == null) {
+                    throw new IllegalArgumentException("Each UserVote must reference a valid professor.");
+                }
+
+                // Fetch professor from DB
+                Professor professor = professorRepository.findById(userVoteDto.getProfessor().getId())
+                        .orElseThrow(() -> new EntityNotFoundException(
+                                "Professor not found with ID: " + userVoteDto.getProfessor().getId()));
+
+                // Map UserVoteDto to entity
+                UserVote userVote = mapper.map(userVoteDto, UserVote.class);
+
+                // Set foreign keys
+                userVote.setProfessor(professor);
+                userVote.setVote(vote);
+
+                userVoteEntities.add(userVote);
+            }
+        }
+
+// Attach to vote
+        vote.setUserVotes(userVoteEntities);
+
+
+
+
 
         Vote savedVote = voteRepository.save(vote);
         return savedVote.toDto(mapper);

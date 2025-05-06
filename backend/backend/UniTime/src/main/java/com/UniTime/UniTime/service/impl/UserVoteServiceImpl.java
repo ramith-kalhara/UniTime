@@ -4,9 +4,11 @@ import com.UniTime.UniTime.dto.UserVoteDto;
 import com.UniTime.UniTime.entity.Course;
 import com.UniTime.UniTime.entity.Professor;
 import com.UniTime.UniTime.entity.UserVote;
+import com.UniTime.UniTime.entity.Vote;
 import com.UniTime.UniTime.exception.NotFoundException;
 import com.UniTime.UniTime.repository.ProfessorRepository;
 import com.UniTime.UniTime.repository.UserVoteRepository;
+import com.UniTime.UniTime.repository.VoteRepository;
 import com.UniTime.UniTime.service.UserVoteService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -22,6 +24,7 @@ public class UserVoteServiceImpl implements UserVoteService {
 
     private final UserVoteRepository userVoteRepository;
     private final ProfessorRepository professorRepository;
+    private final VoteRepository voteRepository;
     private final ModelMapper mapper;
 
     // Create vote
@@ -37,9 +40,20 @@ public class UserVoteServiceImpl implements UserVoteService {
                     .orElseThrow(() -> new NotFoundException("Professor not found with id: " + professorId));
             vote.setProfessor(professor);
         }
+
+        // Associate Vote
+        if (voteDto.getVote() != null && voteDto.getVote().getId() != null) {
+            Long voteId = voteDto.getVote().getId();
+            System.out.println("voteId: " + voteId);
+            Vote existingVote = voteRepository.findById(voteId)
+                    .orElseThrow(() -> new NotFoundException("Vote not found with id: " + voteId));
+            vote.setVote(existingVote);
+        }
+
         UserVote savedVote = userVoteRepository.save(vote);
         return savedVote.toDto(mapper);
     }
+
 
     // Get all votes
     @Override

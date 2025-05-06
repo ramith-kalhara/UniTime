@@ -49,6 +49,11 @@ public class Vote {
     @JoinColumn(name = "course_id")
     private Course course;
 
+    @OneToMany(mappedBy = "vote", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<UserVote> userVotes = new ArrayList<>();
+
+
 
     public VoteDto toDto(ModelMapper mapper) {
         VoteDto voteDto = mapper.map(this, VoteDto.class);

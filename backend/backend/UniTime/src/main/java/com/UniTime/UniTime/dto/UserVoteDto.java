@@ -9,10 +9,11 @@ import org.modelmapper.ModelMapper;
 public class UserVoteDto {
 
     private Long id;
-    private String vote;
     private String user;
 
     private ProfessorDto professor;
+
+    private VoteDto vote;
 
 
     public UserVote toEntity(ModelMapper mapper) {

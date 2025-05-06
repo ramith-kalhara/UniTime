@@ -22,14 +22,11 @@ public class VoteDto {
 
     private CourseDto course;
 
+    private List<UserVoteDto> userVotes;
+
 
 
     public Vote toEntity(ModelMapper mapper) {
-        // Convert VoteDto to Vote entity, also converting CourseDto to Course entity
-        Vote vote = mapper.map(this, Vote.class);
-        if (this.course != null) {
-            vote.setCourse(this.course.toEntity(mapper)); // Set the Course entity on Vote
-        }
-        return vote;
+        return mapper.map(this, Vote.class);
     }
 }
