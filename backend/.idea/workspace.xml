@@ -5,11 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bc4b7341-ab38-479e-ab15-ab890ef48ab2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/entity/Professor.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/entity/Professor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/service/impl/CourseServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/service/impl/CourseServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/UnitTime/src/views/admin/ProfessorUpdate.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/UnitTime/src/views/admin/ProfessorUpdate.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/UnitTime/src/views/admin/Schedule.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/UnitTime/src/views/admin/Schedule.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/service/impl/VoteServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/service/impl/VoteServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/UnitTime/src/views/user/SingleCourse.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/UnitTime/src/views/user/SingleCourse.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -25,9 +25,7 @@ const ProfessorsData = [
       moduleId : "IOT20",
       module: "Music Teacher"
     },
-   
- 
-    
+
     
   ];
   

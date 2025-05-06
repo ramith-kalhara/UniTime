@@ -8,7 +8,7 @@ const VoteData = [
     startTime: "10:00 AM",
     endTime: "5:00 PM",
     moduleId: "IT2030",
-    Professors: [ // <-- array of objects
+    Professors: [
       {
         id: 1,
         imageUrl: team2,

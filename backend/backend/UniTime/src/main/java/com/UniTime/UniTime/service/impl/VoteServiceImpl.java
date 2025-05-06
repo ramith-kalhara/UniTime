@@ -3,15 +3,13 @@ package com.UniTime.UniTime.service.impl;
 import com.UniTime.UniTime.dto.ProfessorDto;
 import com.UniTime.UniTime.dto.UserVoteDto;
 import com.UniTime.UniTime.dto.VoteDto;
-import com.UniTime.UniTime.entity.Course;
-import com.UniTime.UniTime.entity.Professor;
-import com.UniTime.UniTime.entity.UserVote;
-import com.UniTime.UniTime.entity.Vote;
+import com.UniTime.UniTime.entity.*;
 import com.UniTime.UniTime.exception.NotFoundException;
 import com.UniTime.UniTime.repository.CourseRepository;
 import com.UniTime.UniTime.repository.ProfessorRepository;
 import com.UniTime.UniTime.repository.UserVoteRepository;
 import com.UniTime.UniTime.repository.VoteRepository;
+import com.UniTime.UniTime.service.CourseService;
 import com.UniTime.UniTime.service.VoteService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -32,6 +30,7 @@ public class VoteServiceImpl implements VoteService {
     private final CourseRepository courseRepository;
     private final ProfessorRepository professorRepository;
     private final UserVoteRepository userVoteRepository;
+
     private final ModelMapper mapper;
 
     // Create Vote
@@ -40,10 +39,10 @@ public class VoteServiceImpl implements VoteService {
         Vote vote = voteDto.toEntity(mapper);
 
         // Set associated course properly
-        if (voteDto.getCourse() != null) {
-            Course course = voteDto.getCourse().toEntity(mapper);
+        if (voteDto.getCourse() != null && voteDto.getCourse().getCourseId() != null) {
+            Course course = courseRepository.findById(voteDto.getCourse().getCourseId())
+                    .orElseThrow(() -> new NotFoundException("Room not found with id: " + voteDto.getCourse().getCourseId()));
             vote.setCourse(course);
-            course.setVote(vote);
         }
 
         // Fetch existing professors and associate them
