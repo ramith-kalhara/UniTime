@@ -1,6 +1,7 @@
 package com.UniTime.UniTime.controller;
 
 import com.UniTime.UniTime.dto.LoginRequestDto;
+import com.UniTime.UniTime.dto.LoginResponseDto;
 import com.UniTime.UniTime.dto.UserDto;
 import com.UniTime.UniTime.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -49,9 +50,9 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserDto> login(@RequestBody LoginRequestDto loginRequest) {
-        UserDto userDto = userService.login(loginRequest.getEmail(), loginRequest.getPassword());
-        return ResponseEntity.ok(userDto);
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginDto) {
+        LoginResponseDto response = userService.authenticateUser(loginDto);
+        return ResponseEntity.ok(response);
     }
 
 }

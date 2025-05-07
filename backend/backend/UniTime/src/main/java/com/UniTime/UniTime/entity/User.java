@@ -31,6 +31,7 @@ public class User {
     private String tpNum;
     private String password;
     private String email;
+    private String role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserVote> userVotes = new ArrayList<>();

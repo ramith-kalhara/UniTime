@@ -1,8 +1,28 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
+import Swal from "sweetalert2";
 function Register() {
   const [mode, setMode] = useState('sign-in');
+  const navigate = useNavigate();
+
+
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    tpNum: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
+
+  const [loginData, setLoginData] = useState({
+    email: '',
+    password: ''
+  });
+  
 
   // Set default mode on mount
   useEffect(() => {
@@ -31,6 +51,121 @@ function Register() {
   const toggle = () => {
     setMode((prev) => (prev === 'sign-in' ? 'sign-up' : 'sign-in'));
   };
+
+
+  const handleChange = (e) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
+
+  const handleLoginChange = (e) => {
+    setLoginData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
+  
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+
+    const payload = {
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      tpNum: formData.tpNum,
+      password: formData.password,
+      email: formData.email
+    };
+
+    try {
+      const response = await axios.post('http://localhost:8086/api/user/create', payload);
+      console.log('User created:', response.data);
+    
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'User created successfully!',
+        confirmButtonColor: '#3085d6'
+      });
+    
+      setFormData({
+        firstName: '',
+        lastName: '',
+        tpNum: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+      });
+    } catch (error) {
+      console.error('Error creating user:', error);
+    
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Failed to create user. Please try again.',
+        confirmButtonColor: '#d33'
+      });
+    }
+ 
+
+  };
+
+  const handleLoginSubmit = async (e) => {
+    e.preventDefault();
+  
+    try {
+      const response = await axios.post('http://localhost:8086/api/user/login', loginData);
+      console.log('Login success:', response.data);
+  
+      // Store user data
+      localStorage.setItem('user', JSON.stringify(response.data));
+      const userRole = response.data.role;
+  
+      Swal.fire({
+        icon: 'success',
+        title: 'Welcome!',
+        text: 'Login successful!',
+        confirmButtonColor: '#3085d6'
+      }).then(() => {
+        // Navigate and trigger auto-refresh after 2 seconds
+        if (userRole === 'ADMIN') {
+          navigate('/admin/add-professor');
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        } else if (userRole === 'USER') {
+          navigate('/user/home');
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        } else {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Unknown Role',
+            text: 'No route assigned for this role.',
+          });
+        }
+      });
+    } catch (error) {
+      console.error('Login failed:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Login Failed',
+        text: 'Invalid email or password',
+        confirmButtonColor: '#d33'
+      });
+    }
+  };
+  
+  
+  
   return (
     <div>
       <div id="container" className={`container ${mode}`}>
@@ -38,77 +173,79 @@ function Register() {
         <div className="row">
           {/* SIGN UP */}
           <div className="col align-items-center flex-col sign-up">
-            <div className="form-wrapper align-items-center">
-              <div className="form sign-up">
-                <div className="input-group">
-                  <i className="bx bxs-user" />
-                  <input type="text" placeholder="Username" name="username" />
-                </div>
-                <div className="input-group">
-                  <i className="bx bx-mail-send" />
-                  <input type="email" placeholder="Email" name="email" />
-                </div>
-                <div className="input-group">
-                  <i className="bx bxs-bio" />
-                  <input type="text" placeholder="Bio" name="bio" />
-                </div>
-                <div className="input-group">
-                  <i className="bx bxs-profile" />
-                  <input type="file" name="profilePic" />
-                </div>
+          <div className="form-wrapper align-items-center">
+      <form className="form sign-up" onSubmit={handleSubmit}>
+        <div className="input-group">
+          <i className="bx bxs-user" />
+          <input type="text" placeholder="First Name" name="firstName" value={formData.firstName} onChange={handleChange} required />
+        </div>
+        <div className="input-group">
+          <i className="bx bxs-user" />
+          <input type="text" placeholder="Last Name" name="lastName" value={formData.lastName} onChange={handleChange} required />
+        </div>
+        <div className="input-group">
+          <i className="bx bxs-user" />
+          <input type="text" placeholder="Telephone Number" name="tpNum" value={formData.tpNum} onChange={handleChange} required />
+        </div>
+        <div className="input-group">
+          <i className="bx bx-mail-send" />
+          <input type="email" placeholder="Email" name="email" value={formData.email} onChange={handleChange} required />
+        </div>
+        <div className="input-group">
+          <i className="bx bxs-lock-alt" />
+          <input type="password" placeholder="Password" name="password" value={formData.password} onChange={handleChange} required />
+        </div>
+        <div className="input-group">
+          <i className="bx bxs-lock-alt" />
+          <input type="password" placeholder="Confirm Password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required />
+        </div>
 
-                {/* Interests (Multi-select dropdown) */}
-                <div className="input-group">
-                  Interests
-                  <i className="bx bxs-interests" />
-                  <select name="interests" multiple>
-                    <option value="coding">Coding</option>
-                    <option value="cooking">Cooking</option>
-                    <option value="photography">Photography</option>
-                    <option value="DIY crafts">DIY Crafts</option>
-                    <option value="music">Music</option>
-                  </select>
-                </div>
-                <div className="input-group">
-                  <i className="bx bxs-lock-alt" />
-                  <input type="password" placeholder="Password" name="password" />
-                </div>
-                <div className="input-group">
-                  <i className="bx bxs-lock-alt" />
-                  <input type="password" placeholder="Confirm Password" name="confirmPassword" />
-                </div>
-
-                <button type="submit">Sign up</button>
-                <p>
-                  <span>Already have an account?</span>
-                  <b onClick={toggle} className="pointer">Sign in here</b>
-                </p>
-              </div>
-
-            </div>
+        <button type="submit">Sign up</button>
+        <p>
+          <span>Already have an account?</span>
+          <b onClick={toggle} className="pointer">Sign in here</b>
+        </p>
+      </form>
+    </div>
           </div>
           {/* END SIGN UP */}
 
           {/* SIGN IN */}
           <div className="col align-items-center flex-col sign-in">
-            <div className="form-wrapper align-items-center">
-              <div className="form sign-in">
-                <div className="input-group">
-                  <i className="bx bxs-user" />
-                  <input type="text" placeholder="Username" />
-                </div>
-                <div className="input-group">
-                  <i className="bx bxs-lock-alt" />
-                  <input type="password" placeholder="Password" />
-                </div>
-                <button > Sign in</button>
-                <p><b>Forgot password?</b></p>
-                <p>
-                  <span>Don't have an account?</span>
-                  <b onClick={toggle} className="pointer">Sign up here</b>
-                </p>
-              </div>
-            </div>
+          <div className="form-wrapper align-items-center">
+  <div className="form sign-in">
+    <form onSubmit={handleLoginSubmit}>
+      <div className="input-group">
+        <i className="bx bxs-user" />
+        <input
+          type="text"
+          placeholder="Email"
+          name="email"
+          value={loginData.email}
+          onChange={handleLoginChange}
+        />
+      </div>
+      <div className="input-group">
+        <i className="bx bxs-lock-alt" />
+        <input
+          type="password"
+          placeholder="Password"
+          name="password"
+          value={loginData.password}
+          onChange={handleLoginChange}
+        />
+      </div>
+      <button type="submit">Sign in</button>
+    </form>
+
+    <p><b>Forgot password?</b></p>
+    <p>
+      <span>Don't have an account?</span>
+      <b onClick={toggle} className="pointer">Sign up here</b>
+    </p>
+  </div>
+</div>
+ 
           </div>
           {/* END SIGN IN */}
         </div>

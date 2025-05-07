@@ -7,9 +7,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Data
-public class LoginRequestDto {
+public class LoginResponseDto {
+    private String message;
+    private Long userId;
     private String email;
-    private String password;
     private String role;
 }
-
