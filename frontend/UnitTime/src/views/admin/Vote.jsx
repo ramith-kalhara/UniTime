@@ -46,29 +46,23 @@ const Vote = () => {
 
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchCourses = async () => {
       try {
-        const [courseRes, professorRes] = await Promise.all([
-          fetch("http://localhost:8086/api/course/"),
-          fetch("http://localhost:8086/api/professor/")
-        ]);
-
-        if (courseRes.ok && professorRes.ok) {
+        const courseRes = await fetch("http://localhost:8086/api/course/");
+        if (courseRes.ok) {
           const courseData = await courseRes.json();
-          const professorData = await professorRes.json();
           setCourseCodes(courseData);
-          setProfessors(professorData);
         } else {
-          console.error("Failed to fetch courses or professors");
+          console.error("Failed to fetch courses");
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching courses:", error);
       }
     };
-
-    fetchData();
+  
+    fetchCourses();
   }, []);
-
+  
 
 
 
@@ -96,26 +90,32 @@ const Vote = () => {
           const data = await response.json();
           setFormValues((prev) => ({
             ...prev,
-            moduleCode: value, //  Keep the ID
-            moduleName: data.name || '', //  Only use courseCode as name/label
+            moduleCode: value,
+            moduleName: data.name || '',
           }));
+    
+          // 👇 Set professors to only those related to selected course
+          setProfessors(data.professors || []);
         } else {
           setFormValues((prev) => ({
             ...prev,
             moduleCode: '',
             moduleName: '',
           }));
+          setProfessors([]); // clear professors on failed fetch
         }
       } catch (error) {
-        console.error("Failed to fetch course name:", error);
+        console.error("Failed to fetch course details:", error);
         setFormValues((prev) => ({
           ...prev,
           moduleCode: '',
           moduleName: '',
         }));
+        setProfessors([]);
       }
       return;
     }
+    
 
     // Validate module name
     if (name === 'moduleName' && /[^a-zA-Z\s]/.test(value)) {
@@ -403,11 +403,6 @@ const Vote = () => {
                           </ul>
                         )}
                       </Col>
-
-
-
-
-
                     </Row>
                   </div>
 
