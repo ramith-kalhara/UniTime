@@ -6,16 +6,15 @@ import jakarta.persistence.Column;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 public class VoteDto {
 
     private Long id;
-    private String start_date;
-    private String end_date;
-    private String start_time;
-    private String end_time;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
     private String description;
 
     private List<ProfessorDto> professors;

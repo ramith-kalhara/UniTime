@@ -6,32 +6,33 @@ import "swiper/css/pagination";
 import defaultImg from "../../assets/user/img/team-4.jpg"
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import axios from "axios";
+import dayjs from "dayjs";
 
 const VoteBar = () => {
-  const [voteData, setVoteData] = useState([]);
+    const [voteData, setVoteData] = useState([]);
 
-  useEffect(() => {
-    axios.get("http://localhost:8086/api/vote/")
-      .then((response) => {
-        const transformed = response.data.map((voteItem) => ({
-          id: voteItem.id,
-          startTime: voteItem.start_time,
-          endTime: voteItem.end_time,
-          moduleId: voteItem.professors?.course?.courseCode,
-          Professors: voteItem.professors.map((prof) => ({
-            id: prof.id,
-            imageUrl: prof.imageUrl || defaultImg 
-            , // fallback image
-            name: prof.full_name,
-            module: prof.course?.courseCode || "N/A"
-          }))
-        }));
-        setVoteData(transformed);
-      })
-      .catch((error) => {
-        console.error("Error fetching vote data:", error);
-      });
-  }, []);
+    useEffect(() => {
+        axios.get("http://localhost:8086/api/vote/")
+            .then((response) => {
+                const transformed = response.data.map((voteItem) => ({
+                    id: voteItem.id,
+                    startTime: voteItem.startTime,
+                    endTime: voteItem.endTime,
+                    moduleId: voteItem.professors?.course?.courseCode,
+                    Professors: voteItem.professors.map((prof) => ({
+                        id: prof.id,
+                        imageUrl: prof.imageUrl || defaultImg
+                        , // fallback image
+                        name: prof.full_name,
+                        module: prof.course?.courseCode || "N/A"
+                    }))
+                }));
+                setVoteData(transformed);
+            })
+            .catch((error) => {
+                console.error("Error fetching vote data:", error);
+            });
+    }, []);
 
     return (
         <div className="container-fluid pt-5">
@@ -46,8 +47,10 @@ const VoteBar = () => {
                             </p>
                         </div>
                         <p className="text-center">
-                            <strong>Voting Time:</strong> {vote.startTime} - {vote.endTime}
+                            <strong>Start Time:</strong> {dayjs(vote.startTime).format("YYYY-MM-DD - HH:mm:ss")}<br/>{" "}
+                            <strong>End Time:</strong> - {dayjs(vote.endTime).format("YYYY-MM-DD - HH:mm:ss")}
                         </p>
+
                         <Swiper
                             style={{ width: "100%", maxWidth: "1200px", margin: "0 auto", position: "relative" }}
                             modules={[Navigation, Pagination, Autoplay]}

@@ -55,7 +55,7 @@ public class Schedule {
     @JsonBackReference
     private Course course;
 
-    @ManyToMany(mappedBy = "schedules")
+    @ManyToMany(mappedBy = "schedules",cascade = CascadeType.ALL)
     private List<User> users = new ArrayList<>();
 
 

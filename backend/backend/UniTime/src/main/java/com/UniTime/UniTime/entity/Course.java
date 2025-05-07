@@ -56,7 +56,7 @@ public class Course {
     @JsonManagedReference
     private List<Schedule> schedules = new ArrayList<>();
 
-    @OneToOne(mappedBy = "course")
+    @OneToOne(mappedBy = "course" )
     private Vote vote;
 
     @ManyToMany(mappedBy = "courses")
