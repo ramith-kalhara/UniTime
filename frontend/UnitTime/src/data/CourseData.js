@@ -1,5 +1,6 @@
 
 import blog1 from "../assets/user/img/blog-1.jpg"
+import blog2 from "../assets/user/img/blog-2.jpg"
 const CourseData = [
   {
     id: 0,
@@ -15,9 +16,15 @@ const CourseData = [
 
   {
     id: 2,
+<<<<<<< HEAD
     img: blog1,
     moduleName: "Data Science",
     description: "Learn to extract insights from data using statistics, programming, and machine learning to solve real-world problems.",
+=======
+    img: blog2,
+    moduleName: "Data ",
+    description: "Sed kasd sea sed at elitr sed ipsum justo, sit nonumy diam eirmod, duo et sed sit eirmod kasd clita tempor dolor stet lorem. Tempor ipsum justo amet stet...",
+>>>>>>> Ramith1.3
     department: "Data science",
     courseCode: "IT2030",
     creadit: "4",
@@ -44,8 +51,25 @@ const CourseData = [
     courseCode: "IT2030",
     creadit: "4",
     tags: ["Project Management", "Software Engineering", "Teamwork", "Agile", "Scrum"],
+<<<<<<< HEAD
      descriptionLong: "BMIT combines business management with IT expertise, preparing students to lead technology projects and align IT solutions with business goals."
   }
+=======
+     descriptionLong: " Sadipscing labore amet rebum est et justo gubergren. Et eirmod ipsum sit diam ut magna lorem. Nonumy vero labore lorem sanctusrebum et lorem magna kasd, stet amet magna accusam consetetureirmod. Kasd accusam sit ipsum sadipscing et at at sanctus et.Ipsum sit gubergren dolores et, consetetur justo invidunt at etaliquyam ut et vero clita. Diam sea sea no sed dolores diam  nonumy, gubergren sit stet no diam kasd vero."
+  },
+  {
+    id: 4,
+    img: blog1,
+    moduleName: "BMIT",
+    description: "Sed kasd sea sed at elitr sed ipsum justo, sit nonumy diam eirmod, duo et sed sit eirmod kasd clita tempor dolor stet lorem. Tempor ipsum justo amet stet...",
+    department: "civil engeenire",
+    courseCode: "IT2030",
+    creadit: "4",
+    tags: ["Project Management", "Software Engineering", "Teamwork", "Agile", "Scrum"],
+     descriptionLong: " Sadipscing labore amet rebum est et justo gubergren. Et eirmod ipsum sit diam ut magna lorem. Nonumy vero labore lorem sanctusrebum et lorem magna kasd, stet amet magna accusam consetetureirmod. Kasd accusam sit ipsum sadipscing et at at sanctus et.Ipsum sit gubergren dolores et, consetetur justo invidunt at etaliquyam ut et vero clita. Diam sea sea no sed dolores diam  nonumy, gubergren sit stet no diam kasd vero."
+  },
+  
+>>>>>>> Ramith1.3
 
 
 ];

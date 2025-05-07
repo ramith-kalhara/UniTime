@@ -111,6 +111,7 @@ const Room = () => {
     hasSmartScreen: '',
     hasComputers: '',
     description: '',
+    roomName:''
   });
   
 
@@ -147,6 +148,7 @@ const Room = () => {
   };
   
 
+
   const validateRoomDetails = () => {
     let errorMessages = '';
   
@@ -156,6 +158,7 @@ const Room = () => {
     if (!formValues.department) errorMessages += 'Department is required.\n';
     if (!formValues.hasSmartScreen) errorMessages += 'Smart Screen option is required.\n';
     if (!formValues.description) errorMessages += 'Room Description is required.\n';
+    if (!formValues.roomName) errorMessages += 'Room Name is required.\n';
   
     // Validate Capacity should be a number
     if (formValues.capacity && isNaN(formValues.capacity)) {
@@ -185,12 +188,21 @@ const Room = () => {
   
     if (validateRoomDetails()) {
       try {
+        const jsonBody = {
+          hasSmartScreen: formValues.hasSmartScreen,
+          capacity: formValues.capacity,
+          roomType: formValues.roomType,
+          department: formValues.department,
+          description: formValues.description,
+          roomName: formValues.roomName
+        };
+  
         const response = await fetch("http://localhost:8086/api/room/create", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json"  // tell server this is JSON
           },
-          body: JSON.stringify(formValues)
+          body: JSON.stringify(jsonBody)        // send as JSON string
         });
   
         if (!response.ok) {
@@ -203,13 +215,14 @@ const Room = () => {
           text: 'Room has been successfully added!',
         });
   
-        // Reset form after submit
         setFormValues({
           hasSmartScreen: '',
           capacity: '',
           roomType: '',
           department: '',
-          description: ''
+          description: '',
+          roomName:''
+          // image: null (not needed now)
         });
   
       } catch (error) {
@@ -222,6 +235,9 @@ const Room = () => {
       }
     }
   };
+  
+  
+  
   
   
 
@@ -531,6 +547,38 @@ const Room = () => {
                             name="department"
                             onChange={handleFormChange} 
                             placeholder="Department"
+                            type="text"
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col lg="6">
+                     <FormGroup>
+  <label className="form-control-label" htmlFor="input-image">
+    Image
+  </label>
+  <Input
+    type="file"
+    name="image"
+    onChange={(e) => setFormValues({
+      ...formValues,
+      image: e.target.files[0]  // store the File object, not just the path
+    })}
+  />
+</FormGroup>
+
+                      </Col>
+
+                      <Col lg="6">
+                        <FormGroup>
+                          <label className="form-control-label" htmlFor="input-department">
+                            Room Name 
+                          </label>
+                          <Input
+                            className="form-control-alternative"
+                            value={formValues.roomName}
+                            name="roomName"
+                            onChange={handleFormChange} 
+                            placeholder="Room Name"
                             type="text"
                           />
                         </FormGroup>

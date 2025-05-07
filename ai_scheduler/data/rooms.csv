@@ -1,4 +1,4 @@
 room_id,capacity,has_projector,has_computer,room_type
-R101,40,True,True,Lecture Hall
-R102,30,True,False,Lab
-R103,25,False,True,Lab
+1,40,True,True,Lecture Hall
+2,30,True,False,Lab
+3,25,False,True,Lab

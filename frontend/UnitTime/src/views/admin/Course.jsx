@@ -294,6 +294,7 @@ const Course = () => {
                       </Col>
                      
                     </Row>
+
                     
                       <FormGroup>
                         <label> Description </label>

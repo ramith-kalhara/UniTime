@@ -1,19 +1,44 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import defaultImg from "../../assets/user/img/team-4.jpg"
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
-
-import VoteData from "../../data/VoteData"; // Full vote data
+import axios from "axios";
 
 const VoteBar = () => {
+  const [voteData, setVoteData] = useState([]);
+
+  useEffect(() => {
+    axios.get("http://localhost:8086/api/vote/")
+      .then((response) => {
+        const transformed = response.data.map((voteItem) => ({
+          id: voteItem.id,
+          startTime: voteItem.start_time,
+          endTime: voteItem.end_time,
+          moduleId: voteItem.professors?.course?.courseCode,
+          Professors: voteItem.professors.map((prof) => ({
+            id: prof.id,
+            imageUrl: prof.imageUrl || defaultImg 
+            , // fallback image
+            name: prof.full_name,
+            module: prof.course?.courseCode || "N/A"
+          }))
+        }));
+        setVoteData(transformed);
+      })
+      .catch((error) => {
+        console.error("Error fetching vote data:", error);
+      });
+  }, []);
+
     return (
         <div className="container-fluid pt-5">
             <div className="vote_container">
 
 
-                {VoteData.map((vote) => (
+                {voteData.map((vote) => (
                     <div key={vote.id} className="mb-5">
                         <div className="text-center pb-2">
                             <p className="section-title px-5">

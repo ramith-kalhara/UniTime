@@ -4,10 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
+<<<<<<< HEAD
     <list default="true" id="0588b268-76d3-40e4-a287-b8e8566ff2fb" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UniTime/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/UniTime/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UniTime/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/UniTime/target/classes/application.properties" afterDir="false" />
+=======
+    <list default="true" id="bc4b7341-ab38-479e-ab15-ab890ef48ab2" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/service/impl/VoteServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/UniTime/src/main/java/com/UniTime/UniTime/service/impl/VoteServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/UnitTime/src/views/user/SingleCourse.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/UnitTime/src/views/user/SingleCourse.jsx" afterDir="false" />
+>>>>>>> Ramith1.3
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,26 +21,9 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
-    <favorite-branches>
-      <branch-storage>
-        <map>
-          <entry type="LOCAL">
-            <value>
-              <list>
-                <branch-info repo="$PROJECT_DIR$/.." source="danuk001" />
-              </list>
-            </value>
-          </entry>
-        </map>
-      </branch-storage>
-    </favorite-branches>
-    <option name="RECENT_BRANCH_BY_REPOSITORY">
-      <map>
-        <entry key="$PROJECT_DIR$/.." value="danuk001" />
-      </map>
-    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
+<<<<<<< HEAD
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
     &quot;state&quot;: &quot;OPEN&quot;,
@@ -82,21 +71,24 @@
     </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+=======
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "Spring Boot.UniTimeApplication.executor": "Run",
+    "git-widget-placeholder": "Ramith1.3",
+    "last_opened_file_path": "C:/Users/kalha/Downloads/FitFeed-main/FitFeed-main/FitFeed/backend spring boot",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.0"
+  }
+}]]></component>
+>>>>>>> Ramith1.3
   <component name="TaskManager">
-    <task active="true" id="Default" summary="Default task">
-      <changelist id="0588b268-76d3-40e4-a287-b8e8566ff2fb" name="Changes" comment="" />
-      <created>1743328331756</created>
-      <option name="number" value="Default" />
-      <option name="presentableId" value="Default" />
-      <updated>1743328331756</updated>
-      <workItem from="1743328332875" duration="12331000" />
-      <workItem from="1743860118354" duration="3528000" />
-      <workItem from="1743877780932" duration="955000" />
-      <workItem from="1743879018863" duration="130000" />
-    </task>
     <servers />
-  </component>
-  <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="3" />
   </component>
 </project>
