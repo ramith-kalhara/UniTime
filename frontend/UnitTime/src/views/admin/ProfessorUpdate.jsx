@@ -75,6 +75,7 @@ const ProfessorUpdate = () => {
     }
   
     setFormData({
+
       id: professor.id,
       fullName: professor.full_name || "",
       email: professor.email || "",
@@ -84,7 +85,7 @@ const ProfessorUpdate = () => {
       city: professor.city || "",
       country: professor.country || "",
       postalCode: professor.postal_code || "",
-      moduleCode: professor.course?.courseCode|| "",
+      moduleCode: professor.course?.courseId?.toString() || "",
       description: professor.description || "",
     });
   }, [professor, navigate]);
@@ -213,6 +214,8 @@ const ProfessorUpdate = () => {
     }
 
     console.log("Couse Id : " + moduleCode)
+    const numericCourseId = parseInt(formData.moduleCode, 10); // <-- This is important
+
   
     //  AXIOS PUT REQUEST HERE
     try {
@@ -229,12 +232,12 @@ const ProfessorUpdate = () => {
           country: formData.country,
           postal_code: formData.postalCode,
           description: formData.description,
-          course: { // send course as an object
-            courseId: formData.moduleCode // courseId here is moduleCode
-          
+          course: {
+            courseId: numericCourseId
           }
         }
       );
+         
 
       console.log("Couse Id : " + moduleCode)
   
@@ -513,21 +516,24 @@ const ProfessorUpdate = () => {
                     <Col lg="6">
                     <FormGroup>
   <Label htmlFor="moduleCode" className="form-control-label">Module Code </Label>
-<Input
+  <Input
   type="select"
   name="moduleCode"
   id="moduleCode"
   className="form-control"
-  value={formData.moduleCode?.toString() || ""}
+  value={formData.moduleCode}
   onChange={handleChange}
 >
-  <option value="">{formData.moduleCode}</option>
+  <option value="">
+    {courseCodes.find(c => c.courseId.toString() === formData.moduleCode)?.courseCode || "Select a course"}
+  </option>
   {courseCodes.map((course) => (
     <option key={course.courseId} value={course.courseId.toString()}>
       {course.courseCode}
     </option>
   ))}
 </Input>
+
 
 </FormGroup>
 
