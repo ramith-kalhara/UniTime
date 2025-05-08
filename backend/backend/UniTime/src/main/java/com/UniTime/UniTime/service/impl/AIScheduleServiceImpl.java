@@ -32,7 +32,6 @@ public class AIScheduleServiceImpl implements AIScheduleService {
 
         Map<String, Object> body = new HashMap<>();
         body.put("course_id", request.getCourseId());
-        body.put("module_id", request.getModuleId());
         body.put("professor_id", request.getProfessorId());
         body.put("room_id", request.getRoomId());
 

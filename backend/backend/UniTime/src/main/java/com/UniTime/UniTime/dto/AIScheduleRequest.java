@@ -9,7 +9,6 @@ import lombok.Setter;
 @Data
 public class AIScheduleRequest {
     private Long courseId;
-    private Long moduleId;
     private Long professorId;
     private Long roomId;
 }
