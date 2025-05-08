@@ -182,37 +182,36 @@ const Room = () => {
     return true;
   };
   
-
   const handleFormSubmit = async (e) => {
     e.preventDefault();
   
     if (validateRoomDetails()) {
       try {
-        const jsonBody = {
-          hasSmartScreen: formValues.hasSmartScreen,
-          capacity: formValues.capacity,
-          roomType: formValues.roomType,
+        const formData = new FormData();
+  
+        const roomData = {
+          roomName: formValues.roomName,
           department: formValues.department,
           description: formValues.description,
-          roomName: formValues.roomName
+          capacity: formValues.capacity,
+          roomType: formValues.roomType,
+          smart_screen: formValues.hasSmartScreen,
         };
+  
+        formData.append("room", new Blob([JSON.stringify(roomData)], { type: "application/json" }));
+        formData.append("image", formValues.image); // Attach the file
   
         const response = await fetch("http://localhost:8086/api/room/create", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"  // tell server this is JSON
-          },
-          body: JSON.stringify(jsonBody)        // send as JSON string
+          body: formData,
         });
   
-        if (!response.ok) {
-          throw new Error("Something went wrong");
-        }
+        if (!response.ok) throw new Error("Something went wrong");
   
         Swal.fire({
-          icon: 'success',
-          title: 'Room Added',
-          text: 'Room has been successfully added!',
+          icon: "success",
+          title: "Room Added",
+          text: "Room has been successfully added!",
         });
   
         setFormValues({
@@ -221,22 +220,20 @@ const Room = () => {
           roomType: '',
           department: '',
           description: '',
-          roomName:''
-          // image: null (not needed now)
+          roomName: '',
+          image: null,
         });
   
       } catch (error) {
         console.error("Error:", error);
         Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Failed to add room. Please try again.',
+          icon: "error",
+          title: "Error",
+          text: "Failed to add room. Please try again.",
         });
       }
     }
   };
-  
-  
   
   
   

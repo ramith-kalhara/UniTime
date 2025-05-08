@@ -7,7 +7,7 @@ import defaultImg from "../../assets/user/img/team-4.jpg"
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import axios from "axios";
 import dayjs from "dayjs";
-
+import Swal from "sweetalert2";
 const VoteBar = () => {
     const [voteData, setVoteData] = useState([]);
 
@@ -34,6 +34,130 @@ const VoteBar = () => {
             });
     }, []);
 
+    const handleVote = async (voteId, professorId) => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        console.log("Local Storage User:", user);
+      
+        if (!user || !user.userId) {
+          Swal.fire({
+            icon: "warning",
+            title: "Login Required",
+            text: "Please log in first to vote.",
+            confirmButtonColor: "#3085d6"
+          });
+          return;
+        }
+      
+        try {
+          // Step 1: Fetch all existing votes of the user
+          const existingVotesRes = await axios.get("http://localhost:8086/api/uservote/");
+          const allVotes = existingVotesRes.data;
+      
+          // Step 2: Check if the user has already voted in this poll
+          const existingVote = allVotes.find(
+            (vote) =>
+              vote.user?.id === user.userId &&
+              vote.vote?.id === voteId
+          );
+      
+          if (existingVote) {
+            // Step 3: Show alert with option to delete existing vote
+            Swal.fire({
+              icon: "info",
+              title: "Already Voted",
+              text: "You have already voted in this poll. Do you want to change your vote?",
+              showCancelButton: true,
+              confirmButtonColor: "#3085d6",
+              cancelButtonColor: "#d33",
+              confirmButtonText: "Yes, delete my vote",
+              cancelButtonText: "No, keep my vote"
+            }).then(async (result) => {
+              if (result.isConfirmed) {
+                // Step 4: Delete the existing vote if confirmed
+                try {
+                  const deleteVoteRes = await axios.delete(`http://localhost:8086/api/uservote/${existingVote.id}`);
+                  if (deleteVoteRes.status === 200) {
+                    Swal.fire({
+                      icon: "success",
+                      title: "Vote Deleted",
+                      text: "Your previous vote has been deleted. You can now submit a new vote.",
+                      confirmButtonColor: "#3085d6"
+                    });
+                    // Now submit the new vote
+                    submitVote(voteId, professorId);
+                  } else {
+                    Swal.fire({
+                      icon: "error",
+                      title: "Deletion Failed",
+                      text: "Unable to delete your vote at this time.",
+                      confirmButtonColor: "#d33"
+                    });
+                  }
+                } catch (error) {
+                  console.error("Error deleting vote:", error);
+                  Swal.fire({
+                    icon: "error",
+                    title: "An Error Occurred",
+                    text: "Unable to delete your vote.",
+                    confirmButtonColor: "#d33"
+                  });
+                }
+              }
+            });
+          } else {
+            // If no existing vote, directly submit the vote
+            submitVote(voteId, professorId);
+          }
+        } catch (error) {
+          console.error("Error fetching existing votes:", error);
+          Swal.fire({
+            icon: "error",
+            title: "An Error Occurred",
+            text: "Unable to fetch your previous votes.",
+            confirmButtonColor: "#d33"
+          });
+        }
+      };
+      
+      // Helper function to submit the new vote
+      const submitVote = async (voteId, professorId) => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        
+        const votePayload = {
+          user: { id: user.userId },
+          vote: { id: voteId },
+          professor: { id: professorId }
+        };
+      
+        try {
+          const response = await axios.post("http://localhost:8086/api/uservote/create", votePayload);
+      
+          if (response.status === 201 || response.status === 200) {
+            Swal.fire({
+              icon: "success",
+              title: "Vote Submitted!",
+              text: "Your vote has been recorded.",
+              confirmButtonColor: "#3085d6"
+            });
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Submission Failed",
+              text: "Failed to submit vote.",
+              confirmButtonColor: "#d33"
+            });
+          }
+        } catch (error) {
+          console.error("Error submitting vote:", error);
+          Swal.fire({
+            icon: "error",
+            title: "An Error Occurred",
+            text: "Unable to complete your vote at this time.",
+            confirmButtonColor: "#d33"
+          });
+        }
+      };
+      
     return (
         <div className="container-fluid pt-5">
             <div className="vote_container">
@@ -75,10 +199,18 @@ const VoteBar = () => {
                                                     style={{ width: "38px", height: "38px" }} href="#">
                                                     <i className="fa-solid fa-arrow-left"></i>
                                                 </a>
-                                                <a className="btn btn-outline-light text-center mr-2 px-0 d-flex align-items-center justify-content-center"
-                                                    style={{ width: "38px", height: "38px", fontSize: "12px", fontWeight: "bold" }} href="#">
-                                                    Vote
-                                                </a>
+                                                <a
+  className="btn btn-outline-light text-center mr-2 px-0 d-flex align-items-center justify-content-center"
+  style={{ width: "38px", height: "38px", fontSize: "12px", fontWeight: "bold" }}
+  href="#"
+  onClick={(e) => {
+    e.preventDefault();
+    handleVote(vote.id, professor.id);
+  }}
+>
+  Vote
+</a>
+
                                                 <a className="btn btn-outline-light text-center px-0 d-flex align-items-center justify-content-center"
                                                     style={{ width: "38px", height: "38px" }} href="#">
                                                     <i className="fa-solid fa-arrow-right"></i>
