@@ -32,7 +32,10 @@ const Schedule = () => {
   const [roomId, setRoomId] = useState("");
   const [professorId, setProfessorId] = useState("");
   const [courseId, setCourseId] = useState("");
-
+  const [formValues, setFormValues] = useState({
+    image: null,
+  });
+  
 
   //get data to select option menu 
   const [professors, setProfessors] = useState([]);
@@ -51,7 +54,7 @@ const Schedule = () => {
         }
         const professorData = await professorResponse.json();
         setProfessors(professorData);
-  
+
         // Fetch courses
         const courseResponse = await fetch("http://localhost:8086/api/course/");
         if (!courseResponse.ok) {
@@ -59,7 +62,7 @@ const Schedule = () => {
         }
         const courseData = await courseResponse.json();
         setCourses(courseData);
-  
+
         // Fetch rooms
         const roomResponse = await fetch("http://localhost:8086/api/room/");
         if (!roomResponse.ok) {
@@ -67,15 +70,15 @@ const Schedule = () => {
         }
         const roomData = await roomResponse.json();
         setRooms(roomData);
-  
+
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
-  
+
     fetchData();
   }, []);
-  
+
 
   const handleCapacityChange = (e) => {
     const { value } = e.target;
@@ -95,9 +98,7 @@ const Schedule = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-
-
+  
     if (!startDate || !startTime || !endTime) {
       Swal.fire({
         icon: "error",
@@ -106,7 +107,7 @@ const Schedule = () => {
       });
       return;
     }
-
+  
     const now = dayjs();
     if (dayjs(startDate).isBefore(now, "day")) {
       Swal.fire({
@@ -116,12 +117,7 @@ const Schedule = () => {
       });
       return;
     }
-
-    console.log("Course Id : " + courseId)
-    console.log("Professor  Id : " + professorId)
-    console.log("Room  Id : " + roomId)
-
-    // Construct data
+  
     const scheduleData = {
       capacity: parseInt(capacity),
       lectureTitle: lecture_title,
@@ -129,50 +125,43 @@ const Schedule = () => {
       startTime: dayjs(startTime).format("HH:mm:ss"),
       endTime: dayjs(endTime).format("HH:mm:ss"),
       scheduleDescription: schedule_description,
-      room: {
-        id: roomId
-      },
-      professor: {
-        id: professorId
-      },
-      course: {
-        courseId: courseId
-      }
+      room: { id: roomId },
+      professor: { id: professorId },
+      course: { courseId: courseId },
     };
-
-
+  
     try {
+      const formData = new FormData();
+      formData.append("schedule", new Blob([JSON.stringify(scheduleData)], { type: "application/json" }));
+      if (formValues.image) {
+        formData.append("image", formValues.image);
+      }
+  
       const response = await fetch("http://localhost:8086/api/schedule/create", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(scheduleData)
+        body: formData,
       });
-
-      if (!response.ok) {
-        throw new Error("Schedule creation failed");
-      }
-
+  
+      if (!response.ok) throw new Error("Schedule creation failed");
+  
       Swal.fire({
         icon: "success",
         title: "Schedule Created",
-        text: "Schedule successfully added!"
+        text: "Schedule successfully added!",
       });
-
-      // Reset fields
-      // Reset logic here...
-
+  
+      // Optionally reset your form state here...
+  
     } catch (error) {
       console.error("Error:", error);
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: "Failed to create schedule. Please try again."
+        text: "Failed to create schedule. Please try again.",
       });
     }
   };
-
+  
 
 
   return (
@@ -391,7 +380,7 @@ const Schedule = () => {
                       </Col>
                     </Row>
                     <Row>
-                      <Col lg="12">
+                      <Col lg="6">
                         <FormGroup>
                           <label className="form-control-label" htmlFor="input-lectureTitle">
                             Lecture Title
@@ -405,6 +394,25 @@ const Schedule = () => {
                             onChange={(e) => setLectureTitle(e.target.value)}
                           />
                         </FormGroup>
+                      </Col>
+                      <Col lg="6">
+                        <FormGroup>
+                          <label className="form-control-label" htmlFor="input-image">
+                            Image
+                          </label>
+                          <Input
+  type="file"
+  name="image"
+  onChange={(e) =>
+    setFormValues({
+      ...formValues,
+      image: e.target.files[0], // this stores the file
+    })
+  }
+/>
+
+                        </FormGroup>
+
                       </Col>
                     </Row>
 

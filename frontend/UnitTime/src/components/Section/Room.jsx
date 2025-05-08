@@ -5,12 +5,18 @@ function Room({ ScheduleData }) {
     <div className="col-lg-4 mb-5">
       <div className="card border-0 bg-light shadow-sm pb-2">
         {/* Optional image - only if you add it to the data */}
-        <img className="card-img-top mb-2" src={ScheduleData.img || '/images/default.jpg'} alt="Room" />
+        <img
+          className="card-img-top mb-2"
+          src={ScheduleData.img || '/images/default.jpg'}
+          alt="Room"
+          style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '8px' }}
+        />
+
 
         <div className="card-body text-center">
           <h4 className="card-title">{ScheduleData.room_type}</h4>
           <p className="card-text">{ScheduleData.description}</p>
-        
+
         </div>
         <div className="card-footer bg-transparent py-4 px-5">
           <div className="row border-bottom">

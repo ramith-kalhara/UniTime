@@ -10,10 +10,7 @@ import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
@@ -36,6 +33,10 @@ public class Schedule {
     private LocalDate startDate;
     private LocalTime startTime;
     private LocalTime endTime;
+
+    @Lob
+    @Column(name = "image_data", columnDefinition="LONGBLOB")
+    private byte[] imageData;
 
     @Column(columnDefinition = "TEXT")
     private String scheduleDescription;
@@ -71,6 +72,12 @@ public class Schedule {
             dto.setUsers(userDtos);
         }
 
-        return mapper.map(this, ScheduleDto.class);
+        // Convert image byte[] to Base64 string
+        if (this.imageData != null) {
+            dto.setImageBase64(Base64.getEncoder().encodeToString(this.imageData));
+        }
+
+        return dto; // ✅ This is correct
     }
+
 }

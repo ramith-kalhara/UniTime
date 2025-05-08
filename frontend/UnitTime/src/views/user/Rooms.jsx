@@ -14,27 +14,30 @@ const roomImages = [room1, room2, room3, room4];
 function Rooms() {
   const [schedules, setSchedules] = useState([]);
 
-  useEffect(() => {
-    axios.get('http://localhost:8086/api/schedule/')
-      .then(response => {
-        const transformedData = response.data.map((item, index) => ({
-          id: item.id,
-          img: roomImages[index % roomImages.length], // Rotate images
-          room_type: item.room?.roomType || "N/A",
-          description: item.scheduleDescription || "No description provided.",
-          department: item.course?.department || "N/A",
-          capacity: item.room?.capacity || "N/A",
-          startTime: item.startTime,
-          endTime: item.endTime,
-          lectureName: item.lectureTitle,
-          moduleName: item.course?.name || "N/A"
-        }));
-        setSchedules(transformedData);
-      })
-      .catch(error => {
-        console.error('Failed to fetch schedule data:', error);
-      });
-  }, []);
+ useEffect(() => {
+  axios.get('http://localhost:8086/api/schedule/')
+    .then(response => {
+      const transformedData = response.data.map((item, index) => ({
+        id: item.id,
+        img: item.imageBase64 
+              ? `data:image/jpeg;base64,${item.imageBase64}` 
+              : roomImages[index % roomImages.length],
+        room_type: item.room?.roomType || "N/A",
+        description: item.scheduleDescription || "No description provided.",
+        department: item.course?.department || "N/A",
+        capacity: item.room?.capacity || "N/A",
+        startTime: item.startTime,
+        endTime: item.endTime,
+        lectureName: item.lectureTitle,
+        moduleName: item.course?.name || "N/A"
+      }));
+      setSchedules(transformedData);
+    })
+    .catch(error => {
+      console.error('Failed to fetch schedule data:', error);
+    });
+}, []);
+
 
   return (
     <div>
