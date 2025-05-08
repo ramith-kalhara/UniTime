@@ -12,8 +12,11 @@ import com.UniTime.UniTime.service.UserVoteService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,12 +35,17 @@ public class ProfessorServiceImpl implements ProfessorService {
 
     // Create Professor
     @Override
-    public ProfessorDto postProfessor(ProfessorDto professorDto) {
-        // Convert DTO to Entity without userVote list
+    public ProfessorDto postProfessor(ProfessorDto professorDto, MultipartFile image) throws IOException {
+        // Convert DTO to Entity
         Professor professor = professorDto.toEntity(mapper);
 
+        // Handle Image
+        if (image != null && !image.isEmpty()) {
+            professor.setImageData(image.getBytes());
+        }
+
         // Set Course
-        if (professorDto.getCourse() != null) {
+        if (professorDto.getCourse() != null && professorDto.getCourse().getCourseId() != null) {
             Course course = courseRepository.findById(professorDto.getCourse().getCourseId())
                     .orElseThrow(() -> new NotFoundException("Course not found"));
             professor.setCourse(course);
@@ -55,60 +63,59 @@ public class ProfessorServiceImpl implements ProfessorService {
         if (professorDto.getUserVote() != null) {
             for (UserVoteDto userVoteDto : professorDto.getUserVote()) {
                 UserVote userVote = new UserVote();
-                userVote.setProfessor(professor); // attach the professor reference
+                userVote.setProfessor(professor);  // link to professor
                 userVotes.add(userVote);
             }
         }
-        professor.setUserVote(userVotes); // attach votes to professor
+        professor.setUserVote(userVotes);
 
-        // Save professor first to get the ID (important before setting relationships that need ID)
+        // Save professor first
         Professor savedProfessor = professorRepository.save(professor);
 
-        // Handle schedules after saving professor
+        // Handle Schedules
         List<Schedule> schedules = new ArrayList<>();
         if (professorDto.getSchedules() != null) {
             for (ScheduleDto scheduleDto : professorDto.getSchedules()) {
                 Schedule schedule;
 
                 if (scheduleDto.getScheduleId() != null) {
-                    // Fetch and update existing schedule
                     schedule = scheduleRepository.findById(scheduleDto.getScheduleId())
                             .orElseThrow(() -> new NotFoundException("Schedule not found with id: " + scheduleDto.getScheduleId()));
                 } else {
-                    // Create new schedule from DTO
                     schedule = mapper.map(scheduleDto, Schedule.class);
                 }
 
-                // Set the professor (new or existing)
                 schedule.setProfessor(savedProfessor);
                 schedules.add(schedule);
             }
-
-            // Save all new or updated schedules
             scheduleRepository.saveAll(schedules);
-            System.out.println("Final Schedule Entities: " + schedules);
-
+            savedProfessor.setSchedules(schedules);
         }
 
+        // Convert saved professor to DTO and encode image
+        ProfessorDto savedDto = savedProfessor.toDto(mapper);
+        if (savedProfessor.getImageData() != null) {
+            savedDto.setImageBase64(Base64.getEncoder().encodeToString(savedProfessor.getImageData()));
+        }
 
-        // Now update savedProfessor with the schedule list (optional)
-        savedProfessor.setSchedules(schedules);
-        System.out.println( "Schedule : " + schedules);
-
-        return savedProfessor.toDto(mapper);
+        return savedDto;
     }
 
 
     // Get all Professors
     @Override
     public List<ProfessorDto> getAllProfessors() {
-        List<Professor> professors = professorRepository.findAll();
-        if (professors.isEmpty()) {
-            return new ArrayList<>();
-        } else {
-            return professors.stream().map(professor -> professor.toDto(mapper)).toList();
-        }
+        return professorRepository.findAll().stream()
+                .map(professor -> {
+                    ProfessorDto dto = professor.toDto(mapper);
+                    if (professor.getImageData() != null) {
+                        dto.setImageBase64(Base64.getEncoder().encodeToString(professor.getImageData()));
+                    }
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
+
 
     // Get Professor by ID
     @Override

@@ -58,10 +58,6 @@ const Professor = () => {
     }
   }, [formData.moduleCode]);
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    setFormData((prev) => ({ ...prev, file }));
-  };
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -96,7 +92,7 @@ const Professor = () => {
     const {
       fullName, email, contactNumber, departmentName,
       address, city, country, postalCode,
-      moduleCode, description
+      moduleCode, description, image // Make sure image is in formData
     } = formData;
 
     const professorData = {
@@ -159,8 +155,18 @@ const Professor = () => {
     }
 
     try {
-      await axios.post("http://localhost:8086/api/professor/create", professorData);
-      console.log("Professor Data : " + professorData)
+      const data = new FormData();
+      data.append("professor", new Blob([JSON.stringify(professorData)], { type: "application/json" }));
+      if (formData.image) {
+        data.append("image", formData.image);
+      }
+
+      const response = await fetch("http://localhost:8086/api/professor/create", {
+        method: "POST",
+        body: data,
+      });
+
+      if (!response.ok) throw new Error("Professor creation failed");
 
       Swal.fire({
         icon: "success",
@@ -168,13 +174,28 @@ const Professor = () => {
         text: "Professor created successfully!",
       });
 
-      // Optionally reset or redirect here
+      // Reset if needed
+      setFormData({
+        fullName: "",
+        email: "",
+        contactNumber: "",
+        departmentName: "",
+        address: "",
+        city: "",
+        country: "",
+        postalCode: "",
+        moduleName: "",
+        moduleCode: "",
+        description: "",
+        image: null, // Reset image
+      });
+
     } catch (error) {
       console.error("Error creating professor:", error);
       Swal.fire({
         icon: "error",
         title: "API Error",
-        text: error.response?.data?.message || "Something went wrong.",
+        text: error.message || "Something went wrong.",
       });
     }
   };
@@ -346,16 +367,21 @@ const Professor = () => {
                       </Col>
                       <Col lg="6">
                         <FormGroup>
-                          <label className="form-control-label" htmlFor="fileUpload">
-                            Upload File
+                          <label className="form-control-label" htmlFor="input-image">
+                            Image
                           </label>
                           <Input
-                            className="form-control-alternative"
-                            id="fileUpload"
-                            name="file"
                             type="file"
-                            onChange={handleFileChange} // define this handler
+                            name="image"
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                image: e.target.files[0],
+                              })
+                            }
                           />
+
+
                         </FormGroup>
                       </Col>
 
@@ -469,7 +495,7 @@ const Professor = () => {
                         </FormGroup>
 
                       </Col>
-               
+
                     </Row>
                   </div>
                   <hr className="my-4" />

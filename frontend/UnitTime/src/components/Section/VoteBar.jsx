@@ -3,7 +3,12 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import defaultImg from "../../assets/user/img/team-4.jpg"
+import team1 from '../../assets/user/img/team-1.jpg';
+import team2 from '../../assets/user/img/team-2.jpg';
+import team3 from '../../assets/user/img/team-3.jpg';
+import team4 from '../../assets/user/img/team-4.jpg';
+
+const imageList = [team1, team2, team3, team4];
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -19,14 +24,18 @@ const VoteBar = () => {
                     startTime: voteItem.startTime,
                     endTime: voteItem.endTime,
                     moduleId: voteItem.professors?.course?.courseCode,
-                    Professors: voteItem.professors.map((prof) => ({
-                        id: prof.id,
-                        imageUrl: prof.imageUrl || defaultImg
-                        , // fallback image
-                        name: prof.full_name,
-                        module: prof.course?.courseCode || "N/A"
+                    Professors: voteItem.professors.map((prof, index) => ({
+                      id: prof.id,
+                      imageUrl: prof.imageBase64 
+                      ? `data:image/jpeg;base64,${prof.imageBase64}` 
+                      : prof.imageUrl || imageList[index % imageList.length],
+                     // ✅ now index is defined
+                      name: prof.full_name,
+                      module: prof.course?.courseCode || "N/A"
                     }))
+                    
                 }));
+                console.log("Data aray : ", transformed)
                 setVoteData(transformed);
             })
             .catch((error) => {
@@ -193,7 +202,7 @@ const VoteBar = () => {
                                 <SwiperSlide key={`${vote.id}-${professor.id}-${index}`}>
                                     <div className="text-center team">
                                         <div className="position-relative overflow-hidden mb-4" style={{ borderRadius: "100%" }}>
-                                            <img className="img-fluid w-100" src={professor.imageUrl} alt={professor.name} />
+                                            <img className="img-fluid w-100" src={professor.imageUrl} alt={professor.name} style={{ width: '302px', height: '300px', objectFit: 'cover', borderRadius: '8px' }} />
                                             <div className="team-social d-flex align-items-center justify-content-center w-100 h-100 position-absolute">
                                                 <a className="btn btn-outline-light text-center mr-2 px-0 d-flex align-items-center justify-content-center"
                                                     style={{ width: "38px", height: "38px" }} href="#">

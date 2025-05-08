@@ -11,6 +11,7 @@ import lombok.Setter;
 import org.modelmapper.ModelMapper;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,6 +46,10 @@ public class Professor {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
+    @Lob
+    @Column(name = "image_data", columnDefinition="LONGBLOB")
+    private byte[] imageData;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", nullable = false)
     @JsonBackReference
@@ -73,6 +78,13 @@ public class Professor {
                         .map(schedule -> mapper.map(schedule, ScheduleDto.class))
                         .collect(Collectors.toList())
                 : new ArrayList<>();
+
+        // Convert image byte[] to Base64 string
+        if (this.imageData != null) {
+            dto.setImageBase64(Base64.getEncoder().encodeToString(this.imageData));
+        } else {
+            dto.setImageBase64(null);
+        }
 
         dto.setSchedules(scheduleDtos);
         return dto;

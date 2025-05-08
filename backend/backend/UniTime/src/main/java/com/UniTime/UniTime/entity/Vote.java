@@ -13,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Setter
 @Getter
@@ -60,6 +61,13 @@ public class Vote {
         if (this.course != null) {
             CourseDto courseDto = this.course.toDto(mapper); // ensure this method maps all fields
             voteDto.setCourse(courseDto);
+        }
+
+        if (this.professors != null) {
+            List<ProfessorDto> professorDtos = this.professors.stream()
+                    .map(professor -> professor.toDto(mapper))
+                    .collect(Collectors.toList());
+            voteDto.setProfessors(professorDtos);
         }
         return voteDto;
     }
