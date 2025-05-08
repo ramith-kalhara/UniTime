@@ -2,8 +2,8 @@ import React from 'react';
 
 function Room({ ScheduleData }) {
   return (
-    <div className="col-lg-4 mb-5">
-      <div className="card border-0 bg-light shadow-sm pb-2">
+    <div className="col-lg-4 mb-5"   >
+      <div className="card border-0 bg-light shadow-sm pb-2"  style={{ width: '350px', height: '691px' }}>
         {/* Optional image - only if you add it to the data */}
         <img
           className="card-img-top mb-2"

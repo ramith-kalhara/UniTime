@@ -1,7 +1,9 @@
 package com.UniTime.UniTime.entity;
 
+import com.UniTime.UniTime.dto.AIScheduleDto;
 import jakarta.persistence.*;
 import lombok.*;
+import org.modelmapper.ModelMapper;
 
 @Getter
 @Setter
@@ -26,6 +28,11 @@ public class AISchedule {
         this.professorId = professorId;
         this.roomId = roomId;
         this.timeSlot = timeSlot;
+    }
+
+    public AIScheduleDto toDto(ModelMapper mapper) {
+        AIScheduleDto dto = mapper.map(this, AIScheduleDto.class);
+        return dto;
     }
 
 
