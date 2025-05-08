@@ -24,7 +24,10 @@ function Course() {
 
         const transformed = allCourses.map((item, index) => ({
           id: item.courseId,
-          img: courseImages[index % courseImages.length],
+          img: item.imageBase64
+  ? `data:image/jpeg;base64,${item.imageBase64}`
+  : courseImages[index % courseImages.length],
+
           moduleName: item.name,
           description: item.description,
           department: item.department,

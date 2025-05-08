@@ -30,9 +30,14 @@ const Course = () => {
   const [department, setDepartment] = useState('');
   const [description, setdescription] = useState('');
 
+  const [formDataState, setFormDataState] = useState({
+    image: null,
+  });
+
+
   const handleNameChange = (e) => {
     const { value } = e.target;
-  
+
     // Allow only letters and spaces
     if (/[^a-zA-Z\s]/.test(value)) {
       Swal.fire({
@@ -42,15 +47,15 @@ const Course = () => {
       });
       return; // Don't update state if invalid
     }
-  
+
     // If valid, update the name state
     setName(value);
   };
-  
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     // Validation
     if (!courseCode || !name || !credits || !department || !description) {
       Swal.fire({
@@ -60,7 +65,7 @@ const Course = () => {
       });
       return;
     }
-  
+
     if (credits && isNaN(credits)) {
       Swal.fire({
         icon: "error",
@@ -69,36 +74,47 @@ const Course = () => {
       });
       return;
     }
-  
-    // Prepare payload
-    const newCourse = {
+
+    const courseData = {
       courseCode,
       name,
       credits: parseInt(credits),
       department,
       description,
       startDate: startDate.format('YYYY-MM-DD'),
+      endDate: endDate.format('YYYY-MM-DD'),
     };
-  
+
     try {
-      const response = await axios.post("http://localhost:8086/api/course/create", newCourse);
-  
-      if (response.status === 200 || response.status === 201) {
-        Swal.fire({
-          icon: "success",
-          title: "Course Added Successfully",
-          text: "Your course has been added.",
-        });
-  
-        // Optional: clear form
-        setCourseCode("");
-        setName("");
-        setCredits("");
-        setDepartment("");
-        setdescription("");
-        setStartDate(dayjs());
-        setEndDate(dayjs());
+      const formData = new FormData();
+      formData.append("course", new Blob([JSON.stringify(courseData)], { type: "application/json" }));
+      if (formDataState.image) {
+        formData.append("image", formDataState.image);
       }
+
+      const response = await fetch("http://localhost:8086/api/course/create", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error("Course creation failed");
+
+      Swal.fire({
+        icon: "success",
+        title: "Course Added Successfully",
+        text: "Your course has been added.",
+      });
+
+      // Optional: clear form
+      setCourseCode("");
+      setName("");
+      setCredits("");
+      setDepartment("");
+      setdescription("");
+      setStartDate(dayjs());
+      setEndDate(dayjs());
+      setFormDataState({ image: null });
+
     } catch (error) {
       console.error("Error adding course:", error);
       Swal.fire({
@@ -108,7 +124,8 @@ const Course = () => {
       });
     }
   };
-  
+
+
   // Handle Credits change (ensure it's a number)
   const handleCreditsChange = (e) => {
     const { value } = e.target;
@@ -204,7 +221,7 @@ const Course = () => {
                     <h3 className="mb-0">Add Course</h3>
                   </Col>
                   <Col className="text-right" xs="4">
-                    <Button color="primary" href="#pablo" onClick={handleSubmit}  size="sm">
+                    <Button color="primary" href="#pablo" onClick={handleSubmit} size="sm">
                       Add Course
                     </Button>
                   </Col>
@@ -256,7 +273,7 @@ const Course = () => {
                           <Input
                             className="form-control-alternative"
                             value={credits}
-                            onChange={handleCreditsChange} 
+                            onChange={handleCreditsChange}
                             id="input-first-name"
                             placeholder="Credits"
                             type="text"
@@ -292,24 +309,43 @@ const Course = () => {
                           </LocalizationProvider>
                         </FormGroup>
                       </Col>
-                     
                     </Row>
 
-                    
-                      <FormGroup>
-                        <label> Description </label>
-                        <Input
-                          className="form-control-alternative"
-                          placeholder="A few words about you ..."
-                          rows="4"
-                          defaultValue="Description"
-                          value={description}
-                          onChange={(e) => setdescription(e.target.value)}
-                          type="textarea"
-                        />
-                      </FormGroup>
-                    
-                 
+                    <Row>
+                      <Col lg="6">
+                        <FormGroup>
+                          <label className="form-control-label" htmlFor="input-image">
+                            Image
+                          </label>
+                          <Input
+                            type="file"
+                            name="image"
+                            onChange={(e) =>
+                              setFormDataState({
+                                ...formDataState,
+                                image: e.target.files[0],
+                              })
+                            }
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+
+
+                    <FormGroup>
+                      <label> Description </label>
+                      <Input
+                        className="form-control-alternative"
+                        placeholder="A few words about you ..."
+                        rows="4"
+                        defaultValue="Description"
+                        value={description}
+                        onChange={(e) => setdescription(e.target.value)}
+                        type="textarea"
+                      />
+                    </FormGroup>
+
+
                   </div>
                 </Form>
               </CardBody>

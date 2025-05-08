@@ -5,6 +5,7 @@ import lombok.Data;
 import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
+import java.util.Base64;
 import java.util.List;
 
 @Data
@@ -16,6 +17,8 @@ public class CourseDto {
     private String department;
     private LocalDate startDate;
     private String description;
+
+    private String imageBase64;
 
     // Create ref
     private List<ProfessorDto> professors;
@@ -33,6 +36,10 @@ public class CourseDto {
         Course course = mapper.map(this, Course.class);
         if (this.vote != null) {
             course.setVote(this.vote.toEntity(mapper));
+        }
+
+        if (this.imageBase64 != null) {
+            course.setImageData(Base64.getDecoder().decode(this.imageBase64));
         }
         return course;
     }

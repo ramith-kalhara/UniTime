@@ -14,6 +14,7 @@ import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,6 +49,10 @@ public class Course {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
+    @Lob
+    @Column(name = "image_data", columnDefinition="LONGBLOB")
+    private byte[] imageData;
+
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Professor> professors;
@@ -61,6 +66,8 @@ public class Course {
 
     @ManyToMany(mappedBy = "courses")
     private List<User> users = new ArrayList<>();
+
+
 
 
     public CourseDto toDto(ModelMapper mapper) {
@@ -90,6 +97,13 @@ public class Course {
                     .collect(Collectors.toList());
             dto.setProfessors(professorDtos);
         }
+        // Convert image byte[] to Base64 string
+        if (this.imageData != null) {
+            dto.setImageBase64(Base64.getEncoder().encodeToString(this.imageData));
+        } else {
+            dto.setImageBase64(null);
+        }
+
 
 
 
