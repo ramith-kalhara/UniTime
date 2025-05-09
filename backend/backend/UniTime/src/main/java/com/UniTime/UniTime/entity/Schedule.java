@@ -56,7 +56,7 @@ public class Schedule {
     @JsonBackReference
     private Course course;
 
-    @ManyToMany(mappedBy = "schedules",cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "schedules", cascade = CascadeType.ALL)
     private List<User> users = new ArrayList<>();
 
 
@@ -77,7 +77,7 @@ public class Schedule {
             dto.setImageBase64(Base64.getEncoder().encodeToString(this.imageData));
         }
 
-        return dto; // ✅ This is correct
+        return dto;
     }
 
 }

@@ -125,8 +125,12 @@ function Register() {
       console.log('Login success:', response.data);
   
       // Store user data
-      localStorage.setItem('user', JSON.stringify(response.data));
+      localStorage.setItem("userId", response.data.id);
+      localStorage.setItem("user", JSON.stringify(response.data)); 
       const userRole = response.data.role;
+
+      console.log('Login response:', response.data);  // Ensure this contains `id` and `role`
+
   
       Swal.fire({
         icon: 'success',

@@ -12,6 +12,7 @@ import com.UniTime.UniTime.service.UserVoteService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -31,6 +32,7 @@ public class ProfessorServiceImpl implements ProfessorService {
     private final RoomRepository roomRepository;
     private final UserVoteService userVoteService;
     private final ScheduleRepository scheduleRepository;
+    private final UserRepository userRepository;
     private final ModelMapper mapper;
 
     // Create Professor
@@ -130,20 +132,19 @@ public class ProfessorServiceImpl implements ProfessorService {
 
     // Update Professor by ID
     @Override
+    @Transactional
     public ProfessorDto updateProfessor(Long id, ProfessorDto professorDto) {
         Professor professor = professorDto.toEntity(mapper);
         professor.setId(id);
 
-        // Check if the course is provided and exists, if not, create or retrieve it
+        // 🔹 Link course if exists
         if (professorDto.getCourse() != null) {
             Course course = courseRepository.findById(professorDto.getCourse().getCourseId())
                     .orElseThrow(() -> new NotFoundException("Course not found with id: " + professorDto.getCourse().getCourseId()));
-
-            // Set the course to the professor
             professor.setCourse(course);
         }
 
-        // 🔹 Handle Vote
+        // 🔹 Link vote if exists
         if (professorDto.getVote() != null && professorDto.getVote().getId() != null) {
             Long voteId = professorDto.getVote().getId();
             Vote vote = voteRepository.findById(voteId)
@@ -151,54 +152,57 @@ public class ProfessorServiceImpl implements ProfessorService {
             professor.setVote(vote);
         }
 
-        // Handle UserVotes manually
+        // 🔹 Link user votes
         List<UserVote> userVotes = new ArrayList<>();
         if (professorDto.getUserVote() != null) {
             for (UserVoteDto userVoteDto : professorDto.getUserVote()) {
                 UserVote userVote = new UserVote();
-                userVote.setProfessor(professor); // attach the professor reference
+                userVote.setProfessor(professor);
                 userVotes.add(userVote);
             }
         }
-        professor.setUserVote(userVotes); // attach votes to professor
+        professor.setUserVote(userVotes);
 
-        // Save professor first to get the ID (important before setting relationships that need ID)
+        // 🔹 Save the professor first to ensure ID is available
         Professor savedProfessor = professorRepository.save(professor);
 
-        // Handle schedules after saving professor
-        List<Schedule> schedules = new ArrayList<>();
+        // 🔹 Process schedules
+        List<Schedule> updatedSchedules = new ArrayList<>();
         if (professorDto.getSchedules() != null) {
             for (ScheduleDto scheduleDto : professorDto.getSchedules()) {
                 Schedule schedule;
 
                 if (scheduleDto.getScheduleId() != null) {
-                    // Fetch and update existing schedule
+                    // Fetch existing schedule
                     schedule = scheduleRepository.findById(scheduleDto.getScheduleId())
                             .orElseThrow(() -> new NotFoundException("Schedule not found with id: " + scheduleDto.getScheduleId()));
+
+                    // Detach schedule from users
+                    if (schedule.getUsers() != null && !schedule.getUsers().isEmpty()) {
+                        for (User user : new ArrayList<>(schedule.getUsers())) {
+                            user.getSchedules().remove(schedule);
+                            userRepository.save(user);
+                        }
+                        schedule.getUsers().clear();
+                    }
                 } else {
-                    // Create new schedule from DTO
+                    // Create new schedule
                     schedule = mapper.map(scheduleDto, Schedule.class);
                 }
 
-                // Set the professor (new or existing)
+                // Link professor to schedule
                 schedule.setProfessor(savedProfessor);
-                schedules.add(schedule);
+                updatedSchedules.add(schedule);
             }
 
-            // Save all new or updated schedules
-            scheduleRepository.saveAll(schedules);
-            System.out.println("Final Schedule Entities: " + schedules);
-
+            // Save all schedules after processing
+            scheduleRepository.saveAll(updatedSchedules);
+            savedProfessor.setSchedules(updatedSchedules);
         }
 
-
-        // Now update savedProfessor with the schedule list (optional)
-        savedProfessor.setSchedules(schedules);
-        System.out.println( "Schedule : " + schedules);
-
-//        Professor savedProfessor = professorRepository.save(professor);
         return savedProfessor.toDto(mapper);
     }
+
 
     // Delete Professor by ID
     @Override
