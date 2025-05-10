@@ -10,8 +10,11 @@ import team3 from '../../assets/user/img/team-3.jpg';
 import team4 from '../../assets/user/img/team-4.jpg';
 
 const imageList = [team1, team2, team3, team4];
+
 function Professor() {
   const [professors, setProfessors] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+
   useEffect(() => {
     axios.get('http://localhost:8086/api/professor/')
       .then(response => {
@@ -19,7 +22,7 @@ function Professor() {
           id: prof.id,
           imageUrl: prof.imageBase64 
             ? `data:image/jpeg;base64,${prof.imageBase64}` 
-            : imageList[index % imageList.length], // fallback if no image
+            : imageList[index % imageList.length],
           name: prof.full_name,
           moduleId: prof.course?.courseCode || 'N/A',
           module: prof.course?.name || 'N/A'
@@ -30,7 +33,12 @@ function Professor() {
         console.error('Failed to fetch professors:', error);
       });
   }, []);
-  
+
+  const filteredProfessors = professors.filter((prof) =>
+    prof.module.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    prof.moduleId.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div>
       <UserHeader pageIndex={2} />
@@ -43,8 +51,19 @@ function Professor() {
             <h1 className="mb-4">Meet Our Professors</h1>
           </div>
 
-          {/* Show only 3 professors */}
-          <Professors data={professors} />
+          {/* Search Bar */}
+          <div className="mb-4 text-center">
+            <input
+              type="text"
+              className="form-control w-50 mx-auto"
+              placeholder="Search by Course Name or Code"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+
+          {/* Professors List */}
+          <Professors data={filteredProfessors} />
         </div>
       </div>
     </div>
