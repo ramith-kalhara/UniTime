@@ -23,6 +23,7 @@ var AdminRoutes = [
     icon: "ni ni-tv-2 text-primary",
     component: <Index />,
     layout: "/admin",
+    hidden: true,
   },
   {
     path: "/add-professor",
@@ -134,6 +135,7 @@ var AdminRoutes = [
     icon: "ni ni-key-25 text-info",
     component: <Login />,
     layout: "/auth",
+    hidden: true,
   }
 ];
 export default AdminRoutes;

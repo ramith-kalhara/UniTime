@@ -6,6 +6,7 @@ import AdminLayout from "./layouts/Admin.jsx";
 import AuthLayout from "./layouts/Auth.jsx";
 import UserLayout from "./layouts/User.jsx";
 import Register from "./views/user/Register.jsx";
+import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
   // Move useLocation hook inside BrowserRouter
@@ -34,13 +35,28 @@ function LocationHandler() {
 
   return (
     <Routes>
-      <Route path="/admin/*" element={<AdminLayout />} />
-      <Route path="/auth/*" element={<AuthLayout />} />
-
-      <Route path="/register" element={<Register />} />
-      <Route path="/user/*" element={<UserLayout />} />
-      <Route path="*" element={<Navigate to="/register" replace />} />
-    </Routes>
+    <Route
+      path="/admin/*"
+      element={
+        <ProtectedRoute allowedRoles={["ADMIN"]}>
+          <AdminLayout />
+        </ProtectedRoute>
+      }
+    />
+  
+    <Route
+      path="/user/*"
+      element={
+        <ProtectedRoute allowedRoles={["USER"]}>
+          <UserLayout />
+        </ProtectedRoute>
+      }
+    />
+  
+    <Route path="/auth/*" element={<AuthLayout />} />
+    <Route path="/register" element={<Register />} />
+    <Route path="*" element={<Navigate to="/register" replace />} />
+  </Routes>
   );
 }
 

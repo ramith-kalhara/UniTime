@@ -37,8 +37,17 @@ function UserNavbar() {
             </div> */}
               <Link to="/user/contact" className="nav-item nav-link">Contact</Link>
             </div>
-            <a href ="" className="btn btn-primary px-4 mr-2">Login</a>
-            <a href ="" className="btn btn-primary px-4 ">Logout</a>
+            <a
+  href="#"
+  className="btn btn-primary px-4"
+  onClick={(e) => {
+    e.preventDefault(); // Prevents default anchor behavior
+    localStorage.removeItem("user"); // Clears user data
+    window.location.href = "/register"; // Redirects to register page
+  }}
+>
+  Logout
+</a>
           </div>
         </nav>
       </div>

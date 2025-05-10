@@ -7,7 +7,7 @@ function CourseCard({ CourseData }) {
 
 
 
-      <img className="card-img-top mb-2" src={CourseData.img} alt="" />
+      <img className="card-img-top mb-2" src={CourseData.img} style={{ width: '350px', height: '234px', objectFit: 'cover', borderRadius: '8px' }} alt="" />
       <div className="card-body bg-light text-center p-4">
         <h4 >{CourseData.moduleName}</h4>
         <div className="d-flex justify-content-center mb-3">

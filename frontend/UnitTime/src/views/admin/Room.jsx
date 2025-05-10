@@ -2,10 +2,6 @@
 // reactstrap components
 import React, { useState } from 'react';
 
-import teamImage from "../../assets/admin/img/theme/team-4-800x800.jpg";
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import Swal from 'sweetalert2';
 import {
@@ -23,6 +19,7 @@ import {
 } from "reactstrap";
 // core components
 import AdminHeader from "../../components/Headers/AdminHeader";
+import AdminView from '../../components/Section/AdminView';
 
 const Room = () => {
   const [formData, setFormData] = useState({
@@ -91,18 +88,7 @@ const Room = () => {
     return true;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validate()) {
-      Swal.fire({
-        icon: 'success',
-        title: 'Form Submitted Successfully',
-        text: 'Your form has been submitted!',
-      });
-      // You can add the form submission logic here, like calling an API or saving the data.
-      
-    }
-  };
+
   const [formValues, setFormValues] = useState({
     roomNumber: '',
     capacity: '',
@@ -111,6 +97,7 @@ const Room = () => {
     hasSmartScreen: '',
     hasComputers: '',
     description: '',
+    roomName:''
   });
   
 
@@ -147,6 +134,7 @@ const Room = () => {
   };
   
 
+
   const validateRoomDetails = () => {
     let errorMessages = '';
   
@@ -156,6 +144,7 @@ const Room = () => {
     if (!formValues.department) errorMessages += 'Department is required.\n';
     if (!formValues.hasSmartScreen) errorMessages += 'Smart Screen option is required.\n';
     if (!formValues.description) errorMessages += 'Room Description is required.\n';
+    if (!formValues.roomName) errorMessages += 'Room Name is required.\n';
   
     // Validate Capacity should be a number
     if (formValues.capacity && isNaN(formValues.capacity)) {
@@ -179,49 +168,59 @@ const Room = () => {
     return true;
   };
   
-
   const handleFormSubmit = async (e) => {
     e.preventDefault();
   
     if (validateRoomDetails()) {
       try {
+        const formData = new FormData();
+  
+        const roomData = {
+          roomName: formValues.roomName,
+          department: formValues.department,
+          description: formValues.description,
+          capacity: formValues.capacity,
+          roomType: formValues.roomType,
+          smart_screen: formValues.hasSmartScreen,
+        };
+  
+        formData.append("room", new Blob([JSON.stringify(roomData)], { type: "application/json" }));
+        formData.append("image", formValues.image); // Attach the file
+  
         const response = await fetch("http://localhost:8086/api/room/create", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(formValues)
+          body: formData,
         });
   
-        if (!response.ok) {
-          throw new Error("Something went wrong");
-        }
+        if (!response.ok) throw new Error("Something went wrong");
   
         Swal.fire({
-          icon: 'success',
-          title: 'Room Added',
-          text: 'Room has been successfully added!',
+          icon: "success",
+          title: "Room Added",
+          text: "Room has been successfully added!",
         });
   
-        // Reset form after submit
         setFormValues({
           hasSmartScreen: '',
           capacity: '',
           roomType: '',
           department: '',
-          description: ''
+          description: '',
+          roomName: '',
+          image: null,
         });
   
       } catch (error) {
         console.error("Error:", error);
         Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Failed to add room. Please try again.',
+          icon: "error",
+          title: "Error",
+          text: "Failed to add room. Please try again.",
         });
       }
     }
   };
+  
   
   
 
@@ -233,207 +232,12 @@ const Room = () => {
       <Container className="mt--7" fluid>
         <Row>
           <Col className="order-xl-2 mb-5 mb-xl-0" xl="4">
-            <Card className="card-profile shadow">
-              <Row className="justify-content-center">
-                <Col className="order-lg-2" lg="3">
-                  <div className="card-profile-image">
-                    <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                      <img
-                        alt="..."
-                        className="rounded-circle"
-                        src={teamImage}
-                      />
-                    </a>
-                  </div>
-                </Col>
-              </Row>
-              <CardHeader className="text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
-                <div className="d-flex justify-content-between">
-                  <Button
-                    className="mr-4"
-                    color="info"
-                    href="#pablo"
-                    onClick={handleSubmit}
-                    size="sm"
-                  >
-                    Assign
-                  </Button>
-                  <Button
-                    className="float-right"
-                    color="default"
-                    href="#pablo"
-                    onClick={handleSubmit}
-                    size="sm"
-                  >
-                    Assign
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardBody className="pt-0 pt-md-4">
-                <Row>
-                  <div className="col">
-                    <div className="card-profile-stats d-flex justify-content-center mt-md-5">
 
-                    </div>
-                  </div>
-                </Row>
-                <form onSubmit={handleSubmit}>
-                  <Row>
-                    <Col lg="12">
-                      <FormGroup>
-                        <label className="form-control-label" htmlFor="roomId">
-                          Room ID
-                        </label>
-                        <Input
-                          className="form-control-alternative"
-                          name="roomId"
-                          value={formData.roomId}
-                          onChange={handleChange}
-                          placeholder="room_number"
-                          maxLength="6"
-                          type="text"
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
 
-                  <Row>
-                    <Col lg="12">
-                      <FormGroup>
-                        <label className="form-control-label" htmlFor="professorId">
-                          Professor Id
-                        </label>
-                        <Input
-                          className="form-control-alternative"
-                          name="professorId"
-                          value={formData.professorId}
-                          onChange={handleChange}
-                          placeholder="Professor Id"
-                          maxLength="10"
-                          type="text"
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
 
-                  <Row>
-                    <Col lg="12">
-                      <FormGroup>
-                        <label className="form-control-label" htmlFor="moduleId">
-                          Module ID
-                        </label>
-                        <Input
-                          className="form-control-alternative"
-                          name="moduleId"
-                          value={formData.moduleId}
-                          onChange={handleChange}
-                          placeholder="Module Id"
-                          maxLength="6"
-                          type="text"
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
+<AdminView/>
 
-                  {/* <Row>
-                    <Col lg="12">
-                      <FormGroup>
-                          <label className="form-control-label" htmlFor="input-roomType">
-                            Room Type
-                          </label>
-                          <Input
-                            type="select"
-                            id="input-roomType"
-                            name="roomType"
-                            bsSize="lg"
-                            className="form-control form-control-alternative"
-                            value={formValues.roomType}
-                            onChange={handleChange}
-                          >
-                            <option value="" disabled>Select room type</option>
-                            <option value="Lecture Hall">Lecture Hall</option>
-                            <option value="Lab">Lab</option>
-                            <option value="Auditorium">Auditorium</option>
-                            <option value="Seminar Room">Seminar Room</option>
-                            <option value="Tutorial Room">Tutorial Room</option>
-                          </Input>
-                        </FormGroup>
-                    </Col>
-                  </Row> */}
 
-                  <Row>
-                    <Col lg="12">
-                      <FormGroup>
-                        <label className="form-control-label" htmlFor="lectureTitle">
-                          Lecture Title
-                        </label>
-                        <Input
-                          className="form-control-alternative"
-                          name="lectureTitle"
-                          value={formData.lectureTitle}
-                          onChange={handleChange}
-                          placeholder="Lecture Title"
-                          type="text"
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-
-                  <Row>
-                    <Col lg="12">
-                      <FormGroup>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <DatePicker
-                            label="Start Date"
-                            value={formData.endDate}
-                            onChange={handleDateChange}
-                            renderInput={(props) => <Input {...props} />}
-                          />
-                        </LocalizationProvider>
-                      </FormGroup>
-                    </Col>
-                  </Row>
-
-                  <Row>
-                    <Col lg="12">
-                      <FormGroup>
-                        <label className="form-control-label" htmlFor="startTime">
-                          Start Time
-                        </label>
-                        <Input
-                          className="form-control-alternative"
-                          name="startTime"
-                          value={formData.startTime}
-                          onChange={handleChange}
-                          placeholder="Start Time"
-                          type="time"
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-
-                  <Row>
-                    <Col lg="12">
-                      <FormGroup>
-                        <label className="form-control-label" htmlFor="endTime">
-                          End Time
-                        </label>
-                        <Input
-                          className="form-control-alternative"
-                          name="endTime"
-                          value={formData.endTime}
-                          onChange={handleChange}
-                          placeholder="End Time"
-                          type="time"
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-
-                 
-                </form>
-              </CardBody>
-            </Card>
           </Col>
           <Col className="order-xl-1" xl="8">
             <Card className="bg-secondary shadow">
@@ -531,6 +335,38 @@ const Room = () => {
                             name="department"
                             onChange={handleFormChange} 
                             placeholder="Department"
+                            type="text"
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col lg="6">
+                     <FormGroup>
+  <label className="form-control-label" htmlFor="input-image">
+    Image
+  </label>
+  <Input
+    type="file"
+    name="image"
+    onChange={(e) => setFormValues({
+      ...formValues,
+      image: e.target.files[0]  // store the File object, not just the path
+    })}
+  />
+</FormGroup>
+
+                      </Col>
+
+                      <Col lg="6">
+                        <FormGroup>
+                          <label className="form-control-label" htmlFor="input-department">
+                            Room Name 
+                          </label>
+                          <Input
+                            className="form-control-alternative"
+                            value={formValues.roomName}
+                            name="roomName"
+                            onChange={handleFormChange} 
+                            placeholder="Room Name"
                             type="text"
                           />
                         </FormGroup>

@@ -1,10 +1,36 @@
 // pages/User/Professor.jsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Professors from '../../components/Section/Professors';
 import UserHeader from '../../components/Headers/UserHeader';
-import ProfessorsData from '../../data/ProfessorsData';
+import axios from 'axios';
 
+import team1 from '../../assets/user/img/team-1.jpg';
+import team2 from '../../assets/user/img/team-2.jpg';
+import team3 from '../../assets/user/img/team-3.jpg';
+import team4 from '../../assets/user/img/team-4.jpg';
+
+const imageList = [team1, team2, team3, team4];
 function Professor() {
+  const [professors, setProfessors] = useState([]);
+  useEffect(() => {
+    axios.get('http://localhost:8086/api/professor/')
+      .then(response => {
+        const transformedData = response.data.map((prof, index) => ({
+          id: prof.id,
+          imageUrl: prof.imageBase64 
+            ? `data:image/jpeg;base64,${prof.imageBase64}` 
+            : imageList[index % imageList.length], // fallback if no image
+          name: prof.full_name,
+          moduleId: prof.course?.courseCode || 'N/A',
+          module: prof.course?.name || 'N/A'
+        }));
+        setProfessors(transformedData);
+      })
+      .catch(error => {
+        console.error('Failed to fetch professors:', error);
+      });
+  }, []);
+  
   return (
     <div>
       <UserHeader pageIndex={2} />
@@ -18,7 +44,7 @@ function Professor() {
           </div>
 
           {/* Show only 3 professors */}
-          <Professors data={ProfessorsData} />
+          <Professors data={professors} />
         </div>
       </div>
     </div>

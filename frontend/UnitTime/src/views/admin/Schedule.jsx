@@ -4,8 +4,8 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import dayjs from 'dayjs';
 import Swal from "sweetalert2";
-import React, { useState } from 'react';
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+
 import teamImage from "../../assets/admin/img/theme/team-4-800x800.jpg";
 import {
   Button,
@@ -18,37 +18,68 @@ import {
   Container,
   Row,
   Col,
+  Label
 } from "reactstrap";
 import AdminHeader from "../../components/Headers/AdminHeader";
+import AdminView from '../../components/Section/AdminView';
 
 const Schedule = () => {
   const [startDate, setStartDate] = useState(dayjs());
   const [startTime, setStartTime] = useState(dayjs());
   const [endTime, setEndTime] = useState(dayjs());
-  const [roomNumber, setRoomNumber] = useState("");
-  const [professor_name, setProfessorName] = useState("");
   const [lecture_title, setLectureTitle] = useState("");
-  const [module_code, setModuleCode] = useState("");
   const [capacity, setCapacity] = useState("");
   const [schedule_description, setscheduleDescription] = useState("");
+  const [roomId, setRoomId] = useState("");
+  const [professorId, setProfessorId] = useState("");
+  const [courseId, setCourseId] = useState("");
+  const [formValues, setFormValues] = useState({
+    image: null,
+  });
+  
 
-  const handleProfessorNameChange = (e) => {
-    const { value } = e.target;
-  
-    // Allow only letters and spaces
-    if (/[^a-zA-Z\s]/.test(value)) {
-      Swal.fire({
-        icon: "error",
-        title: "Invalid Name",
-        text: "Professor Name can only contain letters and spaces.",
-      });
-      return; // Don't update state if invalid
-    }
-  
-    // If valid, update the professorName state
-    setProfessorName(value);
-  };
-  
+  //get data to select option menu 
+  const [professors, setProfessors] = useState([]);
+  const [courses, setCourses] = useState([]);
+  const [rooms, setRooms] = useState([]);
+
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch professors
+        const professorResponse = await fetch("http://localhost:8086/api/professor/");
+        if (!professorResponse.ok) {
+          throw new Error("Failed to fetch professors");
+        }
+        const professorData = await professorResponse.json();
+        setProfessors(professorData);
+
+        // Fetch courses
+        const courseResponse = await fetch("http://localhost:8086/api/course/");
+        if (!courseResponse.ok) {
+          throw new Error("Failed to fetch courses");
+        }
+        const courseData = await courseResponse.json();
+        setCourses(courseData);
+
+        // Fetch rooms
+        const roomResponse = await fetch("http://localhost:8086/api/room/");
+        if (!roomResponse.ok) {
+          throw new Error("Failed to fetch rooms");
+        }
+        const roomData = await roomResponse.json();
+        setRooms(roomData);
+
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
 
   const handleCapacityChange = (e) => {
     const { value } = e.target;
@@ -63,21 +94,11 @@ const Schedule = () => {
       });
     }
   };
-  
+
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    // Validate fields
-    if (!roomNumber || !professor_name || !lecture_title || !module_code) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "All fields are required!",
-      });
-      return;
-    }
   
     if (!startDate || !startTime || !endTime) {
       Swal.fire({
@@ -99,45 +120,51 @@ const Schedule = () => {
     }
   
     const scheduleData = {
-      roomNumber,
-      professorName: professor_name,
+      capacity: parseInt(capacity),
       lectureTitle: lecture_title,
-      moduleCode: module_code,
-      capacity: parseInt(capacity), // convert to number
+      startDate: dayjs(startDate).format("YYYY-MM-DD"),
+      startTime: dayjs(startTime).format("HH:mm:ss"),
+      endTime: dayjs(endTime).format("HH:mm:ss"),
       scheduleDescription: schedule_description,
-      startDate: dayjs(startDate).format("YYYY-MM-DD"), // LocalDate
-      startTime: dayjs(startTime).format("HH:mm:ss"),   // LocalTime
-      endTime: dayjs(endTime).format("HH:mm:ss"),       // LocalTime
+      room: { id: roomId },
+      professor: { id: professorId },
+      course: { courseId: courseId },
     };
-    
-   
   
     try {
-      const response = await axios.post(
-        "http://localhost:8086/api/schedule/create",
-        scheduleData
-      );
+      const formData = new FormData();
+      formData.append("schedule", new Blob([JSON.stringify(scheduleData)], { type: "application/json" }));
+      if (formValues.image) {
+        formData.append("image", formValues.image);
+      }
+  
+      const response = await fetch("http://localhost:8086/api/schedule/create", {
+        method: "POST",
+        body: formData,
+      });
+  
+      if (!response.ok) throw new Error("Schedule creation failed");
   
       Swal.fire({
         icon: "success",
-        title: "Success!",
-        text: "Schedule created successfully!",
+        title: "Schedule Created",
+        text: "Schedule successfully added!",
       });
   
-      // Optionally redirect or reset form here
-      // window.location.href = "/admin/index";
+      // Optionally reset your form state here...
   
     } catch (error) {
-      console.error("Error creating schedule:", error);
+      console.error("Error:", error);
       Swal.fire({
         icon: "error",
-        title: "API Error",
-        text: error.response?.data?.message || "Something went wrong.",
+        title: "Error",
+        text: "Failed to create schedule. Please try again.",
       });
     }
   };
   
-  
+
+
   return (
     <>
       <AdminHeader pageIndex={5} />
@@ -145,90 +172,9 @@ const Schedule = () => {
       <Container className="mt--7" fluid>
         <Row>
           <Col className="order-xl-2 mb-5 mb-xl-0" xl="4">
-            <Card className="card-profile shadow">
-              <Row className="justify-content-center">
-                <Col className="order-lg-2" lg="3">
-                  <div className="card-profile-image">
-                    <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                      <img
-                        alt="..."
-                        className="rounded-circle"
-                        src={teamImage}
-                      />
-                    </a>
-                  </div>
-                </Col>
-              </Row>
-              <CardHeader className="text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
-                <div className="d-flex justify-content-between">
-                  <Button
-                    className="mr-4"
-                    color="info"
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                    size="sm"
-                  >
-                    Connect
-                  </Button>
-                  <Button
-                    className="float-right"
-                    color="default"
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                    size="sm"
-                  >
-                    Message
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardBody className="pt-0 pt-md-4">
-                <Row>
-                  <div className="col">
-                    <div className="card-profile-stats d-flex justify-content-center mt-md-5">
-                      <div>
-                        <span className="heading">22</span>
-                        <span className="description">Friends</span>
-                      </div>
-                      <div>
-                        <span className="heading">10</span>
-                        <span className="description">Photos</span>
-                      </div>
-                      <div>
-                        <span className="heading">89</span>
-                        <span className="description">Comments</span>
-                      </div>
-                    </div>
-                  </div>
-                </Row>
-                <div className="text-center">
-                  <h3>
-                    Jessica Jones
-                    <span className="font-weight-light">, 27</span>
-                  </h3>
-                  <div className="h5 font-weight-300">
-                    <i className="ni location_pin mr-2" />
-                    Bucharest, Romania
-                  </div>
-                  <div className="h5 mt-4">
-                    <i className="ni business_briefcase-24 mr-2" />
-                    Solution Manager - Creative Tim Officer
-                  </div>
-                  <div>
-                    <i className="ni education_hat mr-2" />
-                    University of Computer Science
-                  </div>
-                  <hr className="my-4" />
-                  <p>
-                    Ryan — the name taken by Melbourne-raised, Brooklyn-based
-                    Nick Murphy — writes, performs and records all of his own
-                    music.
-                  </p>
-                  <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                    Show more
-                  </a>
-                </div>
-              </CardBody>
-            </Card>
+          <AdminView/>
+
+
           </Col>
           <Col className="order-xl-1" xl="8">
             <Card className="bg-secondary shadow">
@@ -245,42 +191,66 @@ const Schedule = () => {
                 </Row>
               </CardHeader>
               <CardBody>
+
+
+
                 <Form onSubmit={handleSubmit}>
                   <h6 className="heading-small text-muted mb-4">Schedule Information</h6>
                   <div className="pl-lg-4">
                     {/* Schedule Information */}
                     <Row>
+
+
                       <Col lg="6">
                         <FormGroup>
-                          <label className="form-control-label" htmlFor="input-roomNumber">
-                            Room Number
-                          </label>
+                          <Label htmlFor="input-roomNumber" className="form-control-label">
+                            Select Room
+                          </Label>
                           <Input
-                            className="form-control-alternative"
+                            type="select"
+                            name="roomId"
                             id="input-roomNumber"
-                            placeholder="Room Number"
-                            maxLength="6"
-                            type="text"
-                            value={roomNumber}
-                            onChange={(e) => setRoomNumber(e.target.value)}
-                          />
+                            className="form-control"
+                            value={roomId} // Use roomId here
+                            onChange={(e) => setRoomId(e.target.value)} // Set roomId here
+                          >
+                            <option value="">Select Room</option>
+                            {rooms.map((room) => (
+                              <option key={room.id} value={room.id}>
+                                {room.roomName}
+                              </option>
+                            ))}
+                          </Input>
                         </FormGroup>
+
                       </Col>
+
                       <Col lg="6">
                         <FormGroup>
-                          <label className="form-control-label" htmlFor="input-professorName">
-                            Professor Name
-                          </label>
+                          <Label htmlFor="input-professorName" className="form-control-label">
+                            Select Professor
+                          </Label>
                           <Input
-                            className="form-control-alternative"
+                            type="select"
+                            name="professorId"
                             id="input-professorName"
-                            placeholder="Professor Name"
-                            type="text"
-                            value={professor_name}
-                            onChange={handleProfessorNameChange}
-                          />
+                            className="form-control"
+                            value={professorId} // Use professorId here
+                            onChange={(e) => setProfessorId(e.target.value)} // Set professorId here
+                          >
+                            <option value="">Select Professor</option>
+                            {professors.map((professor) => (
+                              <option key={professor.id} value={professor.id}>
+                                {professor.full_name}
+                              </option>
+                            ))}
+                          </Input>
                         </FormGroup>
+
+
                       </Col>
+
+
                     </Row>
 
                     <Row>
@@ -303,24 +273,34 @@ const Schedule = () => {
 
                       {/* Module Code Field */}
                       <Col lg="6">
+
+
                         <FormGroup>
-                          <label className="form-control-label" htmlFor="input-moduleCode">
-                            Module Code
-                          </label>
+                          <Label htmlFor="input-moduleCode" className="form-control-label">
+                            Select Module Code
+                          </Label>
                           <Input
-                            className="form-control-alternative"
+                            type="select"
+                            name="moduleCode"
                             id="input-moduleCode"
-                            placeholder="Module Code"
-                            type="text"
-                            maxLength="6"
-                            value={module_code}
-                            onChange={(e) => setModuleCode(e.target.value)}
-                          />
+                            className="form-control"
+                            value={courseId} // Use courseId here
+                            onChange={(e) => setCourseId(e.target.value)} // Set courseId here
+                          >
+                            <option value="">Select Module Code</option>
+                            {courses.map((course) => (
+                              <option key={course.courseId} value={course.courseId}>
+                                {course.courseCode}
+                              </option>
+                            ))}
+                          </Input>
+
                         </FormGroup>
+
                       </Col>
                     </Row>
                     <Row>
-                      <Col lg="12">
+                      <Col lg="6">
                         <FormGroup>
                           <label className="form-control-label" htmlFor="input-lectureTitle">
                             Lecture Title
@@ -334,6 +314,25 @@ const Schedule = () => {
                             onChange={(e) => setLectureTitle(e.target.value)}
                           />
                         </FormGroup>
+                      </Col>
+                      <Col lg="6">
+                        <FormGroup>
+                          <label className="form-control-label" htmlFor="input-image">
+                            Image
+                          </label>
+                          <Input
+  type="file"
+  name="image"
+  onChange={(e) =>
+    setFormValues({
+      ...formValues,
+      image: e.target.files[0], // this stores the file
+    })
+  }
+/>
+
+                        </FormGroup>
+
                       </Col>
                     </Row>
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import ProfileImg from "../../assets/admin/img/theme/team-4-800x800.jpg";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -18,40 +18,129 @@ import {
   Col,
 } from "reactstrap";
 import AdminHeader from "../../components/Headers/AdminHeader";
+import AdminView from '../../components/Section/AdminView';
 
 const Vote = () => {
   const [startDateTime, setStartDateTime] = useState(dayjs());
   const [endDateTime, setEndDateTime] = useState(dayjs());
+  const [courseCodes, setCourseCodes] = useState([]);
+  const [professors, setProfessors] = useState([]);
+
+
+
   const [formValues, setFormValues] = useState({
+
     moduleCode: '',
     moduleName: '',
     voteDescription: '',
-    professorId: '', // New state for professor
+    professor: ['']
   });
+  const handleProfessorChange = (index, value) => {
+    const updatedProfessors = [...formValues.professor];
+    updatedProfessors[index] = value;
+    setFormValues({ ...formValues, professor: updatedProfessors });
+  };
 
-  // List of professors
-  const professors = [
-    { id: 1, name: "Kawya Bandara" },
-    { id: 2, name: "Julia Smith" },
-    { id: 3, name: "Wil Smith" },
-    { id: 4, name: "Kavinga Yapa Bandara" },
-    { id: 5, name: "Sajith Premadasa" },
-    { id: 6, name: "Anura Kumara" }
-  ];
+  const addProfessorField = () => {
+    setFormValues({ ...formValues, professor: [...formValues.professor, ''] });
+  };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const courseRes = await fetch("http://localhost:8086/api/course/");
+        if (courseRes.ok) {
+          const courseData = await courseRes.json();
+          setCourseCodes(courseData);
+        } else {
+          console.error("Failed to fetch courses");
+        }
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      }
+    };
+  
+    fetchCourses();
+  }, []);
+  
+
+
+
+
+  const handleInputChange = async (e) => {
+    const { name, value, options, type } = e.target;
+
+    if (name === 'professor' && type === 'select-multiple') {
+      const selectedValues = Array.from(options)
+        .filter(option => option.selected)
+        .map(option => option.value);
+
+      setFormValues((prev) => ({
+        ...prev,
+        [name]: selectedValues,
+      }));
+      return;
+    }
+
+    // When user selects moduleCode (which is actually courseId)
+    if (name === "moduleCode") {
+      try {
+        const response = await fetch(`http://localhost:8086/api/course/${value}`);
+        if (response.ok) {
+          const data = await response.json();
+          setFormValues((prev) => ({
+            ...prev,
+            moduleCode: value,
+            moduleName: data.name || '',
+          }));
+    
+          // 👇 Set professors to only those related to selected course
+          setProfessors(data.professors || []);
+        } else {
+          setFormValues((prev) => ({
+            ...prev,
+            moduleCode: '',
+            moduleName: '',
+          }));
+          setProfessors([]); // clear professors on failed fetch
+        }
+      } catch (error) {
+        console.error("Failed to fetch course details:", error);
+        setFormValues((prev) => ({
+          ...prev,
+          moduleCode: '',
+          moduleName: '',
+        }));
+        setProfessors([]);
+      }
+      return;
+    }
+    
+
+    // Validate module name
+    if (name === 'moduleName' && /[^a-zA-Z\s]/.test(value)) {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Module Name",
+        text: "Module Name can only contain letters and spaces.",
+      });
+      return;
+    }
+
     setFormValues((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const { moduleCode, moduleName, voteDescription, professorId } = formValues;
 
-    if (!moduleCode || !moduleName || !voteDescription || !professorId) {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { moduleCode, moduleName, voteDescription, professor } = formValues;
+
+    // Form Validation
+    if (!moduleCode || !moduleName || !voteDescription || professor.length === 0) {
       Swal.fire({
         icon: 'error',
         title: 'Missing Fields',
@@ -78,14 +167,62 @@ const Vote = () => {
       return;
     }
 
-    Swal.fire({
-      icon: 'success',
-      title: 'Vote Created Successfully',
-      text: 'Your vote has been created!',
-    });
+    // Prepare data for API request
+    const voteData = {
+      startTime: dayjs(startDateTime).format('YYYY-MM-DDTHH:mm:ss'),
+      endTime: dayjs(endDateTime).format('YYYY-MM-DDTHH:mm:ss'),
+      description: voteDescription,
+      course: {
+        courseId: moduleCode
+      },
+      professors: formValues.professor.filter(Boolean).map(id => ({ id }))
+    };
 
-    // TODO: Add actual submit logic here
+
+    try {
+      // Send the data to the API
+      const response = await fetch("http://localhost:8086/api/vote/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", 
+        body: JSON.stringify(voteData),
+      });
+
+      console.log(voteData)
+
+      if (response.ok) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Vote Created Successfully',
+          text: 'Your vote has been created!',
+        });
+        // Optionally, clear the form or redirect the user
+        setFormValues({
+          moduleCode: '',
+          moduleName: '',
+          voteDescription: '',
+          professor: [],
+        });
+      } else {
+        const errorData = await response.json();
+        Swal.fire({
+          icon: 'error',
+          title: 'Failed to Create Vote',
+          text: errorData.message || 'An unexpected error occurred.',
+        });
+      }
+    } catch (error) {
+      console.error('Error submitting vote:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'There was an error submitting your vote.',
+      });
+    }
   };
+
 
   return (
     <>
@@ -93,43 +230,9 @@ const Vote = () => {
       <Container className="mt--7" fluid>
         <Row>
           <Col className="order-xl-2 mb-5 mb-xl-0" xl="4">
-            <Card className="card-profile shadow">
-              <Row className="justify-content-center">
-                <Col className="order-lg-2" lg="3">
-                  <div className="card-profile-image">
-                    <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                      <img alt="..." className="rounded-circle" src={ProfileImg} />
-                    </a>
-                  </div>
-                </Col>
-              </Row>
-              <CardHeader className="text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
-                <div className="d-flex justify-content-between">
-                  <Button className="mr-4" color="info" size="sm">Connect</Button>
-                  <Button className="float-right" color="default" size="sm">Message</Button>
-                </div>
-              </CardHeader>
-              <CardBody className="pt-0 pt-md-4">
-                <Row>
-                  <div className="col">
-                    <div className="card-profile-stats d-flex justify-content-center mt-md-5">
-                      <div><span className="heading">22</span><span className="description">Friends</span></div>
-                      <div><span className="heading">10</span><span className="description">Photos</span></div>
-                      <div><span className="heading">89</span><span className="description">Comments</span></div>
-                    </div>
-                  </div>
-                </Row>
-                <div className="text-center">
-                  <h3>Jessica Jones<span className="font-weight-light">, 27</span></h3>
-                  <div className="h5 font-weight-300">Bucharest, Romania</div>
-                  <div className="h5 mt-4">Solution Manager - Creative Tim Officer</div>
-                  <div>University of Computer Science</div>
-                  <hr className="my-4" />
-                  <p>Ryan — the name taken by Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs and records all of his own music.</p>
-                  <a href="#pablo" onClick={(e) => e.preventDefault()}>Show more</a>
-                </div>
-              </CardBody>
-            </Card>
+
+
+<AdminView/>
           </Col>
 
           <Col className="order-xl-1" xl="8">
@@ -143,23 +246,37 @@ const Vote = () => {
                 </Row>
               </CardHeader>
               <CardBody>
+
+
                 <Form onSubmit={handleSubmit}>
                   <h6 className="heading-small text-muted mb-4">Module information</h6>
                   <div className="pl-lg-4">
                     <Row>
+
                       <Col lg="6">
                         <FormGroup>
                           <label htmlFor="moduleCode">Module Code</label>
                           <Input
-                            type="text"
+                            type="select"
                             name="moduleCode"
-                            maxLength="6"
-                            placeholder="Enter Module Code"
+                            className="form-control"
                             value={formValues.moduleCode}
                             onChange={handleInputChange}
-                          />
+                          >
+                            <option value={''}>Select Module Code</option>
+                            {courseCodes.map((course) => (
+                              <option key={course.courseId} value={course.courseId}>
+                                {course.courseCode}
+                              </option>
+                            ))}
+
+                          </Input>
                         </FormGroup>
+
+
+
                       </Col>
+
                       <Col lg="6">
                         <FormGroup>
                           <label htmlFor="moduleName">Module Name</label>
@@ -169,32 +286,9 @@ const Vote = () => {
                             placeholder="Enter Module Name"
                             value={formValues.moduleName}
                             onChange={handleInputChange}
+                            disabled
                           />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                  </div>
 
-                  <hr className="my-4" />
-                  <h6 className="heading-small text-muted mb-4">Professor</h6>
-                  <div className="pl-lg-4">
-                    <Row>
-                      <Col lg="12">
-                        <FormGroup>
-                          <label htmlFor="professorId">Select Professor</label>
-                          <Input
-                            type="select"
-                            name="professorId"
-                            value={formValues.professorId}
-                            onChange={handleInputChange}
-                          >
-                            <option value="">Select Professor</option>
-                            {professors.map((professor) => (
-                              <option key={professor.id} value={professor.id}>
-                                {professor.name}
-                              </option>
-                            ))}
-                          </Input>
                         </FormGroup>
                       </Col>
                     </Row>
@@ -211,6 +305,7 @@ const Vote = () => {
                               label="Start Date"
                               value={startDateTime}
                               onChange={(newValue) => setStartDateTime(newValue)}
+                              ampm={false} // 24-hour format
                               renderInput={({ inputRef, inputProps }) => (
                                 <Input innerRef={inputRef} {...inputProps} />
                               )}
@@ -225,12 +320,56 @@ const Vote = () => {
                               label="End Date"
                               value={endDateTime}
                               onChange={(newValue) => setEndDateTime(newValue)}
+                              ampm={false} // 24-hour format
                               renderInput={({ inputRef, inputProps }) => (
                                 <Input innerRef={inputRef} {...inputProps} />
                               )}
                             />
                           </LocalizationProvider>
                         </FormGroup>
+                      </Col>
+                    </Row>
+
+                  </div>
+
+                  <h6 className="heading-small text-muted mb-4">Vote Time & Date Information</h6>
+                  <div className="pl-lg-4">
+                    <Row>
+                      <Col lg="6">
+                        <FormGroup>
+                          <label htmlFor="professor">Professors</label>
+                          {formValues.professor.map((selectedProfId, index) => (
+                            <div key={index} className="mb-2">
+                              <Input
+                                type="select"
+                                name={`professor-${index}`}
+                                className="form-control"
+                                value={selectedProfId}
+                                onChange={(e) => handleProfessorChange(index, e.target.value)}
+                              >
+                                <option value="">-- Select Professor --</option>
+                                {professors.map((prof) => (
+                                  <option key={prof.id} value={prof.id}>
+                                    {prof.full_name}
+                                  </option>
+                                ))}
+                              </Input>
+                            </div>
+                          ))}
+                          <Button type="button" color="secondary" onClick={addProfessorField}>
+                            + Add Professor
+                          </Button>
+                        </FormGroup>
+
+                        {/* Show selected professor names */}
+                        {formValues.professor.some(id => id) && (
+                          <ul className="mt-2">
+                            {formValues.professor.map((id, idx) => {
+                              const prof = professors.find(p => p.id === id);
+                              return id ? <li key={idx}>{prof?.full_name || id}</li> : null;
+                            })}
+                          </ul>
+                        )}
                       </Col>
                     </Row>
                   </div>
