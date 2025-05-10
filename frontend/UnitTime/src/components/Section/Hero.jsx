@@ -12,8 +12,8 @@ function Hero() {
               New Approach to Student Education
             </h1>
             <p className="text-white mb-4">
-            A comprehensive web application for efficient university scheduling and management. 
-            Streamline course planning, room assignments, and faculty coordination.
+            UNITIME is your all-in-one platform for managing courses, connecting with professors, 
+            and optimizing your university experience with modern tools.
             </p>
             <a href="/" className="btn btn-secondary mt-1 py-3 px-5">Learn More</a>
           </div>

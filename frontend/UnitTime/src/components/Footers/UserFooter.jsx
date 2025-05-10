@@ -52,7 +52,7 @@ function UserFooter() {
               <a className="text-white mb-2" href="#"><i className="fa fa-angle-right mr-2" />Home</a>
               <a className="text-white mb-2" href="#"><i className="fa fa-angle-right mr-2" />About Us</a>
               <a className="text-white mb-2" href="#"><i className="fa fa-angle-right mr-2" />Our Rooms</a>
-              <a className="text-white mb-2" href="#"><i className="fa fa-angle-right mr-2" />Our Teachers</a>
+              <a className="text-white mb-2" href="#"><i className="fa fa-angle-right mr-2" />Our Professors</a>
               <a className="text-white mb-2" href="#"><i className="fa fa-angle-right mr-2" />Our Blog</a>
               <a className="text-white" href="#"><i className="fa fa-angle-right mr-2" />Contact Us</a>
             </div>
