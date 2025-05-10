@@ -12,4 +12,5 @@ public interface ProfessorService {
     public ProfessorDto getProfessorById(Long id);
     public ProfessorDto updateProfessor(Long id, ProfessorDto professorDto);
     public Boolean deleteProfessor(Long id);
+    byte[] generateProfessorPdfReport();
 }

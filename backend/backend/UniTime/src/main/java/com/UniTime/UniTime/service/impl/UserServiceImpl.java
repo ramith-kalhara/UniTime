@@ -9,8 +9,11 @@ import com.UniTime.UniTime.service.UserVoteService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,11 +32,16 @@ public class UserServiceImpl implements UserService {
 
     //create user
     @Override
-    public UserDto postUser(UserDto userDto) {
-        //  Map the User (no save yet)
+    public UserDto postUser(UserDto userDto, MultipartFile image) throws IOException {
+        // Map the User (no save yet)
         User user = mapper.map(userDto, User.class);
 
-        //  Build the UserVote list before saving
+        // Handle the user image upload (same as Room)
+        if (image != null && !image.isEmpty()) {
+            user.setImageData(image.getBytes()); // save the image data in User entity
+        }
+
+        // Build the UserVote list before saving
         if (userDto.getUserVotes() != null && !userDto.getUserVotes().isEmpty()) {
             List<UserVote> uvs = new ArrayList<>();
             System.out.println("User Votes " + userDto.getUserVotes());
@@ -55,7 +63,7 @@ public class UserServiceImpl implements UserService {
                     uv.setVote(vote);
                 }
 
-                //many to many user and course
+                // many-to-many user and course relationship
                 if (userDto.getCourses() != null && !userDto.getCourses().isEmpty()) {
                     List<Course> courses = new ArrayList<>();
                     for (CourseDto cd : userDto.getCourses()) {
@@ -72,6 +80,7 @@ public class UserServiceImpl implements UserService {
                     user.setCourses(courses);
                 }
 
+                // Handle user schedules
                 if (userDto.getSchedules() != null && !userDto.getSchedules().isEmpty()) {
                     List<Schedule> schedules = new ArrayList<>();
                     for (ScheduleDto sd : userDto.getSchedules()) {
@@ -96,15 +105,19 @@ public class UserServiceImpl implements UserService {
             user.setUserVotes(uvs);
         }
 
-        //  Now save the User (cascades to userVotes)
-        User saved = userRepository.save(user);
+        // Save user to the repository
+        User savedUser = userRepository.save(user);
 
-        //  Return the DTO
-        return saved.toDto(mapper);
+        // Map the saved user back to DTO
+        UserDto savedDto = savedUser.toDto(mapper);
+
+        // If the user has an image, convert it to Base64 for response
+        if (savedUser.getImageData() != null) {
+            savedDto.setImageBase64(Base64.getEncoder().encodeToString(savedUser.getImageData()));
+        }
+
+        return savedDto;
     }
-
-
-
 
     //get all users
     @Override
@@ -122,11 +135,20 @@ public class UserServiceImpl implements UserService {
     public UserDto getUserById(Long id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
-            return mapper.map(user.get(), UserDto.class);
+            UserDto userDto = mapper.map(user.get(), UserDto.class);
+
+            // Convert the image data to Base64 if it's not null
+            if (user.get().getImageData() != null) {
+                String base64Image = Base64.getEncoder().encodeToString(user.get().getImageData());
+                userDto.setImageBase64(base64Image);
+            }
+
+            return userDto;
         } else {
             throw new NotFoundException("User not found by this ID");
         }
     }
+
 
     //update user by id
     @Override
