@@ -1,6 +1,6 @@
-import ProfileImg from "../../assets/admin/img/theme/team-4-800x800.jpg";
+import ProfileImg from "../../assets/admin/img/theme/team-3-800x800.jpg";
 import Swal from "sweetalert2";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 // reactstrap components
 import {
@@ -14,13 +14,12 @@ import {
   Container,
   Row,
   Col,
+  Label
 } from "reactstrap";
 // core components
 import AdminHeader from "../../components/Headers/AdminHeader";
 
 const Professor = () => {
-
-
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -34,71 +33,68 @@ const Professor = () => {
     moduleCode: "",
     description: "",
   });
-  
 
-  // Handle form input change
+  const [courseCodes, setCourseCodes] = useState([]);
+
+  useEffect(() => {
+    axios.get("http://localhost:8086/api/course/")
+      .then((res) => setCourseCodes(res.data))
+      .catch((err) => console.error("Error fetching courses:", err));
+  }, []);
+
+  useEffect(() => {
+    if (formData.moduleCode) {
+      axios.get(`http://localhost:8086/api/course/${formData.moduleCode}`)
+        .then((response) => {
+          const course = response.data;
+          setFormData((prev) => ({
+            ...prev,
+            moduleName: course.courseName,
+          }));
+        })
+        .catch((error) => console.error("Failed to fetch course name:", error));
+    } else {
+      setFormData((prev) => ({ ...prev, moduleName: "" }));
+    }
+  }, [formData.moduleCode]);
+
+
   const handleChange = (e) => {
     const { id, value } = e.target;
-    if (id === "fullName" && /[^a-zA-Z\s]/.test(value)) {
+
+    const alphaOnly = /^[a-zA-Z\s]*$/;
+    const numericOnly = /^[0-9]*$/;
+
+    if (["fullName", "moduleName", "departmentName"].includes(id) && !alphaOnly.test(value)) {
       Swal.fire({
         icon: "error",
-        title: "Invalid Full Name",
-        text: "Full name can only contain letters and spaces.",
+        title: `Invalid ${id.charAt(0).toUpperCase() + id.slice(1)}`,
+        text: `${id.replace(/([A-Z])/g, " $1")} can only contain letters and spaces.`,
       });
-      return; // Don't update the state if the full name contains non-letter characters
+      return;
     }
-    if (id === "moduleName" && /[^a-zA-Z\s]/.test(value)) {
-      Swal.fire({
-        icon: "error",
-        title: "Invalid Full Name",
-        text: "Full name can only contain letters and spaces.",
-      });
-      return; // Don't update the state if the full name contains non-letter characters
-    }
-    if (id === "departmentName" && /[^a-zA-Z\s]/.test(value)) {
-      Swal.fire({
-        icon: "error",
-        title: "Invalid Full Name",
-        text: "Full name can only contain letters and spaces.",
-      });
-      return; // Don't update the state if the full name contains non-letter characters
-    }
-  
-    // Validate postal code field to ensure it only contains numbers
-    if (id === "postalCode" && /[^0-9]/.test(value)) {
+
+    if (id === "postalCode" && !numericOnly.test(value)) {
       Swal.fire({
         icon: "error",
         title: "Invalid Postal Code",
         text: "Postal code must contain only numbers.",
       });
-      return; // Don't update the state if the postal code contains non-numeric characters
+      return;
     }
-  
-    // Update state for valid inputs
-    setFormData({
-      ...formData,
-      [id]: value,
-    });
+
+    setFormData({ ...formData, [id]: value });
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const {
-      fullName,
-      email,
-      contactNumber,
-      departmentName,
-      address,
-      city,
-      country,
-      postalCode,
-      // moduleName,
-      moduleCode,
-      description,
+      fullName, email, contactNumber, departmentName,
+      address, city, country, postalCode,
+      moduleCode, description, image // Make sure image is in formData
     } = formData;
-    
+
     const professorData = {
       full_name: fullName,
       email: email,
@@ -108,109 +104,102 @@ const Professor = () => {
       city: city,
       country: country,
       postal_code: postalCode,
-      module_id: moduleCode,
       description: description,
+      course: {
+        courseId: parseInt(moduleCode),
+      },
     };
-    
-    
-  
-    // Email validation using regex
+
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-    const phoneRegex = /^[0-9]{10}$/; // Contact number must be 10 digits
-    const numberRegex = /\d/; // Check for numbers in city or country
-  
-    // Check for missing fields
-    if (
-      !fullName ||
-      !email ||
-      !contactNumber ||
-      !departmentName ||
-      !address ||
-      !city ||
-      !country ||
-      !postalCode ||
-      // !moduleName ||
-      !moduleCode ||
-      !description
-    ) {
-      Swal.fire({
+    const phoneRegex = /^[0-9]{10}$/;
+    const numberRegex = /\d/;
+
+    if (!fullName || !email || !contactNumber || !departmentName || !address || !city || !country || !postalCode || !moduleCode || !description) {
+      return Swal.fire({
         icon: "error",
         title: "Validation Error",
         text: "Please fill in all required fields.",
       });
-      return;
     }
-  
-    // Validate email format
+
     if (!emailRegex.test(email)) {
-      Swal.fire({
+      return Swal.fire({
         icon: "error",
         title: "Invalid Email",
         text: "Please enter a valid email address.",
       });
-      return;
     }
- 
-  
-    // Validate contact number (must be 10 digits)
+
     if (!phoneRegex.test(contactNumber)) {
-      Swal.fire({
+      return Swal.fire({
         icon: "error",
         title: "Invalid Contact Number",
         text: "Contact number must be exactly 10 digits.",
       });
-      return;
     }
-  
-    // Validate city and country (cannot contain numbers)
+
     if (numberRegex.test(city)) {
-      Swal.fire({
+      return Swal.fire({
         icon: "error",
         title: "Invalid City",
         text: "City cannot contain numbers.",
       });
-      return;
     }
-  
+
     if (numberRegex.test(country)) {
-      Swal.fire({
+      return Swal.fire({
         icon: "error",
         title: "Invalid Country",
         text: "Country cannot contain numbers.",
       });
-      return;
     }
+
     try {
-      const response = await axios.post(
-        "http://localhost:8086/api/professor/create",
-        professorData
-      );
-  
+      const data = new FormData();
+      data.append("professor", new Blob([JSON.stringify(professorData)], { type: "application/json" }));
+      if (formData.image) {
+        data.append("image", formData.image);
+      }
+
+      const response = await fetch("http://localhost:8086/api/professor/create", {
+        method: "POST",
+        body: data,
+      });
+
+      if (!response.ok) throw new Error("Professor creation failed");
+
       Swal.fire({
         icon: "success",
         title: "Success!",
-        text: "professor created successfully!",
+        text: "Professor created successfully!",
       });
-  
-      // Optionally redirect or reset form here
-      // window.location.href = "/admin/index";
-  
+
+      // Reset if needed
+      setFormData({
+        fullName: "",
+        email: "",
+        contactNumber: "",
+        departmentName: "",
+        address: "",
+        city: "",
+        country: "",
+        postalCode: "",
+        moduleName: "",
+        moduleCode: "",
+        description: "",
+        image: null, // Reset image
+      });
+
     } catch (error) {
       console.error("Error creating professor:", error);
       Swal.fire({
         icon: "error",
         title: "API Error",
-        text: error.response?.data?.message || "Something went wrong.",
+        text: error.message || "Something went wrong.",
       });
     }
-    // If all validations pass
-    Swal.fire({
-      icon: "success",
-      title: "Success",
-      text: "Form submitted successfully!",
-    });
   };
-  
+
   return (
     <>
       <AdminHeader pageIndex={2} />
@@ -323,6 +312,8 @@ const Professor = () => {
                 </Row>
               </CardHeader>
               <CardBody>
+
+
                 <Form onSubmit={handleSubmit}>
                   <h6 className="heading-small text-muted mb-4">Professor Information</h6>
                   <div className="pl-lg-4">
@@ -374,6 +365,26 @@ const Professor = () => {
                           />
                         </FormGroup>
                       </Col>
+                      <Col lg="6">
+                        <FormGroup>
+                          <label className="form-control-label" htmlFor="input-image">
+                            Image
+                          </label>
+                          <Input
+                            type="file"
+                            name="image"
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                image: e.target.files[0],
+                              })
+                            }
+                          />
+
+
+                        </FormGroup>
+                      </Col>
+
                       <Col lg="6">
                         <FormGroup>
                           <label className="form-control-label" htmlFor="departmentName">
@@ -465,35 +476,26 @@ const Professor = () => {
                     <Row>
                       <Col lg="6">
                         <FormGroup>
-                          <label className="form-control-label" htmlFor="moduleName">
-                            Module Name
-                          </label>
+                          <Label htmlFor="moduleCode" className="form-control-label">Module Code</Label>
                           <Input
-                            className="form-control-alternative"
-                            id="moduleName"
-                            value={formData.moduleName}
-                            onChange={handleChange}
-                            placeholder="Module Name"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label className="form-control-label" htmlFor="moduleCode">
-                            Module Code
-                          </label>
-                          <Input
-                            className="form-control-alternative"
+                            type="select"
+                            name="moduleCode"
                             id="moduleCode"
+                            className="form-control"
                             value={formData.moduleCode}
                             onChange={handleChange}
-                            maxLength="6"
-                            placeholder="Module Code"
-                            type="text"
-                          />
+                          >
+                            <option value="">Select Module Code</option>
+                            {courseCodes.map((course) => (
+                              <option key={course.courseId} value={course.courseId}>
+                                {course.courseCode}
+                              </option>
+                            ))}
+                          </Input>
                         </FormGroup>
+
                       </Col>
+
                     </Row>
                   </div>
                   <hr className="my-4" />

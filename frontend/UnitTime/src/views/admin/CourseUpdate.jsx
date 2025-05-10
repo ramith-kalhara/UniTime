@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import teamImage from "../../assets/admin/img/theme/team-4-800x800.jpg";
+import teamImage from "../../assets/admin/img/theme/team-2-800x800.jpg";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';

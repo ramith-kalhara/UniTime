@@ -5,10 +5,12 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import dayjs from 'dayjs';
 import Swal from "sweetalert2";
 import React, { useState, useEffect } from 'react';
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+
+
 
 import axios from "axios";
-import teamImage from "../../assets/admin/img/theme/team-4-800x800.jpg";
+import teamImage from "../../assets/admin/img/theme/team-1-800x800.jpg";
 import {
   Button,
   Card,
@@ -20,6 +22,7 @@ import {
   Container,
   Row,
   Col,
+  Label
 } from "reactstrap";
 import AdminHeader from "../../components/Headers/AdminHeader";
 
@@ -34,36 +37,78 @@ const ScheduleUpdate = () => {
   const [capacity, setCapacity] = useState("");
   const [scheduleDescription, setScheduleDescription] = useState("");
 
+  const [roomId, setRoomId] = useState("");
+  const [courseId, setCourseId] = useState("");
+  const [professorId, setProfessorId] = useState("");
+
+  const navigate = useNavigate();
+
+
   const location = useLocation();
   const schedule = location.state;
-  useEffect(() => {
-    if (schedule) {
-      setRoomNumber(schedule.roomNumber);
-      setProfessorName(schedule.professorName);
-      setLectureTitle(schedule.lectureTitle);
-      setModuleCode(schedule.moduleCode);
-      setCapacity(schedule.capacity.toString());
-      setStartDate(dayjs(schedule.startDate));
-      setStartTime(dayjs(schedule.startTime, "HH:mm:ss"));
-      setEndTime(dayjs(schedule.endTime, "HH:mm:ss"));
-      setScheduleDescription(schedule.scheduleDescription || "");
-    }
-  }, [schedule]);
+
+    //get data to select option menu 
+    const [professors, setProfessors] = useState([]);
+    const [courses, setCourses] = useState([]);
+    const [rooms, setRooms] = useState([]);
+
+
+ useEffect(() => {
+  if (schedule) {
+    setLectureTitle(schedule.lectureTitle);
+    setCapacity(schedule.capacity.toString());
+    setStartDate(dayjs(schedule.startDate));
+    setStartTime(dayjs(schedule.startTime, "HH:mm:ss"));
+    setEndTime(dayjs(schedule.endTime, "HH:mm:ss"));
+    setScheduleDescription(schedule.scheduleDescription || "");
+
+    setRoomId(schedule.room?.id || "");       
+    setProfessorId(schedule.professor?.id || "");
+    setCourseId(schedule.course?.courseId || ""); 
+  }
+}, [schedule]);
+
+
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          // Fetch professors
+          const professorResponse = await fetch("http://localhost:8086/api/professor/");
+          if (!professorResponse.ok) {
+            throw new Error("Failed to fetch professors");
+          }
+          const professorData = await professorResponse.json();
+          setProfessors(professorData);
+    
+          // Fetch courses
+          const courseResponse = await fetch("http://localhost:8086/api/course/");
+          if (!courseResponse.ok) {
+            throw new Error("Failed to fetch courses");
+          }
+          const courseData = await courseResponse.json();
+          setCourses(courseData);
+    
+          // Fetch rooms
+          const roomResponse = await fetch("http://localhost:8086/api/room/");
+          if (!roomResponse.ok) {
+            throw new Error("Failed to fetch rooms");
+          }
+          const roomData = await roomResponse.json();
+          setRooms(roomData);
+    
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+    
+      fetchData();
+    }, []);
+    
 
 
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Validation
-    if (!roomNumber || !professorName || !lectureTitle || !moduleCode) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "All fields are required!",
-      });
-      return;
-    }
 
     if (!startDate || !startTime || !endTime) {
       Swal.fire({
@@ -88,34 +133,54 @@ const ScheduleUpdate = () => {
 
     const updatedSchedule = {
       scheduleId: schedule.scheduleId,
-      roomNumber,
-      professorName,
       capacity: parseInt(capacity),
-      moduleCode,
       lectureTitle,
       startDate: startDate.format("YYYY-MM-DD"),
       startTime: startTime.format("HH:mm:ss"),
       endTime: endTime.format("HH:mm:ss"),
       scheduleDescription,
+      room: {
+        id: roomId,
+      },
+      professor: {
+        id: professorId,
+      },
+      course: {
+        courseId: courseId,
+      },
     };
+
+    if (!roomId || !professorId || !courseId) {
+      Swal.fire({
+        icon: "error",
+        title: "Missing Fields",
+        text: "Please select a professor, course, and room.",
+      });
+      return;
+    }
+    
+    
 
 
     axios.put(`http://localhost:8086/api/schedule/${schedule.scheduleId}`, updatedSchedule)
-      .then(() => {
-        Swal.fire({
-          icon: "success",
-          title: "Schedule Updated",
-          text: "Your schedule has been updated successfully!",
-        });
-      })
-      .catch((err) => {
-        console.error("Failed to update schedule", err);
-        Swal.fire({
-          icon: "error",
-          title: "Update Failed",
-          text: "There was a problem updating the schedule.",
-        });
+    .then(() => {
+      Swal.fire({
+        icon: "success",
+        title: "Schedule Updated",
+        text: "Your schedule has been updated successfully!",
+      }).then(() => {
+        navigate("/admin/schedule-table"); // Navigate after user clicks "OK"
       });
+    })
+    .catch((err) => {
+      console.error("Failed to update schedule", err);
+      Swal.fire({
+        icon: "error",
+        title: "Update Failed",
+        text: "There was a problem updating the schedule.",
+      });
+    });
+  
 
   };
 
@@ -246,34 +311,47 @@ const ScheduleUpdate = () => {
                     {/* Schedule Information */}
                     <Row>
                       <Col lg="6">
-                        <FormGroup>
-                          <label className="form-control-label" htmlFor="input-roomNumber">
-                            Room Number
-                          </label>
+                      <FormGroup>
+                          <Label htmlFor="input-roomNumber" className="form-control-label">
+                            Select Room
+                          </Label>
                           <Input
-                            className="form-control-alternative"
+                            type="select"
+                            name="roomId"
                             id="input-roomNumber"
-                            placeholder="Room Number"
-                            maxLength="6"
-                            type="text"
-                            value={roomNumber}
-                            onChange={(e) => setRoomNumber(e.target.value)}
-                          />
+                            className="form-control"
+                            value={roomId} // Use roomId here
+                            onChange={(e) => setRoomId(e.target.value)} // Set roomId here
+                          >
+                            <option value="">Select Room</option>
+                            {rooms.map((room) => (
+                              <option key={room.id} value={room.id}>
+                                {room.roomName}
+                              </option>
+                            ))}
+                          </Input>
                         </FormGroup>
                       </Col>
                       <Col lg="6">
-                        <FormGroup>
-                          <label className="form-control-label" htmlFor="input-professorName">
-                            Professor Name
-                          </label>
+                      <FormGroup>
+                          <Label htmlFor="input-professorName" className="form-control-label">
+                            Select Professor
+                          </Label>
                           <Input
-                            className="form-control-alternative"
+                            type="select"
+                            name="professorId"
                             id="input-professorName"
-                            placeholder="Professor Name"
-                            type="text"
-                            value={professorName}
-                            onChange={(e) => setProfessorName(e.target.value)}
-                          />
+                            className="form-control"
+                            value={professorId} // Use professorId here
+                            onChange={(e) => setProfessorId(e.target.value)} // Set professorId here
+                          >
+                            <option value="">Select Professor</option>
+                            {professors.map((professor) => (
+                              <option key={professor.id} value={professor.id}>
+                                {professor.full_name}
+                              </option>
+                            ))}
+                          </Input>
                         </FormGroup>
                       </Col>
                     </Row>
@@ -298,19 +376,26 @@ const ScheduleUpdate = () => {
 
                       {/* Module Code Field */}
                       <Col lg="6">
-                        <FormGroup>
-                          <label className="form-control-label" htmlFor="input-moduleCode">
-                            Module Code
-                          </label>
+                      <FormGroup>
+                          <Label htmlFor="input-moduleCode" className="form-control-label">
+                            Select Module Code
+                          </Label>
                           <Input
-                            className="form-control-alternative"
+                            type="select"
+                            name="moduleCode"
                             id="input-moduleCode"
-                            placeholder="Module Code"
-                            type="text"
-                            maxLength="6"
-                            value={moduleCode}
-                            onChange={(e) => setModuleCode(e.target.value)}
-                          />
+                            className="form-control"
+                            value={courseId} // Use courseId here
+                            onChange={(e) => setCourseId(e.target.value)} // Set courseId here
+                          >
+                            <option value="">Select Module Code</option>
+                            {courses.map((course) => (
+                              <option key={course.courseId} value={course.courseId}>
+                                {course.courseCode}
+                              </option>
+                            ))}
+                          </Input>
+
                         </FormGroup>
                       </Col>
                     </Row>

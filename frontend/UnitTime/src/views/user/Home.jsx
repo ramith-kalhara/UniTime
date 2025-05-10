@@ -1,19 +1,104 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
 import Hero from '../../components/Section/Hero'
 import Facilities from '../../components/Section/Facilities'
 import About from '../../components/Section/About'
 import Room from '../../components/Section/Room'
-import BookRoom from '../../components/Section/BookRoom'
 import Professors from '../../components/Section/Professors'
-import Testimonial from '../../components/Section/Testimonial'
-import Blog from '../../components/Section/Blog'
-import VoteSlider from '../../components/Section/VoteSlider'
-import ScheduleData from '../../data/ScheduleData'
-import ProfessorsData from '../../data/ProfessorsData'
-import CourseHeader from '../../components/Headers/CourseHeader'
 import CourseCard from "../../components/Section/CourseCard"
 import CourseData from "../../data/CourseData"
+import axios from 'axios';
+
+
+import room1 from '../../assets/user/img/class-1.jpg';
+import room2 from '../../assets/user/img/class-1.jpg';
+import room3 from '../../assets/user/img/class-1.jpg';
+import room4 from '../../assets/user/img/class-1.jpg';
+const roomImages = [room1, room2, room3, room4];
+
+import team1 from '../../assets/user/img/team-1.jpg';
+import team2 from '../../assets/user/img/team-2.jpg';
+import team3 from '../../assets/user/img/team-3.jpg';
+import team4 from '../../assets/user/img/team-4.jpg';
+const imageList = [team1, team2, team3, team4];
+
+import blog1 from '../../assets/user/img/blog-1.jpg';
+import blog2 from '../../assets/user/img/blog-2.jpg';
+import blog3 from '../../assets/user/img/blog-3.jpg';
+const courseImages = [blog1, blog2, blog3];
 function Home() {
+  const [schedules, setSchedules] = useState([]);
+  const [professors, setProfessors] = useState([]);
+  const [courseList, setCourseList] = useState([]);
+
+
+
+
+  
+
+  useEffect(() => {
+    axios.get('http://localhost:8086/api/schedule/')
+      .then(response => {
+        const transformedData = response.data.map((item, index) => ({
+          id: item.id,
+          img: roomImages[index % roomImages.length], // Rotate images
+          room_type: item.room?.roomType || "N/A",
+          description: item.scheduleDescription || "No description provided.",
+          department: item.course?.department || "N/A",
+          capacity: item.room?.capacity || "N/A",
+          startTime: item.startTime,
+          endTime: item.endTime,
+          lectureName: item.lectureTitle,
+          moduleName: item.course?.name || "N/A"
+        }));
+        setSchedules(transformedData);
+      })
+      .catch(error => {
+        console.error('Failed to fetch schedule data:', error);
+      });
+  }, []);
+
+
+
+  useEffect(() => {
+    axios.get('http://localhost:8086/api/professor/')
+      .then(response => {
+        const transformedData = response.data.map((prof, index) => ({
+          id: prof.id,
+          imageUrl: imageList[index % imageList.length], // cycle images
+          name: prof.full_name,
+          moduleId: prof.course?.courseCode || 'N/A',
+          module: prof.course?.name || 'N/A'
+        }));
+        setProfessors(transformedData);
+      })
+      .catch(error => {
+        console.error('Failed to fetch professors:', error);
+      });
+  }, []);
+
+    useEffect(() => {
+    axios.get('http://localhost:8086/api/course/')
+      .then(response => {
+        const allCourses = response.data;
+
+        const transformed = allCourses.map((item, index) => ({
+          id: item.courseId,
+          img: courseImages[index % courseImages.length],
+          moduleName: item.name,
+          description: item.description,
+          department: item.department,
+          courseCode: item.courseCode,
+          creadit: item.credits,
+          tags: allCourses.map(c => c.name), // All course names
+          descriptionLong: item.description
+        }));
+
+        setCourseList(transformed);
+      })
+      .catch(error => {
+        console.error('Failed to fetch course data:', error);
+      });
+  }, []);
  
   return (
     <div>
@@ -31,7 +116,7 @@ function Home() {
             <h1 className="mb-4">Scheduled Lectures</h1>
           </div>
           <div className="row">
-            {ScheduleData.slice(0,3).map(item => (
+            {schedules.slice(0,3).map(item => (
               <Room key={item.id} ScheduleData={item} />
             ))}
           </div>
@@ -51,7 +136,7 @@ function Home() {
           </div>
 
           {/* Show only 3 professors */}
-          <Professors data={ProfessorsData.slice(0,3)} />
+          <Professors data={professors.slice(0,3)} />
         </div>
       </div>
       
@@ -69,7 +154,7 @@ function Home() {
 
           {/* Course Cards Section */}
           <div className="row">
-            {CourseData.slice(0,3).map(item => (
+            {courseList.slice(0,3).map(item => (
               <div className="col-lg-4 col-md-6 mb-4" key={item.id}>
                 <div className="card border-0 shadow-sm h-100">
                   <CourseCard CourseData={item} />
