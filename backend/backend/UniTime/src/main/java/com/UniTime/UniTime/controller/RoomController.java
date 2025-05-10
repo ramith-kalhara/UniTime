@@ -6,7 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -18,10 +20,18 @@ public class RoomController {
     private final RoomServiceImpl roomService;
 
     // Create room
-    @PostMapping("/create")
-    public ResponseEntity<RoomDto> postRoom(@RequestBody RoomDto roomDto) {
-        return ResponseEntity.status(HttpStatus.OK).body(roomService.postRoom(roomDto));
+    @PostMapping(value = "/create", consumes = {"multipart/form-data"})
+    public ResponseEntity<RoomDto> postRoom(
+            @RequestPart("room") RoomDto roomDto,
+            @RequestPart(value = "image", required = false) MultipartFile image) {
+        try {
+            RoomDto savedRoom = roomService.postRoom(roomDto, image);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedRoom);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
+
 
     // Get all rooms
     @GetMapping("/")

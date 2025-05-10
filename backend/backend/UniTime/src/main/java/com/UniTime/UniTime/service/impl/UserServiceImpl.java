@@ -1,9 +1,6 @@
 package com.UniTime.UniTime.service.impl;
 
-import com.UniTime.UniTime.dto.CourseDto;
-import com.UniTime.UniTime.dto.ScheduleDto;
-import com.UniTime.UniTime.dto.UserDto;
-import com.UniTime.UniTime.dto.UserVoteDto;
+import com.UniTime.UniTime.dto.*;
 import com.UniTime.UniTime.entity.*;
 import com.UniTime.UniTime.exception.NotFoundException;
 import com.UniTime.UniTime.repository.*;
@@ -27,6 +24,8 @@ public class UserServiceImpl implements UserService {
     private final CourseRepository courseRepository;
     private final ScheduleRepository scheduleRepository;
     private final ModelMapper mapper;
+
+
 
     //create user
     @Override
@@ -209,19 +208,46 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto login(String email, String password) {
-        Optional<User> optionalUser = userRepository.findByEmail(email);
+    public LoginResponseDto authenticateUser(LoginRequestDto loginRequestDto) {
+        // Find the user by email
+        User user = userRepository.findByEmail(loginRequestDto.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            if (user.getPassword().equals(password)) {
-                return mapper.map(user, UserDto.class);
-            } else {
-                throw new RuntimeException("Invalid password");
-            }
-        } else {
-            throw new NotFoundException("User not found with email: " + email);
+        // Check if the password is correct
+        if (!user.getPassword().equals(loginRequestDto.getPassword())) {
+            throw new RuntimeException("Invalid password");
         }
+
+        // Check if the role is empty or not
+        String role = user.getRole();
+        if (role == null || role.isEmpty()) {
+            // User has no role assigned, treat as normal user
+            role = "USER";  // Default to "USER" if role is empty
+        }
+
+        if ("ADMIN".equalsIgnoreCase(role)) {
+            // Admin specific logic (if needed)
+            // You can return different responses or tokens for admin users
+        } else if ("USER".equalsIgnoreCase(role)) {
+            // User specific logic (if needed)
+            // You can return different responses or tokens for normal users
+        } else {
+            throw new RuntimeException("Invalid role");
+        }
+
+        // Response DTO setup
+        LoginResponseDto response = new LoginResponseDto();
+        response.setMessage("Login successful");
+        response.setUserId(user.getId());
+        response.setEmail(user.getEmail());
+        response.setRole(role);
+
+        return response;
     }
+
+
+
+
+
 
 }

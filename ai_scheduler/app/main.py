@@ -12,5 +12,6 @@ if __name__ == "__main__":
         "data/rooms.csv"
     )
 
-    print("✅ Schedule generated:")
+    print(" Schedule generated:")
     print(result)
+

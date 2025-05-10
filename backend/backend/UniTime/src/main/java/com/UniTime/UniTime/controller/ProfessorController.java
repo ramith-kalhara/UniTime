@@ -4,9 +4,12 @@ import com.UniTime.UniTime.dto.ProfessorDto;
 import com.UniTime.UniTime.service.impl.ProfessorServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -18,10 +21,19 @@ public class ProfessorController {
     private final ProfessorServiceImpl professorService;
 
     // Create Professor
-    @PostMapping("/create")
-    public ResponseEntity<ProfessorDto> postProfessor(@RequestBody ProfessorDto professorDto) {
-        return ResponseEntity.status(HttpStatus.OK).body(professorService.postProfessor(professorDto));
+    @PostMapping(value = "/create", consumes = {"multipart/form-data"})
+    public ResponseEntity<ProfessorDto> postProfessor(
+            @RequestPart("professor") ProfessorDto professorDto,
+            @RequestPart(value = "image", required = false) MultipartFile image) {
+        try {
+            ProfessorDto savedProfessor = professorService.postProfessor(professorDto, image);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedProfessor);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
+
+
 
     // Get all Professors
     @GetMapping("/")

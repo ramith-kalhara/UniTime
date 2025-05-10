@@ -10,8 +10,11 @@ import com.UniTime.UniTime.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,16 +28,23 @@ public class RoomServiceImpl implements RoomService {
 
     //create room
     @Override
-    public RoomDto postRoom(RoomDto roomDto) {
-        //Convert DTO to Entity
-        Room room = mapper.map(roomDto, Room.class);
+    public RoomDto postRoom(RoomDto roomDto, MultipartFile image) throws IOException {
+        Room room = roomDto.toEntity(mapper);
 
-        //save Entity
+        if (image != null && !image.isEmpty()) {
+            room.setImageData(image.getBytes());
+        }
+
         Room savedRoom = roomRepository.save(room);
 
-        // Convert back to DTO and return
-        return mapper.map(savedRoom, RoomDto.class);
+        RoomDto savedDto = savedRoom.toDto(mapper);
+        if (savedRoom.getImageData() != null) {
+            savedDto.setImageBase64(Base64.getEncoder().encodeToString(savedRoom.getImageData()));
+        }
+
+        return savedDto;
     }
+
 
     //get all room
     @Override

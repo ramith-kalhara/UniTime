@@ -3,14 +3,17 @@ package com.UniTime.UniTime.entity;
 import com.UniTime.UniTime.dto.CourseDto;
 import com.UniTime.UniTime.dto.ProfessorDto;
 import com.UniTime.UniTime.dto.VoteDto;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.apache.catalina.LifecycleState;
 import org.modelmapper.ModelMapper;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Setter
 @Getter
@@ -25,22 +28,18 @@ public class Vote {
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
-    @Column(name = "start_date", length = 10)
-    private String start_date; // Format: YYYY-MM-DD
+    @Column(name = "start_time")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime startTime;
 
-    @Column(name = "end_date", length = 10)
-    private String end_date;
-
-    @Column(name = "start_time", length = 8)
-    private String start_time; // Format: HH:mm:ss
-
-    @Column(name = "end_time", length = 8)
-    private String end_time;
+    @Column(name = "end_time")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime endTime;
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @OneToMany(mappedBy = "vote", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "vote", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JsonManagedReference
     private List<Professor> professors = new ArrayList<>();
 
@@ -62,6 +61,13 @@ public class Vote {
         if (this.course != null) {
             CourseDto courseDto = this.course.toDto(mapper); // ensure this method maps all fields
             voteDto.setCourse(courseDto);
+        }
+
+        if (this.professors != null) {
+            List<ProfessorDto> professorDtos = this.professors.stream()
+                    .map(professor -> professor.toDto(mapper))
+                    .collect(Collectors.toList());
+            voteDto.setProfessors(professorDtos);
         }
         return voteDto;
     }

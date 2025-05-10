@@ -5,7 +5,7 @@ import os
 app = Flask(__name__)
 
 # Load model and encoders
-MODEL_DIR = "app/models"
+MODEL_DIR = "models"
 model = joblib.load(os.path.join(MODEL_DIR, "time_slot_model.joblib"))
 le_prof = joblib.load(os.path.join(MODEL_DIR, "le_prof.joblib"))
 le_room = joblib.load(os.path.join(MODEL_DIR, "le_room.joblib"))
@@ -19,9 +19,16 @@ def predict_time_slot():
         professor_id = data["professor_id"]
         room_id = data["room_id"]
 
-        # Encode inputs
-        professor_enc = le_prof.transform([professor_id])[0]
-        room_enc = le_room.transform([room_id])[0]
+        # Encode inputs with a fallback for unseen labels
+        try:
+            professor_enc = le_prof.transform([professor_id])[0]
+        except ValueError:
+            return jsonify({"error": f"Unseen professor_id: {professor_id}"}), 400
+        
+        try:
+            room_enc = le_room.transform([room_id])[0]
+        except ValueError:
+            return jsonify({"error": f"Unseen room_id: {room_id}"}), 400
 
         # Predict
         pred = model.predict([[professor_enc, room_enc]])[0]

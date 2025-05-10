@@ -30,6 +30,11 @@ function Home() {
   const [professors, setProfessors] = useState([]);
   const [courseList, setCourseList] = useState([]);
 
+
+
+
+  
+
   useEffect(() => {
     axios.get('http://localhost:8086/api/schedule/')
       .then(response => {

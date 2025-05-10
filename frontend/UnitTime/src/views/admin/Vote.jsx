@@ -64,48 +64,42 @@ const Vote = () => {
 
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchCourses = async () => {
       try {
-        const [courseRes, professorRes] = await Promise.all([
-          fetch("http://localhost:8086/api/course/"),
-          fetch("http://localhost:8086/api/professor/")
-        ]);
-
-        if (courseRes.ok && professorRes.ok) {
+        const courseRes = await fetch("http://localhost:8086/api/course/");
+        if (courseRes.ok) {
           const courseData = await courseRes.json();
-          const professorData = await professorRes.json();
           setCourseCodes(courseData);
-          setProfessors(professorData);
         } else {
-          console.error("Failed to fetch courses or professors");
+          console.error("Failed to fetch courses");
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching courses:", error);
       }
     };
-
-    fetchData();
+  
+    fetchCourses();
   }, []);
-
+  
 
 
 
 
   const handleInputChange = async (e) => {
     const { name, value, options, type } = e.target;
-  
+
     if (name === 'professor' && type === 'select-multiple') {
       const selectedValues = Array.from(options)
         .filter(option => option.selected)
         .map(option => option.value);
-  
+
       setFormValues((prev) => ({
         ...prev,
         [name]: selectedValues,
       }));
       return;
     }
-  
+
     // When user selects moduleCode (which is actually courseId)
     if (name === "moduleCode") {
       try {
@@ -114,27 +108,33 @@ const Vote = () => {
           const data = await response.json();
           setFormValues((prev) => ({
             ...prev,
-            moduleCode: value, // ✅ Keep the ID
-            moduleName: data.name || '', // ✅ Only use courseCode as name/label
+            moduleCode: value,
+            moduleName: data.name || '',
           }));
+    
+          // 👇 Set professors to only those related to selected course
+          setProfessors(data.professors || []);
         } else {
           setFormValues((prev) => ({
             ...prev,
             moduleCode: '',
             moduleName: '',
           }));
+          setProfessors([]); // clear professors on failed fetch
         }
       } catch (error) {
-        console.error("Failed to fetch course name:", error);
+        console.error("Failed to fetch course details:", error);
         setFormValues((prev) => ({
           ...prev,
           moduleCode: '',
           moduleName: '',
         }));
+        setProfessors([]);
       }
       return;
     }
-  
+    
+
     // Validate module name
     if (name === 'moduleName' && /[^a-zA-Z\s]/.test(value)) {
       Swal.fire({
@@ -144,14 +144,13 @@ const Vote = () => {
       });
       return;
     }
-  
->>>>>>> Ramith1.3
+
     setFormValues((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
-  
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -193,17 +192,15 @@ const Vote = () => {
 
     // Prepare data for API request
     const voteData = {
-      start_date: dayjs(startDateTime).format('YYYY-MM-DD'),
-      end_date: dayjs(endDateTime).format('YYYY-MM-DD'),
-      start_time: dayjs(startDateTime).format('HH:mm:ss'),
-      end_time: dayjs(endDateTime).format('HH:mm:ss'),
+      startTime: dayjs(startDateTime).format('YYYY-MM-DDTHH:mm:ss'),
+      endTime: dayjs(endDateTime).format('YYYY-MM-DDTHH:mm:ss'),
       description: voteDescription,
       course: {
         courseId: moduleCode
       },
       professors: formValues.professor.filter(Boolean).map(id => ({ id }))
     };
-    
+
 
     try {
       // Send the data to the API
@@ -212,6 +209,7 @@ const Vote = () => {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include", 
         body: JSON.stringify(voteData),
       });
 
@@ -332,7 +330,7 @@ const Vote = () => {
                           </Input>
                         </FormGroup>
 
-                    
+
 
                       </Col>
 
@@ -389,6 +387,7 @@ const Vote = () => {
                               label="Start Date"
                               value={startDateTime}
                               onChange={(newValue) => setStartDateTime(newValue)}
+                              ampm={false} // 24-hour format
                               renderInput={({ inputRef, inputProps }) => (
                                 <Input innerRef={inputRef} {...inputProps} />
                               )}
@@ -403,6 +402,7 @@ const Vote = () => {
                               label="End Date"
                               value={endDateTime}
                               onChange={(newValue) => setEndDateTime(newValue)}
+                              ampm={false} // 24-hour format
                               renderInput={({ inputRef, inputProps }) => (
                                 <Input innerRef={inputRef} {...inputProps} />
                               )}
@@ -411,6 +411,7 @@ const Vote = () => {
                         </FormGroup>
                       </Col>
                     </Row>
+
                   </div>
 
                   <h6 className="heading-small text-muted mb-4">Vote Time & Date Information</h6>
@@ -452,11 +453,6 @@ const Vote = () => {
                           </ul>
                         )}
                       </Col>
-
-
-
-
-
                     </Row>
                   </div>
 

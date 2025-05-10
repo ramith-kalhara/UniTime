@@ -22,7 +22,8 @@ function SingleCourse() {
 
         setCourse({
           id: data.courseId,
-          img: courseImages[data.courseId % courseImages.length],
+          img: data.imageBase64 ? `data:image/jpeg;base64,${data.imageBase64}` : courseImages[data.courseId % courseImages.length],
+
           moduleName: data.name,
           description: data.description,
           department: data.department,

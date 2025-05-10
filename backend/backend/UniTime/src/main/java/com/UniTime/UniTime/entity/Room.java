@@ -12,6 +12,7 @@ import lombok.Setter;
 import org.modelmapper.ModelMapper;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,6 +47,11 @@ public class Room {
     @Column(name = "has_smart_screen", nullable = false)
     private boolean smart_screen;
 
+    @Lob
+    @Column(name = "image_data", columnDefinition="LONGBLOB")
+    private byte[] imageData;
+
+
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference // Ensures the schedule is serialized correctly
     private List<Schedule> schedules;
@@ -58,6 +64,11 @@ public class Room {
 //                .collect(Collectors.toList());
 
 //        roomDto.setSchedules(scheduleDtos);
+
+        if (this.imageData != null) {
+            roomDto.setImageBase64(Base64.getEncoder().encodeToString(this.imageData));
+        }
+
         return roomDto;
     }
 
