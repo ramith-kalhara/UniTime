@@ -1,13 +1,14 @@
 import team1 from "../assets/user/img/team-1.jpg";
 import team2 from "../assets/user/img/team-2.jpg";
 
+
 const VoteData = [
   {
     id: 0,
     startTime: "10:00 AM",
     endTime: "5:00 PM",
     moduleId: "IT2030",
-    Professors: [ // <-- array of objects
+    Professors: [
       {
         id: 1,
         imageUrl: team2,

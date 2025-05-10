@@ -97,7 +97,7 @@ const ScheduleTable = () => {
                     <th scope="col">Room Id</th>
                     <th scope="col">Shedule Title</th>
                     <th scope="col">Professor</th>
-                    <th scope="col">Students</th>
+                    {/* <th scope="col">Students</th> */}
                     <th scope="col">Module Name</th>
                     <th scope="col" />
                   </tr>
@@ -114,7 +114,8 @@ const ScheduleTable = () => {
                       <td>{schedule.endTime}</td>
                       <td>
                         <Badge color="" className="badge-dot mr-4">
-                          {schedule.roomNumber}
+                          {schedule.room?.roomName}
+                       
                         </Badge>
                       </td>
                       <td>
@@ -124,18 +125,13 @@ const ScheduleTable = () => {
                       </td>
                       <td>
                         <Badge color="" className="badge-dot mr-4">
-                          {schedule.professorName}
+                          {schedule.professor?.full_name}
                         </Badge>
                       </td>
-                      <td>
-                        <div className="avatar-group">
-                          {/* Placeholder for now */}
-                          <span className="text-sm">--</span>
-                        </div>
-                      </td>
+               
                       <td>
                         <span className="mb-0 text-sm">
-                          {schedule.moduleCode}
+                          {schedule.course?.name}
                         </span>
                       </td>
                       <td className="text-right">

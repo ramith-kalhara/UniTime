@@ -1,4 +1,53 @@
 room_id,capacity,has_projector,has_computer,room_type
-R101,40,True,True,Lecture Hall
-R102,30,True,False,Lab
-R103,25,False,True,Lab
+1,40,True,True,Lecture Hall
+2,30,True,False,Lab
+3,25,False,True,Lab
+10,77,False,True,Lecture Hall
+4,55,True,True,Lab
+17,42,True,False,Lab
+7,65,False,True,Lecture Hall
+11,34,False,True,Lecture Hall
+13,59,False,True,Lecture Hall
+1,41,True,True,Lecture Hall
+8,74,True,False,Lecture Hall
+14,25,True,True,Lab
+2,69,True,False,Lecture Hall
+19,78,False,False,Lecture Hall
+16,70,True,False,Lab
+15,40,False,True,Lecture Hall
+3,62,True,False,Lecture Hall
+12,26,True,True,Lecture Hall
+18,66,True,True,Lecture Hall
+6,32,False,True,Lecture Hall
+9,71,False,True,Lecture Hall
+5,24,False,False,Lab
+20,58,True,True,Lecture Hall
+10,53,False,False,Lab
+4,75,False,False,Lab
+7,21,False,True,Lab
+11,44,False,False,Lecture Hall
+13,31,True,False,Lecture Hall
+1,46,True,False,Lecture Hall
+8,49,True,True,Lecture Hall
+14,36,True,True,Lecture Hall
+2,61,False,True,Lecture Hall
+19,27,True,True,Lecture Hall
+16,79,True,False,Lab
+15,68,False,False,Lab
+3,23,True,True,Lecture Hall
+12,50,True,True,Lab
+18,35,False,True,Lecture Hall
+6,28,True,False,Lecture Hall
+9,56,True,False,Lab
+5,64,True,True,Lab
+20,48,False,True,Lab
+10,72,False,True,Lab
+4,30,True,True,Lecture Hall
+7,60,True,False,Lecture Hall
+11,33,True,True,Lecture Hall
+13,39,False,False,Lab
+1,43,False,True,Lab
+8,22,False,True,Lecture Hall
+14,57,True,False,Lab
+2,76,True,True,Lab
+19,54,False,True,Lecture Hall

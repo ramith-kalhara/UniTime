@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import teamImage from "../../assets/admin/img/theme/team-4-800x800.jpg";
+
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -20,6 +20,7 @@ import {
   Col,
 } from "reactstrap";
 import AdminHeader from "../../components/Headers/AdminHeader";
+import AdminView from '../../components/Section/AdminView';
 
 const Course = () => {
   const [startDate, setStartDate] = useState(dayjs()); // State for start date
@@ -30,9 +31,14 @@ const Course = () => {
   const [department, setDepartment] = useState('');
   const [description, setdescription] = useState('');
 
+  const [formDataState, setFormDataState] = useState({
+    image: null,
+  });
+
+
   const handleNameChange = (e) => {
     const { value } = e.target;
-  
+
     // Allow only letters and spaces
     if (/[^a-zA-Z\s]/.test(value)) {
       Swal.fire({
@@ -42,15 +48,15 @@ const Course = () => {
       });
       return; // Don't update state if invalid
     }
-  
+
     // If valid, update the name state
     setName(value);
   };
-  
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     // Validation
     if (!courseCode || !name || !credits || !department || !description) {
       Swal.fire({
@@ -60,7 +66,7 @@ const Course = () => {
       });
       return;
     }
-  
+
     if (credits && isNaN(credits)) {
       Swal.fire({
         icon: "error",
@@ -69,36 +75,47 @@ const Course = () => {
       });
       return;
     }
-  
-    // Prepare payload
-    const newCourse = {
+
+    const courseData = {
       courseCode,
       name,
       credits: parseInt(credits),
       department,
       description,
       startDate: startDate.format('YYYY-MM-DD'),
+      endDate: endDate.format('YYYY-MM-DD'),
     };
-  
+
     try {
-      const response = await axios.post("http://localhost:8086/api/course/create", newCourse);
-  
-      if (response.status === 200 || response.status === 201) {
-        Swal.fire({
-          icon: "success",
-          title: "Course Added Successfully",
-          text: "Your course has been added.",
-        });
-  
-        // Optional: clear form
-        setCourseCode("");
-        setName("");
-        setCredits("");
-        setDepartment("");
-        setdescription("");
-        setStartDate(dayjs());
-        setEndDate(dayjs());
+      const formData = new FormData();
+      formData.append("course", new Blob([JSON.stringify(courseData)], { type: "application/json" }));
+      if (formDataState.image) {
+        formData.append("image", formDataState.image);
       }
+
+      const response = await fetch("http://localhost:8086/api/course/create", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error("Course creation failed");
+
+      Swal.fire({
+        icon: "success",
+        title: "Course Added Successfully",
+        text: "Your course has been added.",
+      });
+
+      // Optional: clear form
+      setCourseCode("");
+      setName("");
+      setCredits("");
+      setDepartment("");
+      setdescription("");
+      setStartDate(dayjs());
+      setEndDate(dayjs());
+      setFormDataState({ image: null });
+
     } catch (error) {
       console.error("Error adding course:", error);
       Swal.fire({
@@ -108,7 +125,8 @@ const Course = () => {
       });
     }
   };
-  
+
+
   // Handle Credits change (ensure it's a number)
   const handleCreditsChange = (e) => {
     const { value } = e.target;
@@ -128,73 +146,10 @@ const Course = () => {
       {/* Page content */}
       <Container className="mt--7" fluid>
         <Row>
+     
+
           <Col className="order-xl-2 mb-5 mb-xl-0" xl="4">
-            <Card className="card-profile shadow">
-              <Row className="justify-content-center">
-                <Col className="order-lg-2" lg="3">
-                  <div className="card-profile-image">
-                    <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                      <img alt="..." className="rounded-circle" src={teamImage} />
-                    </a>
-                  </div>
-                </Col>
-              </Row>
-              <CardHeader className="text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
-                <div className="d-flex justify-content-between">
-                  <Button className="mr-4" color="info" href="#pablo" onClick={(e) => e.preventDefault()} size="sm">
-                    Connect
-                  </Button>
-                  <Button className="float-right" color="default" href="#pablo" onClick={(e) => e.preventDefault()} size="sm">
-                    Message
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardBody className="pt-0 pt-md-4">
-                <Row>
-                  <div className="col">
-                    <div className="card-profile-stats d-flex justify-content-center mt-md-5">
-                      <div>
-                        <span className="heading">22</span>
-                        <span className="description">Friends</span>
-                      </div>
-                      <div>
-                        <span className="heading">10</span>
-                        <span className="description">Photos</span>
-                      </div>
-                      <div>
-                        <span className="heading">89</span>
-                        <span className="description">Comments</span>
-                      </div>
-                    </div>
-                  </div>
-                </Row>
-                <div className="text-center">
-                  <h3>
-                    Jessica Jones
-                    <span className="font-weight-light">, 27</span>
-                  </h3>
-                  <div className="h5 font-weight-300">
-                    <i className="ni location_pin mr-2" />
-                    Bucharest, Romania
-                  </div>
-                  <div className="h5 mt-4">
-                    <i className="ni business_briefcase-24 mr-2" />
-                    Solution Manager - Creative Tim Officer
-                  </div>
-                  <div>
-                    <i className="ni education_hat mr-2" />
-                    University of Computer Science
-                  </div>
-                  <hr className="my-4" />
-                  <p>
-                    Ryan — the name taken by Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs, and records all of his own music.
-                  </p>
-                  <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                    Show more
-                  </a>
-                </div>
-              </CardBody>
-            </Card>
+               <AdminView/>
           </Col>
           <Col className="order-xl-1" xl="8">
             <Card className="bg-secondary shadow">
@@ -204,7 +159,7 @@ const Course = () => {
                     <h3 className="mb-0">Add Course</h3>
                   </Col>
                   <Col className="text-right" xs="4">
-                    <Button color="primary" href="#pablo" onClick={handleSubmit}  size="sm">
+                    <Button color="primary" href="#pablo" onClick={handleSubmit} size="sm">
                       Add Course
                     </Button>
                   </Col>
@@ -256,7 +211,7 @@ const Course = () => {
                           <Input
                             className="form-control-alternative"
                             value={credits}
-                            onChange={handleCreditsChange} 
+                            onChange={handleCreditsChange}
                             id="input-first-name"
                             placeholder="Credits"
                             type="text"
@@ -292,23 +247,43 @@ const Course = () => {
                           </LocalizationProvider>
                         </FormGroup>
                       </Col>
-                     
                     </Row>
-                    
-                      <FormGroup>
-                        <label> Description </label>
-                        <Input
-                          className="form-control-alternative"
-                          placeholder="A few words about you ..."
-                          rows="4"
-                          defaultValue="Description"
-                          value={description}
-                          onChange={(e) => setdescription(e.target.value)}
-                          type="textarea"
-                        />
-                      </FormGroup>
-                    
-                 
+
+                    <Row>
+                      <Col lg="6">
+                        <FormGroup>
+                          <label className="form-control-label" htmlFor="input-image">
+                            Image
+                          </label>
+                          <Input
+                            type="file"
+                            name="image"
+                            onChange={(e) =>
+                              setFormDataState({
+                                ...formDataState,
+                                image: e.target.files[0],
+                              })
+                            }
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+
+
+                    <FormGroup>
+                      <label> Description </label>
+                      <Input
+                        className="form-control-alternative"
+                        placeholder="A few words about you ..."
+                        rows="4"
+                        defaultValue="Description"
+                        value={description}
+                        onChange={(e) => setdescription(e.target.value)}
+                        type="textarea"
+                      />
+                    </FormGroup>
+
+
                   </div>
                 </Form>
               </CardBody>
