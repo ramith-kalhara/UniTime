@@ -1,5 +1,5 @@
 import React from 'react'
-
+import teamImage from "../../assets/admin/img/theme/team-4-800x800.jpg";
 import {
   Button,
   Card,
@@ -11,8 +11,7 @@ import {
 function AdminView() {
   return (
     <div>
-         <Col className="order-xl-2 mb-5 mb-xl-0" xl="4">
-            <Card className="card-profile shadow">
+         <Card className="card-profile shadow">
               <Row className="justify-content-center">
                 <Col className="order-lg-2" lg="3">
                   <div className="card-profile-image">
@@ -78,7 +77,6 @@ function AdminView() {
                 </div>
               </CardBody>
             </Card>
-          </Col>
     </div>
   )
 }

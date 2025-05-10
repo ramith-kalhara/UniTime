@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import teamImage from "../../assets/admin/img/theme/team-4-800x800.jpg";
+
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -146,7 +146,11 @@ const Course = () => {
       {/* Page content */}
       <Container className="mt--7" fluid>
         <Row>
-         <AdminView/>
+     
+
+          <Col className="order-xl-2 mb-5 mb-xl-0" xl="4">
+               <AdminView/>
+          </Col>
           <Col className="order-xl-1" xl="8">
             <Card className="bg-secondary shadow">
               <CardHeader className="bg-white border-0">
