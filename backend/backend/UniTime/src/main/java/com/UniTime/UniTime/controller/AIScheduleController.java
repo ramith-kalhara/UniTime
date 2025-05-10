@@ -40,4 +40,11 @@ public class AIScheduleController {
         return ResponseEntity.status(HttpStatus.OK).body(aiScheduleService.deleteAIScheduleById(id));
     }
 
+    // Book AI schedule
+    @PostMapping("/book")
+    public ResponseEntity<String> bookSchedule(@RequestParam Long scheduleId, @RequestParam Long userId) {
+        aiScheduleService.bookAISchedule(scheduleId, userId);
+        return ResponseEntity.ok("User booked successfully");
+    }
+
 }

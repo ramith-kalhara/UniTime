@@ -1,6 +1,6 @@
 import React from 'react'
 
-function AiSchedule({ ScheduleData }) {
+function AiSchedule({ ScheduleData, handleAIBookNow }) {
   return (
     <div className="col-lg-4 mb-5">
     <div className="card border-0 bg-light shadow-sm pb-2"  style={{ width: '350px', height: '691px' }}>
@@ -46,9 +46,18 @@ function AiSchedule({ ScheduleData }) {
           <div className="col-6 py-1">{ScheduleData.profName}</div>
         </div>
       </div>
-      <a href="#" className="btn btn-primary px-4 mx-auto mb-4">
-        Book Now
-      </a>
+   <a
+  href="#"
+  className="btn btn-primary px-4 mx-auto mb-4"
+  onClick={(e) => {
+    e.preventDefault();
+    handleAIBookNow(ScheduleData.id);
+  }}
+>
+  Book Now
+</a>
+
+
     </div>
   </div>
   )

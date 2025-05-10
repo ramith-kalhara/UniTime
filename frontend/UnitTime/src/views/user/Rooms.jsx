@@ -163,6 +163,54 @@ function Rooms() {
       });
     }
   };
+
+  const handleAIBookNow = async (scheduleId) => {
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  if (!scheduleId) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Invalid Schedule ID',
+      text: 'Please select a valid schedule.',
+    });
+    return;
+  }
+
+  if (!user || !user.userId) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Not Logged In',
+      text: 'You need to log in to book a schedule.',
+    });
+    return;
+  }
+
+  const userId = user.userId;
+
+  try {
+    const response = await axios.post(
+      `http://localhost:8086/ai-schedule/book`,
+      null,
+      {
+        params: { scheduleId, userId },
+      }
+    );
+
+    Swal.fire({
+      icon: 'success',
+      title: 'AI Booking Successful',
+      text: response.data || 'You have successfully booked the AI schedule.',
+    });
+  } catch (err) {
+    console.error("AI Booking failed:", err);
+    Swal.fire({
+      icon: 'error',
+      title: 'Booking Failed',
+      text: err.response?.data?.message || 'Something went wrong with AI booking.',
+    });
+  }
+};
+
   
 
   
@@ -197,7 +245,7 @@ function Rooms() {
           </div>
           <div className="row">
             {aiSchedules.map(item => (
-              <AiSchedule key={item.id} ScheduleData={item} />
+              <AiSchedule key={item.id} ScheduleData={item}  handleAIBookNow={handleAIBookNow} />
             ))}
           </div>
         </div>

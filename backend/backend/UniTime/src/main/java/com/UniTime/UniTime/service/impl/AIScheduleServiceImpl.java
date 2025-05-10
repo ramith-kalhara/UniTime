@@ -3,7 +3,9 @@ package com.UniTime.UniTime.service.impl;
 import com.UniTime.UniTime.dto.AIScheduleDto;
 import com.UniTime.UniTime.dto.AIScheduleRequest;
 import com.UniTime.UniTime.entity.AISchedule;
+import com.UniTime.UniTime.entity.User;
 import com.UniTime.UniTime.repository.AIScheduleRepository;
+import com.UniTime.UniTime.repository.UserRepository;
 import com.UniTime.UniTime.service.AIScheduleService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.HttpHeaders;
 import java.util.HashMap;
@@ -27,8 +30,13 @@ public class AIScheduleServiceImpl implements AIScheduleService {
     @Autowired
     public AIScheduleRepository aiScheduleRepository;
 
-    public AIScheduleServiceImpl(AIScheduleRepository aiScheduleRepository, ModelMapper modelMapper) {
+    @Autowired
+    private UserRepository userRepository;
+
+
+    public AIScheduleServiceImpl(AIScheduleRepository aiScheduleRepository, ModelMapper modelMapper,UserRepository userRepository) {
         this.aiScheduleRepository = aiScheduleRepository;
+        this.userRepository = userRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -69,6 +77,24 @@ public class AIScheduleServiceImpl implements AIScheduleService {
         return schedules.stream()
                 .map(schedule -> schedule.toDto(modelMapper))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public void bookAISchedule(Long scheduleId, Long userId) {
+        AISchedule schedule = aiScheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new RuntimeException("Schedule not found"));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Avoid adding the same user multiple times
+        if (!schedule.getUsers().contains(user)) {
+            schedule.getUsers().add(user);
+            aiScheduleRepository.save(schedule);
+        } else {
+            throw new RuntimeException("User already booked this schedule");
+        }
     }
 
     @Override

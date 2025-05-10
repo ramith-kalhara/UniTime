@@ -4,6 +4,7 @@ import com.UniTime.UniTime.dto.CourseDto;
 import com.UniTime.UniTime.dto.ScheduleDto;
 import com.UniTime.UniTime.dto.UserDto;
 import com.UniTime.UniTime.dto.UserVoteDto;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.modelmapper.ModelMapper;
@@ -51,6 +52,13 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "schedule_id")
     )
     private List<Schedule> schedules = new ArrayList<>();
+
+
+    @ManyToMany(mappedBy = "users")
+    @JsonBackReference
+    private List<AISchedule> aiSchedules = new ArrayList<>();
+
+
 
 
     public UserDto toDto(ModelMapper mapper) {

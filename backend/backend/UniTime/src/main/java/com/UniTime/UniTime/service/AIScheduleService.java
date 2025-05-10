@@ -12,6 +12,8 @@ public interface AIScheduleService {
 
     public List<AIScheduleDto> getAllAISchedules();
 
+    public void bookAISchedule(Long id, Long userId);
+
     public AIScheduleDto getAIScheduleById(long id);
 
     public Boolean deleteAIScheduleById(long id);
