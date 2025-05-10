@@ -1,23 +1,43 @@
-import { Link } from "react-router-dom";
-import ProfileImg from "../../assets/admin/img/theme/team-4-800x800.jpg";
-
+import React, { useEffect, useState } from "react";
 import {
-  DropdownMenu,
-  DropdownItem,
+  Navbar,
+  Container,
+  Nav,
   UncontrolledDropdown,
   DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+  Media,
   Form,
   FormGroup,
-  InputGroupText,
   Input,
   InputGroup,
-  Navbar,
-  Nav,
-  Container,
-  Media,
+  InputGroupText,
 } from "reactstrap";
+import { Link } from "react-router-dom";
 
 const AdminNavbar = (props) => {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const userId = JSON.parse(localStorage.getItem("user"))?.userId;
+
+    if (userId) {
+      fetch(`http://localhost:8086/api/user/${userId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setUser(data);
+        })
+        .catch((err) => {
+          console.error("Error fetching user:", err);
+        });
+    }
+  }, []);
+
+  const profileImage = user?.imageBase64
+    ? `data:image/jpeg;base64,${user.imageBase64}`
+    : "/default-avatar.jpg";
+
   return (
     <>
       <Navbar className="navbar-top navbar-dark" expand="md" id="navbar-main">
@@ -28,29 +48,16 @@ const AdminNavbar = (props) => {
           >
             {props.brandText}
           </Link>
-          <Form className="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto">
-            <FormGroup className="mb-0">
-              <InputGroup className="input-group-alternative">
-                <InputGroupText>
-                  <i className="fas fa-search" />
-                </InputGroupText>
-                <Input placeholder="Search" type="text" />
-              </InputGroup>
-            </FormGroup>
-          </Form>
           <Nav className="align-items-center d-none d-md-flex" navbar>
             <UncontrolledDropdown nav>
               <DropdownToggle className="pr-0" nav>
                 <Media className="align-items-center">
                   <span className="avatar avatar-sm rounded-circle">
-                    <img
-                      alt="Profile"
-                      src={ProfileImg} // 
-                    />
+                    <img alt="Profile" src={profileImage} style={{ width: '36px', height: '36px' }} />
                   </span>
                   <Media className="ml-2 d-none d-lg-block">
                     <span className="mb-0 text-sm font-weight-bold">
-                      Jessica Jones
+                      {user ? `${user.firstName} ${user.lastName}` : "Loading..."}
                     </span>
                   </Media>
                 </Media>
@@ -59,35 +66,18 @@ const AdminNavbar = (props) => {
                 <DropdownItem className="noti-title" header tag="div">
                   <h6 className="text-overflow m-0">Welcome!</h6>
                 </DropdownItem>
-                {/* <DropdownItem to="/admin/user-profile" tag={Link}>
-                  <i className="ni ni-single-02" />
-                  <span>My profile</span>
-                </DropdownItem>
-                <DropdownItem to="/admin/user-profile" tag={Link}>
-                  <i className="ni ni-settings-gear-65" />
-                  <span>Settings</span>
-                </DropdownItem>
-                <DropdownItem to="/admin/user-profile" tag={Link}>
-                  <i className="ni ni-calendar-grid-58" />
-                  <span>Activity</span>
-                </DropdownItem>
-                <DropdownItem to="/admin/user-profile" tag={Link}>
-                  <i className="ni ni-support-16" />
-                  <span>Support</span>
-                </DropdownItem> */}
                 <DropdownItem divider />
                 <DropdownItem
                   href="#"
                   onClick={(e) => {
-                    e.preventDefault(); // Prevent default link behavior
-                    localStorage.removeItem("user"); // Clear user data
-                    window.location.href = "/register"; // Redirect to register
+                    e.preventDefault();
+                    localStorage.removeItem("user");
+                    window.location.href = "/register";
                   }}
                 >
                   <i className="ni ni-user-run" />
                   <span>Logout</span>
                 </DropdownItem>
-
               </DropdownMenu>
             </UncontrolledDropdown>
           </Nav>

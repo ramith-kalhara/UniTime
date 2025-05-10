@@ -19,8 +19,8 @@ const adminHeaderData = [
       id: 2 ,
       title: "Add Professor", 
       description: "This is your Add Professor page. You can add a new professor, enter their details, and assign them to courses.",
-      buttonText: "Add Professor", 
-      buttonLink: "#pablo", 
+      buttonText: "Genarate Professor report", 
+      action: "generateProfessorReport"
     },
     {
       id: 3 ,
