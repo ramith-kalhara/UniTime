@@ -15,12 +15,11 @@ function About() {
               <p className="section-title pr-5">
                 <span className="pr-2">Learn About Us</span>
               </p>
-              <h1 className="mb-4">Best School For Your Kids</h1>
+              <h1 className="mb-4">The Best University for Your Future</h1>
               <p>
-                Invidunt lorem justo sanctus clita. Erat lorem labore ea, justo
-                dolor lorem ipsum ut sed eos, ipsum et dolor kasd sit ea justo.
-                Erat justo sed sed diam. Ea et erat ut sed diam sea ipsum est
-                dolor
+                At UniTime, we offer an exceptional education that shapes your future. 
+                With expert faculty, cutting-edge facilities, and a supportive community,
+                we’re here to help you succeed in your academic journey.
               </p>
               <div className="row pt-2 pb-4">
                 <div className="col-6 col-md-4">
@@ -29,16 +28,13 @@ function About() {
                 <div className="col-6 col-md-8">
                   <ul className="list-inline m-0">
                     <li className="py-2 border-top border-bottom">
-                      <i className="fa fa-check text-primary mr-3" />Labore eos amet
-                      dolor amet diam
+                      <i className="fa fa-check text-primary mr-3" />World-class education dedicated to academic excellence.
                     </li>
                     <li className="py-2 border-bottom">
-                      <i className="fa fa-check text-primary mr-3" />Etsea et sit
-                      dolor amet ipsum
+                      <i className="fa fa-check text-primary mr-3" />Innovative programs fostering personal and academic growth.
                     </li>
                     <li className="py-2 border-bottom">
-                      <i className="fa fa-check text-primary mr-3" />Diam dolor diam
-                      elitripsum vero.
+                      <i className="fa fa-check text-primary mr-3" />Expert faculty and modern facilities for a rich learning experience.
                     </li>
                   </ul>
                 </div>
