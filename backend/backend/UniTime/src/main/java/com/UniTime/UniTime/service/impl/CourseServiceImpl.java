@@ -3,10 +3,7 @@ package com.UniTime.UniTime.service.impl;
 import com.UniTime.UniTime.dto.CourseDto;
 import com.UniTime.UniTime.dto.ScheduleDto;
 import com.UniTime.UniTime.dto.UserDto;
-import com.UniTime.UniTime.entity.Course;
-import com.UniTime.UniTime.entity.Schedule;
-import com.UniTime.UniTime.entity.User;
-import com.UniTime.UniTime.entity.Vote;
+import com.UniTime.UniTime.entity.*;
 import com.UniTime.UniTime.exception.NotFoundException;
 import com.UniTime.UniTime.repository.CourseRepository;
 import com.UniTime.UniTime.repository.ScheduleRepository;
@@ -24,6 +21,21 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Image;
+import com.lowagie.text.pdf.PdfWriter;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -204,6 +216,68 @@ public class CourseServiceImpl implements CourseService {
         courseRepository.delete(course);
         return true;
     }
+
+    @Override
+    public byte[] generateCoursePdfReport() {
+        List<Course> courses = courseRepository.findAll();
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Document document = new Document(PageSize.A4);
+
+        try {
+            PdfWriter.getInstance(document, out);
+            document.open();
+
+            Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
+            Font normalFont = FontFactory.getFont(FontFactory.HELVETICA, 12);
+
+            document.add(new Paragraph("Course Report", titleFont));
+            document.add(new Paragraph("Generated on: " + new Date().toString()));
+            document.add(Chunk.NEWLINE);
+
+            for (Course course : courses) {
+                document.add(new Paragraph("Course Name: " + course.getName(), normalFont));
+                document.add(new Paragraph("Course Code: " + course.getCourseCode(), normalFont));
+                document.add(new Paragraph("Credits: " + course.getCredits(), normalFont));
+                document.add(new Paragraph("Department: " + course.getDepartment(), normalFont));
+                document.add(new Paragraph("Start Date: " + course.getStartDate(), normalFont));
+                document.add(new Paragraph("Description: " + course.getDescription(), normalFont));
+
+                // Include associated professors
+                if (course.getProfessors() != null && !course.getProfessors().isEmpty()) {
+                    document.add(new Paragraph("Professors:", normalFont));
+                    for (Professor professor : course.getProfessors()) {
+                        document.add(new Paragraph("   - " + professor.getFull_name(), normalFont));
+                    }
+                }
+
+                // Include associated schedules
+                if (course.getSchedules() != null && !course.getSchedules().isEmpty()) {
+                    document.add(new Paragraph("Schedules:", normalFont));
+                    for (Schedule schedule : course.getSchedules()) {
+                        document.add(new Paragraph("   - " + schedule.getLectureTitle(), normalFont));
+                    }
+                }
+
+                // Optional image
+                if (course.getImageData() != null) {
+                    Image img = Image.getInstance(course.getImageData());
+                    img.scaleToFit(100, 100);
+                    document.add(img);
+                }
+
+                document.add(new Paragraph("--------------------------------------------------"));
+                document.add(Chunk.NEWLINE);
+            }
+
+            document.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return out.toByteArray();
+    }
+
 
 
 }

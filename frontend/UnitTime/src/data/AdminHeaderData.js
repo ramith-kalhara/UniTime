@@ -40,8 +40,8 @@ const adminHeaderData = [
       id: 5 ,
       title: "Add Schedule", 
       description: "This is your Add Schedule page. You can create a new schedule, set dates and times, and assign it to courses, rooms, or professors.",
-      buttonText: "Add Schedule", 
-      buttonLink: "#pablo", 
+      buttonText: "Genrate Schedule report", 
+      action: "generateScheduleReport"
     },
     {
       id: 6 ,
@@ -54,8 +54,8 @@ const adminHeaderData = [
       id: 7,
       title: "Add Course", 
       description: "This is your Add Course page. You can create a new course, define its details, and assign it to professors and students.",
-      buttonText: "Add Course", 
-      buttonLink: "#pablo", 
+      buttonText: "genarate Course report", 
+      action: "generateCourseReport", 
     },
     {
       id: 8,

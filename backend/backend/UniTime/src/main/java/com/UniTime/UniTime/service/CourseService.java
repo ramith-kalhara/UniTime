@@ -22,5 +22,7 @@ public interface CourseService {
 
     // Method to delete a course by its ID
     public Boolean deleteCourse(Long id);
+
+    byte[] generateCoursePdfReport();
 }
 

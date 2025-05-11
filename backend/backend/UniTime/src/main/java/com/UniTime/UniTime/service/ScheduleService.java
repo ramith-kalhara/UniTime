@@ -12,4 +12,5 @@ public interface ScheduleService {
     public ScheduleDto getScheduleById(Long id);
     public ScheduleDto updateSchedule(Long id, ScheduleDto scheduleDto);
     public Boolean deleteSchedule(Long id);
+    byte[] generateSchedulePdfReport();
 }
