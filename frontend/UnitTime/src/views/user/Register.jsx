@@ -79,35 +79,68 @@ function Register() {
   };
 
 
-  const handleSubmit = async (e) => {
+ const handleSubmit = async (e) => {
   e.preventDefault();
 
-  if (formData.password !== formData.confirmPassword) {
-    alert("Passwords do not match!");
+  const { firstName, lastName, tpNum, email, password, confirmPassword, image } = formData;
+
+  // Required fields check
+  if (!firstName || !lastName || !tpNum || !email || !password || !confirmPassword || !image) {
+    Swal.fire({
+      icon: "warning",
+      title: "Missing Fields",
+      text: "Please fill in all required fields.",
+      confirmButtonColor: "#f39c12",
+    });
     return;
   }
 
-  // Prepare the payload using FormData
-  const formDataPayload = new FormData();
+  // Phone number validation (10 digits)
+  const phoneRegex = /^\d{10}$/;
+  if (!phoneRegex.test(tpNum)) {
+    Swal.fire({
+      icon: "error",
+      title: "Invalid Phone Number",
+      text: "Telephone number must be exactly 10 digits.",
+      confirmButtonColor: "#e74c3c",
+    });
+    return;
+  }
 
-  // Wrap all the user fields inside a 'user' object
-  const userData = {
-    firstName: formData.firstName,
-    lastName: formData.lastName,
-    tpNum: formData.tpNum,
-    email: formData.email,
-    password: formData.password,
-  };
-
-  // Append the 'user' object as JSON (wrapped in Blob) to the form data
-  formDataPayload.append("user", new Blob([JSON.stringify(userData)], { type: "application/json" }));
-
-  // Append the image file if available
-  if (formData.image) {
-    formDataPayload.append("image", formData.image);
+  // Password match check
+  if (password !== confirmPassword) {
+    Swal.fire({
+      icon: "error",
+      title: "Password Mismatch",
+      text: "Passwords do not match!",
+      confirmButtonColor: "#e74c3c",
+    });
+    return;
   }
 
   try {
+    // 🚨 Check if email already exists
+    const userRes = await fetch("http://localhost:8086/api/user/");
+    if (!userRes.ok) throw new Error("Failed to fetch existing users");
+    const users = await userRes.json();
+
+    const emailExists = users.some((user) => user.email === email);
+    if (emailExists) {
+      Swal.fire({
+        icon: "error",
+        title: "Email Exists",
+        text: "The email you entered is already registered.",
+        confirmButtonColor: "#e74c3c",
+      });
+      return;
+    }
+
+    // ✅ If email is unique, prepare FormData
+    const formDataPayload = new FormData();
+    const userData = { firstName, lastName, tpNum, email, password };
+    formDataPayload.append("user", new Blob([JSON.stringify(userData)], { type: "application/json" }));
+    formDataPayload.append("image", image);
+
     const response = await fetch("http://localhost:8086/api/user/create", {
       method: "POST",
       body: formDataPayload,
@@ -122,7 +155,6 @@ function Register() {
       confirmButtonColor: "#3085d6",
     });
 
-    // Clear the form data after successful registration
     setFormData({
       firstName: '',
       lastName: '',
@@ -133,15 +165,16 @@ function Register() {
       image: null,
     });
   } catch (error) {
-    console.error("Error creating user:", error);
+    console.error("Error during registration:", error);
     Swal.fire({
       icon: "error",
       title: "Oops...",
-      text: "Failed to create user. Please try again.",
+      text: "Something went wrong. Please try again.",
       confirmButtonColor: "#d33",
     });
   }
 };
+
 
 
 
