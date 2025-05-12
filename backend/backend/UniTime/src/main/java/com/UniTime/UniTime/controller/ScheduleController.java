@@ -3,8 +3,7 @@ package com.UniTime.UniTime.controller;
 import com.UniTime.UniTime.dto.ScheduleDto;
 import com.UniTime.UniTime.service.impl.ScheduleServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -56,4 +55,18 @@ public class ScheduleController {
     public ResponseEntity<Boolean> deleteSchedule(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(scheduleService.deleteSchedule(id));
     }
+
+    @GetMapping("/reportAllSchedules")
+    public ResponseEntity<byte[]> getScheduleReport() {
+        byte[] pdf = scheduleService.generateSchedulePdfReport();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("attachment")
+                .filename("schedule_report.pdf")
+                .build());
+
+        return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
+    }
+
 }

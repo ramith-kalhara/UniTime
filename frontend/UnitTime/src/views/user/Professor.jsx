@@ -10,8 +10,11 @@ import team3 from '../../assets/user/img/team-3.jpg';
 import team4 from '../../assets/user/img/team-4.jpg';
 
 const imageList = [team1, team2, team3, team4];
+
 function Professor() {
   const [professors, setProfessors] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+
   useEffect(() => {
     axios.get('http://localhost:8086/api/professor/')
       .then(response => {
@@ -30,7 +33,12 @@ function Professor() {
         console.error('Failed to fetch professors:', error);
       });
   }, []);
-  
+
+  // Filter professors based on course name
+  const filteredProfessors = professors.filter((prof) =>
+    prof.module.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div>
       <UserHeader pageIndex={2} />
@@ -43,8 +51,19 @@ function Professor() {
             <h1 className="mb-4">Meet Our Professors</h1>
           </div>
 
-          {/* Show only 3 professors */}
-          <Professors data={professors} />
+          {/* Search Input */}
+          <div className="mb-4 text-center">
+            <input
+              type="text"
+              placeholder="Search by Course Name"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="form-control w-50 mx-auto"
+            />
+          </div>
+
+          {/* Professor List */}
+          <Professors data={filteredProfessors} />
         </div>
       </div>
     </div>

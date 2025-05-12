@@ -36,7 +36,7 @@ const Schedule = () => {
   const [formValues, setFormValues] = useState({
     image: null,
   });
-  
+
 
   //get data to select option menu 
   const [professors, setProfessors] = useState([]);
@@ -96,10 +96,12 @@ const Schedule = () => {
   };
 
 
+
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!startDate || !startTime || !endTime) {
       Swal.fire({
         icon: "error",
@@ -108,7 +110,28 @@ const Schedule = () => {
       });
       return;
     }
-  
+
+    // Inside handleSubmit:
+    if (!startDate || !startTime || !endTime) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Start date and time, and End time are required!",
+      });
+      return;
+    }
+
+
+
+    if (dayjs(endTime).isBefore(dayjs(startTime))) {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Time Range",
+        text: "End time cannot be earlier than start time.",
+      });
+      return;
+    }
+
     const now = dayjs();
     if (dayjs(startDate).isBefore(now, "day")) {
       Swal.fire({
@@ -118,7 +141,7 @@ const Schedule = () => {
       });
       return;
     }
-  
+
     const scheduleData = {
       capacity: parseInt(capacity),
       lectureTitle: lecture_title,
@@ -130,29 +153,29 @@ const Schedule = () => {
       professor: { id: professorId },
       course: { courseId: courseId },
     };
-  
+
     try {
       const formData = new FormData();
       formData.append("schedule", new Blob([JSON.stringify(scheduleData)], { type: "application/json" }));
       if (formValues.image) {
         formData.append("image", formValues.image);
       }
-  
+
       const response = await fetch("http://localhost:8086/api/schedule/create", {
         method: "POST",
         body: formData,
       });
-  
+
       if (!response.ok) throw new Error("Schedule creation failed");
-  
+
       Swal.fire({
         icon: "success",
         title: "Schedule Created",
         text: "Schedule successfully added!",
       });
-  
+
       // Optionally reset your form state here...
-  
+
     } catch (error) {
       console.error("Error:", error);
       Swal.fire({
@@ -162,7 +185,7 @@ const Schedule = () => {
       });
     }
   };
-  
+
 
 
   return (
@@ -172,7 +195,7 @@ const Schedule = () => {
       <Container className="mt--7" fluid>
         <Row>
           <Col className="order-xl-2 mb-5 mb-xl-0" xl="4">
-          <AdminView/>
+            <AdminView />
 
 
           </Col>
@@ -321,15 +344,15 @@ const Schedule = () => {
                             Image
                           </label>
                           <Input
-  type="file"
-  name="image"
-  onChange={(e) =>
-    setFormValues({
-      ...formValues,
-      image: e.target.files[0], // this stores the file
-    })
-  }
-/>
+                            type="file"
+                            name="image"
+                            onChange={(e) =>
+                              setFormValues({
+                                ...formValues,
+                                image: e.target.files[0], // this stores the file
+                              })
+                            }
+                          />
 
                         </FormGroup>
 

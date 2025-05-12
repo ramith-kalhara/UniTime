@@ -18,6 +18,24 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Image;
+import com.lowagie.text.pdf.PdfWriter;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+
 @Service
 @RequiredArgsConstructor
 public class ScheduleServiceImpl implements ScheduleService {
@@ -180,5 +198,62 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         return true;
     }
+
+    @Override
+    public byte[] generateSchedulePdfReport() {
+        List<Schedule> schedules = scheduleRepository.findAll();
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Document document = new Document(PageSize.A4);
+
+        try {
+            PdfWriter.getInstance(document, out);
+            document.open();
+
+            Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
+            Font normalFont = FontFactory.getFont(FontFactory.HELVETICA, 12);
+
+            document.add(new Paragraph("Schedule Report", titleFont));
+            document.add(new Paragraph("Generated on: " + new Date().toString()));
+            document.add(Chunk.NEWLINE);
+
+            for (Schedule schedule : schedules) {
+                document.add(new Paragraph("Lecture Title: " + schedule.getLectureTitle(), normalFont));
+                document.add(new Paragraph("Module Code: " + schedule.getModuleCode(), normalFont));
+                document.add(new Paragraph("Professor: " + schedule.getProfessorName(), normalFont));
+                document.add(new Paragraph("Room Number: " + schedule.getRoomNumber(), normalFont));
+                document.add(new Paragraph("Capacity: " + schedule.getCapacity(), normalFont));
+                document.add(new Paragraph("Start Date: " + schedule.getStartDate(), normalFont));
+                document.add(new Paragraph("Start Time: " + schedule.getStartTime(), normalFont));
+                document.add(new Paragraph("End Time: " + schedule.getEndTime(), normalFont));
+                document.add(new Paragraph("Description: " + schedule.getScheduleDescription(), normalFont));
+
+                if (schedule.getCourse() != null) {
+                    document.add(new Paragraph("Course: " + schedule.getCourse().getName(), normalFont));
+                }
+
+                if (schedule.getRoom() != null) {
+                    document.add(new Paragraph("Room Type: " + schedule.getRoom().getRoomType(), normalFont));
+                }
+
+                // Optional image
+                if (schedule.getImageData() != null) {
+                    Image img = Image.getInstance(schedule.getImageData());
+                    img.scaleToFit(100, 100);
+                    document.add(img);
+                }
+
+                document.add(new Paragraph("--------------------------------------------------"));
+                document.add(Chunk.NEWLINE);
+            }
+
+            document.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return out.toByteArray();
+    }
+
 
 }

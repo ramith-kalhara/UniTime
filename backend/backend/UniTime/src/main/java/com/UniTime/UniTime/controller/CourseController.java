@@ -3,8 +3,7 @@ package com.UniTime.UniTime.controller;
 import com.UniTime.UniTime.dto.CourseDto;
 import com.UniTime.UniTime.service.impl.CourseServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -56,4 +55,18 @@ public class CourseController {
     public ResponseEntity<Boolean> deleteCourse(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(courseService.deleteCourse(id));
     }
+
+    @GetMapping("/courseReportAll")
+    public ResponseEntity<byte[]> getCourseReport() {
+        byte[] pdf = courseService.generateCoursePdfReport();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("attachment")
+                .filename("course_report.pdf")
+                .build());
+
+        return new ResponseEntity<>(pdf, headers, HttpStatus.OK);
+    }
+
 }

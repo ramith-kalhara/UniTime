@@ -9,10 +9,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.modelmapper.ModelMapper;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
@@ -33,6 +30,10 @@ public class User {
     private String password;
     private String email;
     private String role;
+
+    @Lob
+    @Column(name = "image_data", columnDefinition="LONGBLOB")
+    private byte[] imageData;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserVote> userVotes = new ArrayList<>();
@@ -87,6 +88,9 @@ public class User {
                     .map(s -> mapper.map(s, ScheduleDto.class))
                     .collect(Collectors.toList());
             dto.setSchedules(schedDtos);
+        }
+        if (this.imageData != null) {
+            dto.setImageBase64(Base64.getEncoder().encodeToString(this.imageData));
         }
 
 
