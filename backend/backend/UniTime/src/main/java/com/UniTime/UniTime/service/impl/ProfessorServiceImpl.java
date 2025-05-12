@@ -3,7 +3,6 @@ package com.UniTime.UniTime.service.impl;
 import com.UniTime.UniTime.dto.ProfessorDto;
 import com.UniTime.UniTime.dto.ScheduleDto;
 import com.UniTime.UniTime.dto.UserVoteDto;
-import com.UniTime.UniTime.dto.VoteDto;
 import com.UniTime.UniTime.entity.*;
 import com.UniTime.UniTime.exception.NotFoundException;
 import com.UniTime.UniTime.repository.*;
@@ -12,14 +11,37 @@ import com.UniTime.UniTime.service.UserVoteService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Image;
+import com.lowagie.text.pdf.PdfWriter;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+
+// Add any other necessary Spring or model imports depending on your package structure
+
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +53,7 @@ public class ProfessorServiceImpl implements ProfessorService {
     private final RoomRepository roomRepository;
     private final UserVoteService userVoteService;
     private final ScheduleRepository scheduleRepository;
+    private final UserRepository userRepository;
     private final ModelMapper mapper;
 
     // Create Professor
@@ -130,20 +153,19 @@ public class ProfessorServiceImpl implements ProfessorService {
 
     // Update Professor by ID
     @Override
+    @Transactional
     public ProfessorDto updateProfessor(Long id, ProfessorDto professorDto) {
         Professor professor = professorDto.toEntity(mapper);
         professor.setId(id);
 
-        // Check if the course is provided and exists, if not, create or retrieve it
+        // 🔹 Link course if exists
         if (professorDto.getCourse() != null) {
             Course course = courseRepository.findById(professorDto.getCourse().getCourseId())
                     .orElseThrow(() -> new NotFoundException("Course not found with id: " + professorDto.getCourse().getCourseId()));
-
-            // Set the course to the professor
             professor.setCourse(course);
         }
 
-        // 🔹 Handle Vote
+        // 🔹 Link vote if exists
         if (professorDto.getVote() != null && professorDto.getVote().getId() != null) {
             Long voteId = professorDto.getVote().getId();
             Vote vote = voteRepository.findById(voteId)
@@ -151,54 +173,57 @@ public class ProfessorServiceImpl implements ProfessorService {
             professor.setVote(vote);
         }
 
-        // Handle UserVotes manually
+        // 🔹 Link user votes
         List<UserVote> userVotes = new ArrayList<>();
         if (professorDto.getUserVote() != null) {
             for (UserVoteDto userVoteDto : professorDto.getUserVote()) {
                 UserVote userVote = new UserVote();
-                userVote.setProfessor(professor); // attach the professor reference
+                userVote.setProfessor(professor);
                 userVotes.add(userVote);
             }
         }
-        professor.setUserVote(userVotes); // attach votes to professor
+        professor.setUserVote(userVotes);
 
-        // Save professor first to get the ID (important before setting relationships that need ID)
+        // 🔹 Save the professor first to ensure ID is available
         Professor savedProfessor = professorRepository.save(professor);
 
-        // Handle schedules after saving professor
-        List<Schedule> schedules = new ArrayList<>();
+        // 🔹 Process schedules
+        List<Schedule> updatedSchedules = new ArrayList<>();
         if (professorDto.getSchedules() != null) {
             for (ScheduleDto scheduleDto : professorDto.getSchedules()) {
                 Schedule schedule;
 
                 if (scheduleDto.getScheduleId() != null) {
-                    // Fetch and update existing schedule
+                    // Fetch existing schedule
                     schedule = scheduleRepository.findById(scheduleDto.getScheduleId())
                             .orElseThrow(() -> new NotFoundException("Schedule not found with id: " + scheduleDto.getScheduleId()));
+
+                    // Detach schedule from users
+                    if (schedule.getUsers() != null && !schedule.getUsers().isEmpty()) {
+                        for (User user : new ArrayList<>(schedule.getUsers())) {
+                            user.getSchedules().remove(schedule);
+                            userRepository.save(user);
+                        }
+                        schedule.getUsers().clear();
+                    }
                 } else {
-                    // Create new schedule from DTO
+                    // Create new schedule
                     schedule = mapper.map(scheduleDto, Schedule.class);
                 }
 
-                // Set the professor (new or existing)
+                // Link professor to schedule
                 schedule.setProfessor(savedProfessor);
-                schedules.add(schedule);
+                updatedSchedules.add(schedule);
             }
 
-            // Save all new or updated schedules
-            scheduleRepository.saveAll(schedules);
-            System.out.println("Final Schedule Entities: " + schedules);
-
+            // Save all schedules after processing
+            scheduleRepository.saveAll(updatedSchedules);
+            savedProfessor.setSchedules(updatedSchedules);
         }
 
-
-        // Now update savedProfessor with the schedule list (optional)
-        savedProfessor.setSchedules(schedules);
-        System.out.println( "Schedule : " + schedules);
-
-//        Professor savedProfessor = professorRepository.save(professor);
         return savedProfessor.toDto(mapper);
     }
+
 
     // Delete Professor by ID
     @Override
@@ -249,6 +274,64 @@ public class ProfessorServiceImpl implements ProfessorService {
         professorRepository.delete(professor);
         return true;
     }
+
+    @Override
+    public byte[] generateProfessorPdfReport() {
+        List<Professor> professors = professorRepository.findAll();
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Document document = new Document(PageSize.A4);
+
+        try {
+            PdfWriter.getInstance(document, out);
+            document.open();
+
+            Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
+            Font normalFont = FontFactory.getFont(FontFactory.HELVETICA, 12);
+
+            document.add(new Paragraph("Professor Report", titleFont));
+            document.add(new Paragraph("Generated on: " + new Date().toString()));
+            document.add(Chunk.NEWLINE);
+
+            for (Professor professor : professors) {
+                document.add(new Paragraph("Full Name: " + professor.getFull_name(), normalFont));
+                document.add(new Paragraph("Email: " + professor.getEmail(), normalFont));
+                document.add(new Paragraph("Phone: " + professor.getTp_num(), normalFont));
+                document.add(new Paragraph("Department: " + professor.getDepartment_name(), normalFont));
+                document.add(new Paragraph("Address: " + professor.getAddress(), normalFont));
+                document.add(new Paragraph("City: " + professor.getCity(), normalFont));
+                document.add(new Paragraph("Country: " + professor.getCountry(), normalFont));
+                document.add(new Paragraph("Postal Code: " + professor.getPostal_code(), normalFont));
+                document.add(new Paragraph("Description: " + professor.getDescription(), normalFont));
+                document.add(new Paragraph("Course: " + professor.getCourse().getName(), normalFont)); // Adjust if needed
+
+                // Optional: List Schedule Titles
+                if (professor.getSchedules() != null && !professor.getSchedules().isEmpty()) {
+                    document.add(new Paragraph("Schedules:", normalFont));
+                    for (Schedule schedule : professor.getSchedules()) {
+                        document.add(new Paragraph("   - " + schedule.getLectureTitle(), normalFont)); // Customize as needed
+                    }
+                }
+
+                // Optional: Include image (Base64 image rendering not directly possible in PDF)
+                if (professor.getImageData() != null) {
+                    Image img = Image.getInstance(professor.getImageData());
+                    img.scaleToFit(100, 100);
+                    document.add(img);
+                }
+
+                document.add(new Paragraph("--------------------------------------------------"));
+                document.add(Chunk.NEWLINE);
+            }
+
+            document.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return out.toByteArray();
+    }
+
 
 
 

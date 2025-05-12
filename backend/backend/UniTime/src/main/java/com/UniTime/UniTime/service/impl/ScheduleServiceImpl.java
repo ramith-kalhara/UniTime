@@ -163,7 +163,22 @@ public class ScheduleServiceImpl implements ScheduleService {
     // Delete schedule
     @Override
     public Boolean deleteSchedule(Long id) {
-        scheduleRepository.deleteById(id);
+        Schedule schedule = scheduleRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Schedule not found with id: " + id));
+
+        // Remove schedule from all users
+        for (User user : schedule.getUsers()) {
+            user.getSchedules().remove(schedule);
+            userRepository.save(user); // 💡 Save the user to persist the change
+        }
+
+        // Clear the schedule's user list
+        schedule.getUsers().clear();
+
+        // Delete the schedule
+        scheduleRepository.delete(schedule);
+
         return true;
     }
+
 }

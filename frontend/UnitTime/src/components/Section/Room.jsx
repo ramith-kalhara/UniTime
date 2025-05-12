@@ -1,9 +1,13 @@
 import React from 'react';
 
-function Room({ ScheduleData }) {
+function Room({ ScheduleData ,onBook }) {
+
+
+
+
   return (
-    <div className="col-lg-4 mb-5">
-      <div className="card border-0 bg-light shadow-sm pb-2">
+    <div className="col-lg-4 mb-5"   >
+      <div className="card border-0 bg-light shadow-sm pb-2"  style={{ width: '350px', height: '691px' }}>
         {/* Optional image - only if you add it to the data */}
         <img
           className="card-img-top mb-2"
@@ -33,6 +37,12 @@ function Room({ ScheduleData }) {
           </div>
           <div className="row border-bottom">
             <div className="col-6 py-1 text-right border-right">
+              <strong>Booked Seats</strong>
+            </div>
+            <div className="col-6 py-1">{ScheduleData.bookSeat} Seats</div>
+          </div>
+          <div className="row border-bottom">
+            <div className="col-6 py-1 text-right border-right">
               <strong>Operating Hours</strong>
             </div>
             <div className="col-6 py-1">
@@ -52,9 +62,11 @@ function Room({ ScheduleData }) {
             <div className="col-6 py-1">{ScheduleData.moduleName}</div>
           </div>
         </div>
-        <a href="#" className="btn btn-primary px-4 mx-auto mb-4">
-          Book Now
-        </a>
+        <a href="#" className="btn btn-primary px-4 mx-auto mb-4" onClick={() => onBook(ScheduleData.id)}>
+  Book Now
+</a>
+
+
       </div>
     </div>
   );

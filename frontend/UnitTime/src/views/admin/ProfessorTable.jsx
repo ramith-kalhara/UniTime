@@ -27,53 +27,45 @@ const ProfessorTable = () => {
   const navigate = useNavigate();
   const [professor, setprofessor] = useState([]);
 
-  useEffect(() => {
-    const fetchprofessor = async () => {
+// 1. Declare it outside useEffect
+const fetchProfessor = async () => {
+  try {
+    const response = await axios.get("http://localhost:8086/api/professor/");
+    console.log("Professor Data:", response.data);
+    setprofessor(response.data);
+  } catch (error) {
+    console.error("Error fetching professor:", error);
+  }
+};
+
+// 2. Call in useEffect on mount
+useEffect(() => {
+  fetchProfessor();
+}, []);
+
+// 3. Update handleDelete to call it after successful deletion
+const handleDelete = (professorId) => {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'You won\'t be able to revert this!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, delete it!',
+    cancelButtonText: 'No, cancel!',
+  }).then(async (result) => {
+    if (result.isConfirmed) {
       try {
-        const response = await axios.get("http://localhost:8086/api/professor/");
-        console.log("Professor Data:", response.data);
-        setprofessor(response.data);
-      } catch (error) {
-        console.error("Error fetching professor:", error);
-      }
-    };
-
-    fetchprofessor();
-  }, []);
-
-  //Delete API
-  const handleDelete = (professorId) => {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: 'You won\'t be able to revert this!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
-      cancelButtonText: 'No, cancel!',
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          const response = await axios.delete(`http://localhost:8086/api/professor/${professorId}`);
-          if (response.status === 200) {
-            Swal.fire(
-              'Deleted!',
-              'The professor has been deleted.',
-              'success'
-            );
-
-            // Remove the deleted room from the state
-            setprofessor(professor.filter(professor => professor.professorId !== professorId));
-          }
-        } catch (error) {
-          Swal.fire(
-            'Error!',
-            'There was a problem deleting the professor.',
-            'error'
-          );
+        const response = await axios.delete(`http://localhost:8086/api/professor/${professorId}`);
+        if (response.status === 200) {
+          Swal.fire('Deleted!', 'The professor has been deleted.', 'success');
+          fetchProfessor(); // 👈 Refresh the list
         }
+      } catch (error) {
+        Swal.fire('Error!', 'There was a problem deleting the professor.', 'error');
       }
-    });
-  };
+    }
+  });
+};
 
 
   return (

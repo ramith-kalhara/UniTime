@@ -18,6 +18,7 @@ import {
   Col,
 } from "reactstrap";
 import AdminHeader from "../../components/Headers/AdminHeader";
+import AdminView from '../../components/Section/AdminView';
 
 const Vote = () => {
   const [startDateTime, setStartDateTime] = useState(dayjs());
@@ -185,6 +186,7 @@ const Vote = () => {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include", 
         body: JSON.stringify(voteData),
       });
 
@@ -228,43 +230,9 @@ const Vote = () => {
       <Container className="mt--7" fluid>
         <Row>
           <Col className="order-xl-2 mb-5 mb-xl-0" xl="4">
-            <Card className="card-profile shadow">
-              <Row className="justify-content-center">
-                <Col className="order-lg-2" lg="3">
-                  <div className="card-profile-image">
-                    <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                      <img alt="..." className="rounded-circle" src={ProfileImg} />
-                    </a>
-                  </div>
-                </Col>
-              </Row>
-              <CardHeader className="text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
-                <div className="d-flex justify-content-between">
-                  <Button className="mr-4" color="info" size="sm">Connect</Button>
-                  <Button className="float-right" color="default" size="sm">Message</Button>
-                </div>
-              </CardHeader>
-              <CardBody className="pt-0 pt-md-4">
-                <Row>
-                  <div className="col">
-                    <div className="card-profile-stats d-flex justify-content-center mt-md-5">
-                      <div><span className="heading">22</span><span className="description">Friends</span></div>
-                      <div><span className="heading">10</span><span className="description">Photos</span></div>
-                      <div><span className="heading">89</span><span className="description">Comments</span></div>
-                    </div>
-                  </div>
-                </Row>
-                <div className="text-center">
-                  <h3>Jessica Jones<span className="font-weight-light">, 27</span></h3>
-                  <div className="h5 font-weight-300">Bucharest, Romania</div>
-                  <div className="h5 mt-4">Solution Manager - Creative Tim Officer</div>
-                  <div>University of Computer Science</div>
-                  <hr className="my-4" />
-                  <p>Ryan — the name taken by Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs and records all of his own music.</p>
-                  <a href="#pablo" onClick={(e) => e.preventDefault()}>Show more</a>
-                </div>
-              </CardBody>
-            </Card>
+
+
+<AdminView/>
           </Col>
 
           <Col className="order-xl-1" xl="8">

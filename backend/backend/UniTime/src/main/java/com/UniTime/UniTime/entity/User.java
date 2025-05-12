@@ -4,14 +4,12 @@ import com.UniTime.UniTime.dto.CourseDto;
 import com.UniTime.UniTime.dto.ScheduleDto;
 import com.UniTime.UniTime.dto.UserDto;
 import com.UniTime.UniTime.dto.UserVoteDto;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.modelmapper.ModelMapper;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
@@ -33,6 +31,10 @@ public class User {
     private String email;
     private String role;
 
+    @Lob
+    @Column(name = "image_data", columnDefinition="LONGBLOB")
+    private byte[] imageData;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserVote> userVotes = new ArrayList<>();
 
@@ -51,6 +53,13 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "schedule_id")
     )
     private List<Schedule> schedules = new ArrayList<>();
+
+
+    @ManyToMany(mappedBy = "users")
+    @JsonBackReference
+    private List<AISchedule> aiSchedules = new ArrayList<>();
+
+
 
 
     public UserDto toDto(ModelMapper mapper) {
@@ -79,6 +88,9 @@ public class User {
                     .map(s -> mapper.map(s, ScheduleDto.class))
                     .collect(Collectors.toList());
             dto.setSchedules(schedDtos);
+        }
+        if (this.imageData != null) {
+            dto.setImageBase64(Base64.getEncoder().encodeToString(this.imageData));
         }
 
 
