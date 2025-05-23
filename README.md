@@ -26,13 +26,80 @@ Implemented as a microservice using Python (scikit-learn) integrated with the co
 - **Java**
 - **MySQL**
 - **Python (AI Microservice)**
-- **scikit-learn** – Machine Learning
-- **Flask/FastAPI** – For Python REST API (microservice)
+- **scikit-learn**
+- **Flask** – Python REST API
 
 ### Frontend:
 - **React.js**
 - **Axios**
 - **React Router**
-- **SweetAlert2** – For prompts/alerts
+- **SweetAlert2**
+
+---
+
+## ⚙️ Getting Started
+
+### 📋 Prerequisites
+
+- [Node.js & npm](https://nodejs.org/)
+- [Python 3.8+](https://www.python.org/)
+- [Java 17+](https://adoptium.net/)
+- [IntelliJ IDEA](https://www.jetbrains.com/idea/)
+- [MySQL Server](https://dev.mysql.com/downloads/mysql/)
+
+---
+
+## 🚦 How to Run the Project
+
+### 🔧 1. Clone the Repository
+
+```bash
+git clone https://github.com/your-username/UniTime.git](https://github.com/ramith-kalhara/UniTime.git
+cd UniTime
+
+
+
+🖥️ 2. Start the Frontend (React)
+
+cd frontend/UniTime
+npm install
+npm run dev
+
+
+
+🧠 3. Set Up the AI Microservice (Python)
+
+cd ../../ai_scheduler
+
+a. (Optional) Create a virtual environment
+python -m venv venv
+venv\Scripts\activate       # Windows
+# OR
+source venv/bin/activate    # Linux/Mac
+
+
+b. Install dependencies
+pip install -r requirements.txt
+
+c. Train the AI model
+python train_time_slot_model.py
+
+d. Start the Flask API
+cd app
+python app.py
+
+
+☕ 4. Start the Backend (Spring Boot)
+Open the backend folder in IntelliJ IDEA.
+Configure database in src/main/resources/application.properties:
+
+
+spring.datasource.username=root
+spring.datasource.password=yourpassword
+
+
+
+
+
 
 
