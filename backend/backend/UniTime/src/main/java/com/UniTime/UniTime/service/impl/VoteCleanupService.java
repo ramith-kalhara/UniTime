@@ -44,7 +44,7 @@ public class VoteCleanupService {
     }
 
     // Runs every 0.5 minutes
-    @Scheduled(fixedRate = 30000)
+    @Scheduled(fixedRate = 30000, initialDelay = 10000) // Waits 10 sec before first run
     @Transactional
     public void deleteExpiredVotes() {
         LocalDateTime now = LocalDateTime.now();
